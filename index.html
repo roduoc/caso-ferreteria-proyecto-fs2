@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ferretería Los Maestros, materiales y herramientas en La Serena." />
+    <title>Ferretería Los Maestros</title>
+    <link rel="stylesheet" href="./src/output.css" />
+    <script src="./assets/src/app.js" defer></script>
+  </head>
+
+  <body class="bg-stone-100 text-stone-900">
+    <header class="border-b border-stone-300 bg-white">
+      <div class="page-shell flex h-20 items-center gap-4">
+        <button id="menu-button" class="simple-icon-button lg:hidden" type="button" aria-label="Abrir menú" aria-controls="mobile-menu" aria-expanded="false">
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <a href="./index.html" class="flex items-center gap-3" aria-label="Ir al inicio">
+          <img class="size-12" src="./assets/images/logo-los-maestros.svg" alt="" />
+          <span>
+            <strong class="block text-xl leading-tight tracking-tight">Los Maestros</strong>
+            <span class="hidden text-[0.68rem] font-bold uppercase tracking-[0.18em] text-amber-700 sm:block">Ferretería</span>
+          </span>
+        </a>
+
+        <nav class="ml-auto hidden items-center gap-6 text-sm font-semibold lg:flex" aria-label="Navegación principal">
+          <a class="nav-link active" href="./index.html" aria-current="page">Inicio</a>
+          <a class="nav-link" href="#productos">Productos</a>
+          <a class="nav-link" href="#nosotros">Nosotros</a>
+          <a class="nav-link" href="#blog">Blogs</a>
+        </nav>
+
+        <label class="relative hidden xl:block">
+          <span class="sr-only">Buscar productos</span>
+          <input class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 text-sm outline-none focus:border-amber-500" type="search" placeholder="Buscar productos..." />
+        </label>
+
+        <a id="cuenta" class="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0" href="#cuenta">Ingresar</a>
+
+        <button id="cart-button" class="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold" type="button" aria-label="Carrito con 0 productos">
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6" />
+            <circle cx="10" cy="20" r="1" /><circle cx="18" cy="20" r="1" />
+          </svg>
+          <span class="hidden sm:inline">Carrito</span>
+          <span id="cart-count" class="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-white bg-amber-400 text-xs font-bold text-stone-900">0</span>
+        </button>
+      </div>
+
+      <nav id="mobile-menu" class="page-shell border-t border-stone-200 py-3 lg:hidden" aria-label="Navegación móvil" hidden>
+        <a class="mobile-link" href="./index.html">Inicio</a>
+        <a class="mobile-link" href="#productos">Productos</a>
+        <a class="mobile-link" href="#nosotros">Nosotros</a>
+        <a class="mobile-link" href="#blog">Blogs</a>
+        <a class="mobile-link" href="#cuenta">Ingresar</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="nosotros" class="page-shell py-8 sm:py-12" aria-labelledby="hero-title">
+        <div class="grid overflow-hidden rounded-xl border border-amber-200 bg-amber-50 lg:grid-cols-2">
+          <div class="flex flex-col items-start justify-center p-7 sm:p-10">
+            <p class="text-sm font-bold uppercase tracking-wider text-amber-700">Ferretería en La Serena</p>
+            <h1 id="hero-title" class="mt-3 text-4xl font-bold leading-tight sm:text-5xl">Todo para tu próximo proyecto</h1>
+            <p class="mt-5 max-w-xl leading-7 text-stone-600">
+              Encuentra materiales de construcción, herramientas y artículos de ferretería. Puedes revisar nuestros productos sin iniciar sesión.
+            </p>
+            <a class="mt-7 rounded-lg bg-stone-900 px-6 py-3 font-semibold text-white" href="#productos">Ver productos</a>
+          </div>
+          <img class="h-72 w-full object-cover lg:h-full" src="./assets/images/hero-ferreteria.svg" alt="Estanterías con herramientas y materiales de ferretería" />
+        </div>
+      </section>
+
+      <section class="page-shell pb-10" aria-label="Beneficios de la ferretería">
+        <div class="trust-strip">
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">✓</span>
+            <div><strong>Stock disponible</strong><p>Consulta antes de comprar</p></div>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">⌂</span>
+            <div><strong>Retiro en tienda</strong><p>En nuestra sucursal de La Serena</p></div>
+          </div>
+          <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">?</span>
+            <div><strong>Atención cercana</strong><p>Te ayudamos con tus materiales</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-shell pb-12" aria-labelledby="categories-title">
+        <h2 id="categories-title" class="section-title">Categorías</h2>
+        <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <a class="category-box" href="#productos"><span aria-hidden="true">🔨</span> Herramientas</a>
+          <a class="category-box" href="#productos"><span aria-hidden="true">🧱</span> Construcción</a>
+          <a class="category-box" href="#productos"><span aria-hidden="true">💡</span> Electricidad</a>
+          <a class="category-box" href="#productos"><span aria-hidden="true">🖌️</span> Pinturas</a>
+        </div>
+      </section>
+
+      <section id="productos" class="border-y border-stone-300 bg-white py-12" aria-labelledby="products-title">
+        <div class="page-shell">
+          <h2 id="products-title" class="section-title">Productos destacados</h2>
+          <p class="mt-2 text-stone-600">Algunos productos disponibles en nuestra tienda.</p>
+          <div id="product-grid" class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"></div>
+        </div>
+      </section>
+
+      <section id="blog" class="page-shell py-12" aria-labelledby="blog-title">
+        <div class="flex items-end justify-between gap-4">
+          <div>
+            <h2 id="blog-title" class="section-title">Blog</h2>
+            <p class="mt-2 text-stone-600">Consejos sencillos para tus proyectos.</p>
+          </div>
+          <a class="hidden text-sm font-semibold text-amber-700 sm:block" href="#blog">Ver publicaciones</a>
+        </div>
+
+        <div class="mt-7 grid gap-5 md:grid-cols-2">
+          <article class="blog-card">
+            <img class="h-48 w-full object-contain p-6 sm:w-56" src="./assets/images/sin-imagen.svg" alt="Publicación sin imagen disponible" />
+            <div class="p-5">
+              <p class="text-xs font-bold uppercase tracking-wider text-amber-700">Consejos</p>
+              <h3 class="mt-2 text-xl font-bold">Cómo elegir una herramienta para el hogar</h3>
+              <p class="mt-3 text-sm leading-6 text-stone-600">Revisa algunos aspectos básicos antes de comprar tu primera herramienta.</p>
+              <a class="mt-4 inline-block text-sm font-semibold text-amber-700" href="#blog">Leer publicación</a>
+            </div>
+          </article>
+
+          <article class="blog-card">
+            <img class="h-48 w-full object-contain p-6 sm:w-56" src="./assets/images/sin-imagen.svg" alt="Publicación sin imagen disponible" />
+            <div class="p-5">
+              <p class="text-xs font-bold uppercase tracking-wider text-amber-700">Construcción</p>
+              <h3 class="mt-2 text-xl font-bold">Materiales básicos para una reparación</h3>
+              <p class="mt-3 text-sm leading-6 text-stone-600">Una lista breve para preparar arreglos pequeños sin comprar de más.</p>
+              <a class="mt-4 inline-block text-sm font-semibold text-amber-700" href="#blog">Leer publicación</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contacto" class="bg-stone-900 text-stone-300">
+      <div class="page-shell grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <h2 class="text-lg font-bold text-white">Ferretería Los Maestros</h2>
+          <p class="mt-3 max-w-md text-sm leading-6">Materiales, herramientas y ferretería general para hogares y profesionales.</p>
+        </div>
+        <div>
+          <h2 class="font-bold text-white">Enlaces</h2>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><a class="footer-link" href="./index.html">Inicio</a></li>
+            <li><a class="footer-link" href="#productos">Productos</a></li>
+            <li><a class="footer-link" href="#nosotros">Nosotros</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-bold text-white">Contacto</h2>
+          <address class="mt-3 space-y-2 text-sm not-italic">
+            <p>La Serena, Región de Coquimbo</p>
+            <p>+56 51 200 0000</p>
+            <p>ventas@losmaestros.cl</p>
+          </address>
+        </div>
+      </div>
+      <div class="border-t border-stone-700 py-4 text-center text-xs">Proyecto académico DSY1104 · 2026</div>
+    </footer>
+  </body>
+</html>
