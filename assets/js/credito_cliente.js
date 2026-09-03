@@ -16,20 +16,3 @@ mobileMenu.addEventListener("click", (event) => {
     menuButton.setAttribute("aria-label", "Abrir menú");
   }
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-  const saldoEl = document.getElementById("saldo-actual");
-
-  const clienteGuardado = localStorage.getItem("clienteActual");
-  const cliente = JSON.parse(clienteGuardado);
-
-  renderSaldo(cliente.saldoActual);
-
-  function renderSaldo(valor) {
-    saldoEl.textContent = valor.toLocaleString("es-CL", {
-      style: "currency",
-      currency: "CLP",
-      maximumFractionDigits: 0,
-    });
-  }
-});
