@@ -1,3 +1,4 @@
+////////menu movil
 const menuButton = document.querySelector("#menu-button");
 const mobileMenu = document.querySelector("#mobile-menu");
 
@@ -17,8 +18,12 @@ mobileMenu.addEventListener("click", (event) => {
   }
 });
 
+/////////////////// reglas de validacion de formulario
 const dominiosPermitidos = ["duoc.cl", "profesor.duoc.cl", "gmail.com"];
 
+//es para saber si el correo esta dentro de los dominios permitidos
+//separa el correo por el arroba, y si no tiene dos partes es porque no es un correo entonces retorna false
+//si tiene dos partes, pasa la segunda parte a minusculas y verifica que este dentro de los dominios permitidos
 function correoValido(correo) {
   const partes = correo.trim().split("@");
   if (partes.length !== 2) return false;
@@ -44,18 +49,23 @@ function validarFormulario({ correoInput, claveInput, errorEl }) {
   const correo = correoInput.value.trim();
   const clave = claveInput.value;
 
-  if (!correo || !clave) {
-    mostrarError(errorEl, "Debes completar correo electrónico y contraseña.");
+  if (!correo) {
+    mostrarError(errorEl, "No puede haber campos en blanco.");
     return false;
   }
 
-  if (correo.length > 100 || clave.length > 100) {
-    mostrarError(errorEl, "Los campos no pueden superar los 100 caracteres.");
+  if (correo.length > 100) {
+    mostrarError(errorEl, "El correo no puede superar los 100 caracteres.");
     return false;
   }
 
   if (!correoValido(correo)) {
     mostrarError(errorEl, "Solo se aceptan correos @duoc.cl, @profesor.duoc.cl o @gmail.com.");
+    return false;
+  }
+
+  if (!clave) {
+    mostrarError(errorEl, "No puede haber campos en blanco.");
     return false;
   }
 
@@ -67,43 +77,51 @@ function validarFormulario({ correoInput, claveInput, errorEl }) {
   ocultarError(errorEl);
   return true;
 }
+/////////////////////fin de validaciones de campo
+
+const rutasPorRol = {
+  admin: "index.html",
+  vendedor: "vista_vendedor.html",
+  cliente: "vista_mis_pedidos.html",
+};
 
 // --- Validación Acceder ---
+//asignamos el form a la variable
+//al hacer click en submit, se ejecuta la funcion
+//prevent default cancela que se recargue la pagina al hacer submit para manejarlo nosotros
+//le pasamos el id de correo, clave y error
+//para el error, el id se lo pasamos a mostrar error para que muestre un mensaje
 const formAcceder = document.querySelector("#form-acceder");
 formAcceder.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const correoInput = document.querySelector("#acceder-correo");
-  const errorEl = document.querySelector("#acceder-error");
   const claveInput = document.querySelector("#acceder-clave");
+  const errorEl = document.querySelector("#acceder-error");
+  
 
-  const valido = validarFormulario({
-    correoInput,
-    claveInput,
-    errorEl,
-  });
+  const valido = validarFormulario({ correoInput, claveInput, errorEl });
   if (!valido) return;
 
-  // Buscar el cliente ficticio con ese correo
-  //trim quita espacios al inicio o final
   const correoIngresado = correoInput.value.trim();
-  //find busca el primer elemento que cumpla la condición, si no encuentra ninguno devuelve undefined
-  //la pregunta es si el correo del cliente c.correo es igual al ingresado
-  const cliente = window.clientesPrueba.find((c) => c.correo === correoIngresado);
+  const claveIngresada = claveInput.value;
 
-  if (!cliente) {
-    mostrarError(errorEl, "No existe un cliente de prueba con ese correo.");
+  //revisa usuario por usuario y compara la contraseña y correo ingresados
+  const usuario = window.clientesPrueba.find(
+    (u) => u.correo === correoIngresado && u.clave === claveIngresada
+  );
+
+  if (!usuario) {
+    mostrarError(errorEl, "Correo o contraseña incorrectos.");
     return;
   }
 
-  // Guardar el cliente en el navegador para que otras páginas lo lean
-  localStorage.setItem("clienteActual", JSON.stringify(cliente));
-
-  // Redirigir al inicio
-  window.location.href = "./index.html";
+  const destino = rutasPorRol[usuario.rol];
+  window.location.href = destino;
 });
 
 // --- Validación Registrarse ---
+//si es valido redirige a la pagina mis pedidos
 const formRegistrarse = document.querySelector("#form-registrarse");
 formRegistrarse.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -113,8 +131,6 @@ formRegistrarse.addEventListener("submit", (event) => {
     errorEl: document.querySelector("#registrarse-error"),
   });
   if (valido) {
-    const esContratista = document.querySelector("#registrarse-contratista").checked;
-    // Aquí va la lógica real de registro (conexión al backend) cuando corresponda
-    console.log("Registro válido:", { esContratista });
+    window.location.href = rutasPorRol.cliente;
   }
 });
