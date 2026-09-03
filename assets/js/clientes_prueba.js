@@ -1,6 +1,11 @@
+// assets/js/clientes-prueba.js
+
+// assets/js/clientes-prueba.js
+
 window.clientesPrueba = [
   {
     id: 1,
+    nombre: "Juan Pérez",
     correo: "juan.perez@gmail.com",
     tipoCliente: "particular",
     cuentaCorrienteHabilitada: false,
@@ -8,6 +13,7 @@ window.clientesPrueba = [
   },
   {
     id: 2,
+    nombre: "María González",
     correo: "maria.gonzalez@gmail.com",
     tipoCliente: "contratista",
     cuentaCorrienteHabilitada: true,
@@ -15,6 +21,7 @@ window.clientesPrueba = [
   },
   {
     id: 3,
+    nombre: "Constructora Rojas",
     correo: "contacto@constructorarojas.cl",
     tipoCliente: "contratista",
     cuentaCorrienteHabilitada: true,
