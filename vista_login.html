@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width" />
   <title>Ferretería Los Maestros</title>
   <link rel="stylesheet" href="./src/output.css" />
+  <script src="./assets/js/clientes-prueba.js" defer></script>
   <script src="./assets/js/vista_login.js" defer></script>
 </head>
 
@@ -170,6 +171,12 @@
               <p id="registrarse-error"
                 class="hidden rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700"
                 role="alert"></p>
+
+              <div>
+                <label class="mb-1 block text-sm font-semibold" for="registrarse-correo">Nombre</label>
+                <input id="registrarse-correo" name="correo" type="text" maxlength="100" required
+                  class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
+              </div>
 
               <div>
                 <label class="mb-1 block text-sm font-semibold" for="registrarse-correo">Correo electrónico</label>

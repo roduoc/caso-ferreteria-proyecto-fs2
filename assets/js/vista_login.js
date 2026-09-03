@@ -72,15 +72,35 @@ function validarFormulario({ correoInput, claveInput, errorEl }) {
 const formAcceder = document.querySelector("#form-acceder");
 formAcceder.addEventListener("submit", (event) => {
   event.preventDefault();
+
+  const correoInput = document.querySelector("#acceder-correo");
+  const errorEl = document.querySelector("#acceder-error");
+  const claveInput = document.querySelector("#acceder-clave");
+
   const valido = validarFormulario({
-    correoInput: document.querySelector("#acceder-correo"),
-    claveInput: document.querySelector("#acceder-clave"),
-    errorEl: document.querySelector("#acceder-error"),
+    correoInput,
+    claveInput,
+    errorEl,
   });
-  if (valido) {
-    // Aquí va la lógica real de login (conexión al backend) cuando corresponda
-    console.log("Login válido, listo para enviar al backend");
+  if (!valido) return;
+
+  // Buscar el cliente ficticio con ese correo
+  //trim quita espacios al inicio o final
+  const correoIngresado = correoInput.value.trim();
+  //find busca el primer elemento que cumpla la condición, si no encuentra ninguno devuelve undefined
+  //la pregunta es si el correo del cliente c.correo es igual al ingresado
+  const cliente = window.clientesPrueba.find((c) => c.correo === correoIngresado);
+
+  if (!cliente) {
+    mostrarError(errorEl, "No existe un cliente de prueba con ese correo.");
+    return;
   }
+
+  // Guardar el cliente en el navegador para que otras páginas lo lean
+  localStorage.setItem("clienteActual", JSON.stringify(cliente));
+
+  // Redirigir al inicio
+  window.location.href = "./index.html";
 });
 
 // --- Validación Registrarse ---
