@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- para que el diseño sea responsivo-->
+    <meta name="viewport" content="width=device-width" />
+    <title>Ferretería Los Maestros</title>
+    <link rel="stylesheet" href="./src/output.css" />
+    <script src="./assets/js/clientes_prueba.js" defer></script>
+    <script src="./assets/js/vista_login.js" defer></script>
+</head>
+
+<body class="bg-stone-100 text-stone-900">
+    <!--le agrega un borde inferior color stone y un fondo blanco al nav -->
+    <header class="border-b border-stone-300 bg-white">
+        <!-- page shell limita el ancho del contenido a un determinado ancho que debe ser el mas pequeño
+       entre dos medidas de pantalla. 
+       flex convierte los elementos hijos en flexbox, que los ordena como una fila horizontal
+       h-20 le da una altura fija al header
+       items center centra verticalmente los elementos-->
+        <div class="page-shell flex h-20 items-center gap-4">
+
+            <!--aria controls nos dice que mobile menu esta siendo controlado por menu button. -->
+            <button id="menu-button" class="simple-icon-button lg:hidden" type="button" aria-label="Abrir menú"
+                aria-controls="mobile-menu" aria-expanded="false">
+                <!--boton hamburguesa dibujado-->
+                <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!--indica que es un link toda esta seccion-->
+            <a href="./index.html" class="flex items-center gap-3" aria-label="Ir al inicio">
+                <img class="size-12" src="./assets/images/logo-los-maestros.svg" alt="" />
+                <span>
+                    <!--block ocupa toda la linea disponible y empuja lo que viene despues a la linea siguiente
+            leading tight controla el espacio vertical entre las lineas de texto
+            tracking tight controla el espacio entre letras de la misma palabra, con tight quedan un poquito mas juntas-->
+                    <strong class="block text-xl leading-tight tracking-tight">Los Maestros</strong>
+                    <!--hidden no se muestra en pantallas pequeñas
+            text y su tamaño
+            fuente negrita
+            uppercase mayusculas
+            tracking y su tamaño especifica el espacio entre letras de la misma palabra
+            sm block que se muestra en pantallas mas grandes que no sean celulares-->
+                    <span
+                        class="hidden text-[0.68rem] font-bold uppercase tracking-[0.18em] text-amber-700 sm:block">Ferretería</span>
+                </span>
+            </a>
+
+            <!--boton de ingresar a la cuenta-
+        sm block que se muestre solo en pantallas grandes-->
+            <a id="cuenta"
+                class="hidden ml-auto rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block"
+                href="index.html">Cerrar sesión</a>
+
+        </div>
+
+        <!--
+      border t es borde superior
+      no ocupa todo el ancho de pantalla por el page shell
+      -->
+        <nav id="mobile-menu" class="page-shell border-t border-stone-200 py-3 lg:hidden" aria-label="Navegación móvil"
+            hidden>
+            <a class="mobile-link" href="./index.html">Inicio</a>
+            <a class="mobile-link" href="index.html">Cerrar sesión</a>
+        </nav>
+    </header>
+
+    <main>
+        <!--altura minim igual a toda la altura visible del navegador-->
+        <div class="flex min-h-screen">
+
+            <!-- Panel lateral -->
+            <aside class="w-64 bg-stone-900 flex flex-col shrink-0">
+                <div class="px-5 py-6 border-b border-stone-800">
+                    <p class="text-stone-50 font-semibold text-lg leading-tight">Ferretería<br>Los Maestros</p>
+                    <p class="text-stone-500 text-xs mt-1">Panel de administración</p>
+                </div>
+
+                <nav class="flex-1 px-3 py-4 space-y-1">
+                    <a href="#"
+                        class="flex items-center gap-3 rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                        </svg>
+                        Gestión de usuarios
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 rounded-lg border-l-[3px] border-amber-400 bg-stone-800 py-[0.65rem] pl-[calc(1rem-3px)] pr-4 text-sm text-amber-400">
+                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                        </svg>
+                        Reportes
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375C2.754 3.75 2.25 4.254 2.25 4.875v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                        </svg>
+                        Gestión de inventario
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M8.25 18.75a1.5 1.5 0 0 1-3 0V9.75a3 3 0 0 1 3-3v0a1.5 1.5 0 0 1 1.5 1.5v9.75a1.5 1.5 0 0 1-1.5 1.5Zm0 0h9.75a1.5 1.5 0 0 0 1.5-1.5V6.75a3 3 0 0 0-3-3H8.25m0 15V3m0 0a1.5 1.5 0 0 0-1.5 1.5v.75M18 10.5h.008v.008H18V10.5Z" />
+                        </svg>
+                        Gestionar pedidos
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                        </svg>
+                        Cuentas corrientes
+                    </a>
+                </nav>
+
+                <div class="px-5 py-4 border-t border-stone-800">
+                    <a href="index.html" class="text-stone-500 hover:text-stone-300 text-xs">← Volver al inicio</a>
+                </div>
+            </aside>
+
+            <!-- Contenido principal -->
+            <main class="flex-1 px-8 py-10">
+                <h1 class="text-3xl font-semibold text-stone-900 text-center mb-10">Reportes</h1>
+
+                <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <div class="bg-white rounded-lg border border-stone-200 p-6">
+                        <h2 class="text-stone-800 font-medium mb-4">10 clientes más frecuentes</h2>
+                        <img src="./assets/images/grafico-clientes-frecuentes.png"
+                            alt="Gráfico de los 10 clientes más frecuentes" class="w-full h-auto rounded">
+                    </div>
+
+                    <div class="bg-white rounded-lg border border-stone-200 p-6">
+                        <h2 class="text-stone-800 font-medium mb-4">10 productos más vendidos</h2>
+                        <img src="./assets/images/grafico-productos-vendidos.png"
+                            alt="Gráfico de los 10 productos más vendidos" class="w-full h-auto rounded">
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </main>
+
+    <footer id="contacto" class="bg-stone-900 text-stone-300">
+
+        <!--
+      sm grid cols 2 se comporta como 2 columnas en pantallas grandes como tablets
+      en pantallas mas grandes como computador se dividira en 3 columnas
+      por defecto en celular sera solo 1 columna-->
+        <div class="page-shell grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
+
+            <div>
+                <h2 class="text-lg font-bold text-white">Ferretería Los Maestros</h2>
+                <!--
+          margin top separa este parrafo del de abajo para que no queden pegados
+          max w md define un ancho maximo para el texto
+          leading 6 define el espacio vertical entre lineas de texto-->
+                <p class="mt-3 max-w-md text-sm leading-6">Materiales, herramientas y ferretería general para hogares y
+                    profesionales.</p>
+            </div>
+            <div>
+                <h2 class="font-bold text-white">Enlaces</h2>
+                <!--
+          space y 2 es espacio vertical entre los elementos hijos, en este caso de la lista-->
+                <ul class="mt-3 space-y-2 text-sm">
+                    <li><a class="footer-link" href="./index.html">Inicio</a></li>
+                    <li><a class="footer-link" href="#productos">Productos</a></li>
+                    <li><a class="footer-link" href="#nosotros">Nosotros</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold text-white">Contacto</h2>
+                <address class="mt-3 space-y-2 text-sm not-italic">
+                    <p>La Serena, Región de Coquimbo</p>
+                    <p>+56 51 200 0000</p>
+                    <p>ventas@losmaestros.cl</p>
+                </address>
+            </div>
+
+        </div>
+
+        <div class="border-t border-stone-700 py-4 text-center text-xs">Proyecto académico DSY1104 · 2026</div>
+    </footer>
+</body>
+
+</html>
