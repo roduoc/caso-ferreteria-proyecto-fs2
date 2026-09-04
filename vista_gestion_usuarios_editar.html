@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
-    <script src="./assets/js/vista_admin_reportes.js" defer></script>
+    <script src="./assets/js/vista_admin_usuarios_editar.js" defer></script>
 </head>
 
 <body class="bg-stone-100 text-stone-900">
@@ -89,7 +89,7 @@
 
                 <!--space y 1 agrega espacio vertical entre elementos hijos-->
                 <nav class="px-3 py-4 space-y-1">
-                    <a href="vista_admin_usuarios.html"
+                    <a href="vista_gestion_usuarios.html"
                         class="flex rounded-lg px-4 py-[0.65rem] text-sm font-semibold text-amber-400">
                         Gestión de usuarios
                     </a>
@@ -132,14 +132,14 @@
                         <div class="grid gap-4 sm:grid-cols-2">
 
                             <div>
-                                <label class="mb-1 block text-sm font-semibold" for="editar-rut">RUT</label>
+                                <label class="mb-1 block text-sm font-semibold">RUT</label>
                                 <input id="editar-rut" name="rut" type="text" maxlength="12" required
                                     value="12.345.678-9"
                                     class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
                             <div>
-                                <label class="mb-1 block text-sm font-semibold" for="editar-rol">Rol</label>
+                                <label class="mb-1 block text-sm font-semibold" >Rol</label>
                                 <select id="editar-rol" name="rol" required
                                     class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500">
                                     <option value="admin">Admin</option>
@@ -149,55 +149,45 @@
                             </div>
 
                             <div>
-                                <label class="mb-1 block text-sm font-semibold" for="editar-nombre">Nombre</label>
+                                <label class="mb-1 block text-sm font-semibold">Nombre</label>
                                 <input id="editar-nombre" name="nombre" type="text" maxlength="100" required
                                     value="María"
                                     class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
                             <div>
-                                <label class="mb-1 block text-sm font-semibold" for="editar-apellidos">Apellidos</label>
+                                <label class="mb-1 block text-sm font-semibold">Apellidos</label>
                                 <input id="editar-apellidos" name="apellidos" type="text" maxlength="100" required
                                     value="González Pérez"
                                     class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
                             <div class="sm:col-span-2">
-                                <label class="mb-1 block text-sm font-semibold" for="editar-correo">Correo
+                                <label class="mb-1 block text-sm font-semibold">Correo
                                     electrónico</label>
                                 <input id="editar-correo" name="correo" type="email" maxlength="100" required
                                     value="maria.gonzalez@gmail.com"
                                     class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
-                            <!--pendiente: llenar con la lista real de regiones (misma logica que vista_envio);
-                            por ahora agregue opciones de ejemplo para poder mostrar el dato simulado seleccionado-->
                             <div>
-                                <label class="mb-1 block text-sm font-semibold" for="editar-region">Región</label>
-                                <select id="editar-region" name="region" required
+                                <label class="mb-1 block text-sm font-semibold" >Región</label>
+                                <select id="region" name="region" required
                                     class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500">
-                                    <option value="">Selecciona una región</option>
-                                    <option value="coquimbo" selected>Región de Coquimbo</option>
-                                    <option value="valparaiso">Región de Valparaíso</option>
-                                    <option value="metropolitana">Región Metropolitana</option>
-                                    <option value="biobio">Región del Biobío</option>
+                                    <option value="">Región Metropolitana</option>
                                 </select>
                             </div>
 
-                            <!--ya no esta disabled porque la region simulada ya viene seleccionada-->
                             <div>
-                                <label class="mb-1 block text-sm font-semibold" for="editar-comuna">Comuna</label>
-                                <select id="editar-comuna" name="comuna" required
-                                    class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500">
-                                    <option value="">Selecciona una comuna</option>
-                                    <option value="la-serena" selected>La Serena</option>
-                                    <option value="coquimbo">Coquimbo</option>
-                                    <option value="ovalle">Ovalle</option>
+                                <label class="mb-1 block text-sm font-semibold">Comuna</label>
+                                <select id="comuna" name="comuna" required disabled
+                                    class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500 disabled:opacity-50">
+                                    <option value="">La Florida</option>
                                 </select>
                             </div>
 
                             <div class="sm:col-span-2">
-                                <label class="mb-1 block text-sm font-semibold" for="editar-direccion">Dirección</label>
+                                <label class="mb-1 block text-sm font-semibold">Dirección</label>
                                 <input id="editar-direccion" name="direccion" type="text" maxlength="150" required
                                     value="Los Carrera 450, La Serena"
                                     class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
