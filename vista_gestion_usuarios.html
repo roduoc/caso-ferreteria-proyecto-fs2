@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- para que el diseño sea responsivo-->
+    <meta name="viewport" content="width=device-width" />
+    <title>Ferretería Los Maestros</title>
+    <link rel="stylesheet" href="./src/output.css" />
+    <script src="./assets/js/vista_admin_reportes.js" defer></script>
+</head>
+
+<body class="bg-stone-100 text-stone-900">
+    <!--le agrega un borde inferior color stone y un fondo blanco al nav -->
+    <header class="border-b border-stone-300 bg-white">
+        <!-- page shell limita el ancho del contenido a un determinado ancho que debe ser el mas pequeño
+       entre dos medidas de pantalla. 
+       flex convierte los elementos hijos en flexbox, que los ordena como una fila horizontal
+       h-20 le da una altura fija al header
+       items center centra verticalmente los elementos-->
+        <div class="page-shell flex h-20 items-center gap-4">
+
+            <!--aria controls nos dice que mobile menu esta siendo controlado por menu button. -->
+            <button id="menu-button" class="simple-icon-button lg:hidden" type="button" aria-label="Abrir menú"
+                aria-controls="mobile-menu" aria-expanded="false">
+                <!--boton hamburguesa dibujado-->
+                <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!--indica que es un link toda esta seccion-->
+            <a href="./index.html" class="flex items-center gap-3" aria-label="Ir al inicio">
+                <img class="size-12" src="./assets/images/logo-los-maestros.svg" alt="" />
+                <span>
+                    <!--block ocupa toda la linea disponible y empuja lo que viene despues a la linea siguiente
+            leading tight controla el espacio vertical entre las lineas de texto
+            tracking tight controla el espacio entre letras de la misma palabra, con tight quedan un poquito mas juntas-->
+                    <strong class="block text-xl leading-tight tracking-tight">Los Maestros</strong>
+                    <!--hidden no se muestra en pantallas pequeñas
+            text y su tamaño
+            fuente negrita
+            uppercase mayusculas
+            tracking y su tamaño especifica el espacio entre letras de la misma palabra
+            sm block que se muestra en pantallas mas grandes que no sean celulares-->
+                    <span
+                        class="hidden text-[0.68rem] font-bold uppercase tracking-[0.18em] text-amber-700 sm:block">Ferretería</span>
+                </span>
+            </a>
+
+            <!--boton de ingresar a la cuenta-
+        sm block que se muestre solo en pantallas grandes-->
+            <a id="cuenta"
+                class="hidden ml-auto rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block"
+                href="index.html">Cerrar sesión</a>
+
+        </div>
+
+        <!--
+      border t es borde superior
+      no ocupa todo el ancho de pantalla por el page shell
+      -->
+        <nav id="mobile-menu" class="page-shell border-t border-stone-200 py-3 lg:hidden" aria-label="Navegación móvil"
+            hidden>
+            <a class="mobile-link" href="./index.html">Inicio</a>
+            <a class="mobile-link" href="index.html">Cerrar sesión</a>
+        </nav>
+    </header>
+
+    <main>
+        <!--flex-col modo columna en celulares, filas en pantallas grandes-->
+        <div class="flex flex-col lg:flex-row min-h-screen">
+            <!--m 3 margin 3 espacio en los 4 lados arriba abajo derecha izquierda-->
+            <button id="boton-panel" type="button" class="simple-icon-button m-3 lg:hidden" aria-label="Abrir panel"
+                aria-controls="panel-lateral" aria-expanded="false">
+                <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!--en celulares ocupa todo el ancho de la pantalla con w full
+            en pantallas grandes ocupa solo 2 64
+            aside es para decir que un contenido es secundario-->
+            <aside id="panel-lateral" class="hidden w-full flex-col bg-stone-900 lg:flex lg:w-64">
+                <div class="px-5 py-6 border-b border-stone-800">
+                    <p class="text-stone-50 font-semibold text-lg leading-tight">Ferretería<br>Los Maestros</p>
+                    <p class="text-stone-500 text-xs mt-1">Panel de administración</p>
+                </div>
+
+                <!--space y 1 agrega espacio vertical entre elementos hijos-->
+                <nav class="px-3 py-4 space-y-1">
+                    <a href="vista_admin_usuarios.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm font-semibold text-amber-400">
+                        Gestión de usuarios
+                    </a>
+
+                    <a href="vista_admin_reportes.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                        Reportes
+                    </a>
+                    <a href="vista_admin_inventario.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                        Gestión de inventario
+                    </a>
+                    <a href="vista_admin_pedidos.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                        Gestionar pedidos
+                    </a>
+                    <a href="vista_admin_cuentas.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                        Cuentas corrientes
+                    </a>
+                </nav>
+            </aside>
+
+            <!--en el caso de flex row crece y ocupa todo el espacio disponible horizontal-->
+            <div class="flex-1 px-8 py-10">
+                <h1 class="text-3xl font-semibold text-stone-900 text-center mb-10">Gestión de usuarios - Vista Administrador</h1>
+
+                <!--space y 4 agrega espacio vertical entre cada tarjeta de pedido
+                max w 5xl para que las tarjetas ocupen mas ancho-->
+                <div class="max-w-5xl mx-auto space-y-4">
+
+                    <div class="grid grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
+                        <div>
+                            <p class="font-medium text-lg text-stone-800">Ana Torres</p>
+                            <p class="text-sm text-stone-500">ana.torres@losmaestros.cl</p>
+                        </div>
+                        <p class="text-center font-semibold text-stone-600">Admin</p>
+                        <!--justify self end le dice al elemento que no se estire a todo su ancho y ocupe solo
+                        su tamaño natural y que se pegue a la derecha-->
+                        <a href="vista_gestion_usuarios_editar.html" class="add-button justify-self-end">Editar</a>
+                    </div>
+
+                    <div class="grid grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
+                        <div>
+                            <p class="font-medium text-lg text-stone-800">Luis Fuentes</p>
+                            <p class="text-sm text-stone-500">luis.fuentes@losmaestros.cl</p>
+                        </div>
+                        <p class="text-center font-semibold text-stone-600">Vendedor</p>
+                        <a href="vista_gestion_usuarios_editar.html" class="add-button justify-self-end">Editar</a>
+                    </div>
+
+                    <div class="grid grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
+                        <div>
+                            <p class="font-medium text-lg text-stone-800">Juan Pérez</p>
+                            <p class="text-sm text-stone-500">juan.perez@gmail.com</p>
+                        </div>
+                        <p class="text-center font-semibold text-stone-600">Cliente</p>
+                        <a href="vista_gestion_usuarios_editar.html" class="add-button justify-self-end">Editar</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer id="contacto" class="bg-stone-900 text-stone-300">
+        <div class="border-t border-stone-700 py-4 text-center text-xs">Proyecto académico DSY1104 · 2026</div>
+    </footer>
+</body>
+
+</html>
