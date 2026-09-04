@@ -146,13 +146,13 @@
               <div>
                 <!--
                 margin bottom es un pequeño espacio debajo del label, separandolo del input que viene despues-->
-                <label class="mb-1 block text-sm font-semibold" for="acceder-correo">Correo electrónico</label>
+                <label class="mb-1 block text-sm font-semibold">Correo electrónico</label>
                 <input id="acceder-correo" name="correo" type="email" maxlength="100" required
                   class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
               </div>
 
               <div>
-                <label class="mb-1 block text-sm font-semibold" for="acceder-clave">Contraseña</label>
+                <label class="mb-1 block text-sm font-semibold">Contraseña</label>
                 <input id="acceder-clave" name="clave" type="password" maxlength="10" required
                   class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
               </div>
@@ -173,22 +173,34 @@
                 role="alert"></p>
 
               <div>
-                <label class="mb-1 block text-sm font-semibold" for="registrarse-nombre">Nombre</label>
+                <label class="mb-1 block text-sm font-semibold" >Nombre</label>
                 <input id="registrarse-nombre" name="nombre" type="text" maxlength="100" required
                   class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
               </div>
 
               <div>
-                <label class="mb-1 block text-sm font-semibold" for="registrarse-correo">Correo electrónico</label>
+                <label class="mb-1 block text-sm font-semibold" >Apellidos</label>
+                <input id="registrarse-apellidos" name="apellidos" type="text" maxlength="100" required
+                  class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
+              </div>
+
+              <div>
+                <label class="mb-1 block text-sm font-semibold">Correo electrónico</label>
                 <input id="registrarse-correo" name="correo" type="email" maxlength="100" required
                   class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
               </div>
 
               <div>
-                <label class="mb-1 block text-sm font-semibold" for="registrarse-clave">Contraseña</label>
+                <label class="mb-1 block text-sm font-semibold">Contraseña</label>
                 <input id="registrarse-clave" name="clave" type="password" maxlength="10" required
                   class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                 <p class="mt-1 text-xs text-stone-500">Entre 4 y 10 caracteres.</p>
+              </div>
+
+              <div>
+                <label class="mb-1 block text-sm font-semibold" >Dirección</label>
+                <input id="registrarse-direccion" name="direccion" type="text" maxlength="100" required
+                  class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
               </div>
 
               <label class="flex items-center gap-2 text-sm font-medium">
