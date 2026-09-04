@@ -120,17 +120,3 @@ formAcceder.addEventListener("submit", (event) => {
   window.location.href = destino;
 });
 
-// --- Validación Registrarse ---
-//si es valido redirige a la pagina mis pedidos
-const formRegistrarse = document.querySelector("#form-registrarse");
-formRegistrarse.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const valido = validarFormulario({
-    correoInput: document.querySelector("#registrarse-correo"),
-    claveInput: document.querySelector("#registrarse-clave"),
-    errorEl: document.querySelector("#registrarse-error"),
-  });
-  if (valido) {
-    window.location.href = rutasPorRol.cliente;
-  }
-});
