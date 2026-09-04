@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
-    <script src="./assets/js/clientes_prueba.js" defer></script>
-    <script src="./assets/js/vista_login.js" defer></script>
+    <script src="./assets/js/vista_admin_reportes.js" defer></script>
 </head>
 
 <body class="bg-stone-100 text-stone-900">
@@ -69,89 +68,71 @@
     </header>
 
     <main>
-        <!--altura minim igual a toda la altura visible del navegador-->
-        <div class="flex min-h-screen">
+        <!--altura minim igual a toda la altura visible del navegador
+        flex para que los elementos se ordenen horizontalmente-->
+        <!--flex-col modo columna en celulares, filas en pantallas grandes-->
+        <div class="flex flex-col lg:flex-row min-h-screen">
 
-            <!-- Panel lateral -->
-            <aside class="w-64 bg-stone-900 flex flex-col shrink-0">
+            <!--m 3 margin 3 espacio en los 4 lados arriba abajo derecha izquierda-->
+            <button id="boton-panel" type="button" class="simple-icon-button m-3 lg:hidden"
+                aria-label="Abrir panel" aria-controls="panel-lateral" aria-expanded="false">
+                <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!--en celulares ocupa todo el ancho de la pantalla con w full
+            en pantallas grandes ocupa solo 2 64
+            como no estamos ocupando page shell se va lo mas posible hacia la izquierda-->
+            <aside id="panel-lateral" class="hidden w-full flex-col bg-stone-900 lg:flex lg:w-64">
+                <!--padding es el espacio por dentro del elemento, entre su borde y su contenido-->
                 <div class="px-5 py-6 border-b border-stone-800">
                     <p class="text-stone-50 font-semibold text-lg leading-tight">Ferretería<br>Los Maestros</p>
                     <p class="text-stone-500 text-xs mt-1">Panel de administración</p>
                 </div>
 
-                <nav class="flex-1 px-3 py-4 space-y-1">
-                    <a href="#"
-                        class="flex items-center gap-3 rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
-                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-                        </svg>
+                <!--space y 1 agrega espacio vertical entrel elementos hijos-->
+                <nav class="px-3 py-4 space-y-1">
+                    <!--py padding vertical, espacio interno-->
+                    <a href="#" class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
                         Gestión de usuarios
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 rounded-lg border-l-[3px] border-amber-400 bg-stone-800 py-[0.65rem] pl-[calc(1rem-3px)] pr-4 text-sm text-amber-400">
-                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-                        </svg>
+
+                    <a href="#" class="flex rounded-r-lg border-l-[3px] border-amber-400 bg-stone-800 py-[0.65rem] pl-[calc(1rem-3px)] pr-4 text-sm text-amber-400">
                         Reportes
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
-                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375C2.754 3.75 2.25 4.254 2.25 4.875v1.5c0 .621.504 1.125 1.125 1.125Z" />
-                        </svg>
+                    <a href="#" class="flex  rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
                         Gestión de inventario
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
-                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M8.25 18.75a1.5 1.5 0 0 1-3 0V9.75a3 3 0 0 1 3-3v0a1.5 1.5 0 0 1 1.5 1.5v9.75a1.5 1.5 0 0 1-1.5 1.5Zm0 0h9.75a1.5 1.5 0 0 0 1.5-1.5V6.75a3 3 0 0 0-3-3H8.25m0 15V3m0 0a1.5 1.5 0 0 0-1.5 1.5v.75M18 10.5h.008v.008H18V10.5Z" />
-                        </svg>
+                    <a href="#" class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
                         Gestionar pedidos
                     </a>
-                    <a href="#"
-                        class="flex items-center gap-3 rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
-                        <svg class="size-[1.15rem] shrink-0" fill="none" stroke="currentColor" stroke-width="1.8"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-                        </svg>
+                    <a href="#" class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
                         Cuentas corrientes
                     </a>
                 </nav>
-
-                <div class="px-5 py-4 border-t border-stone-800">
-                    <a href="index.html" class="text-stone-500 hover:text-stone-300 text-xs">← Volver al inicio</a>
-                </div>
             </aside>
 
-            <!-- Contenido principal -->
-            <main class="flex-1 px-8 py-10">
-                <h1 class="text-3xl font-semibold text-stone-900 text-center mb-10">Reportes</h1>
+            <!--en el caso de flex row crece y ocupa todo el espacio disponible horizontal-->
+            <div class="flex-1 px-8 py-10">
+                <h1 class="text-3xl font-semibold text-stone-900 text-center mb-20">Reportes</h1>
 
                 <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                     <div class="bg-white rounded-lg border border-stone-200 p-6">
                         <h2 class="text-stone-800 font-medium mb-4">10 clientes más frecuentes</h2>
-                        <img src="./assets/images/grafico-clientes-frecuentes.png"
+                        <img src="./assets/images/sin-imagen.svg"
                             alt="Gráfico de los 10 clientes más frecuentes" class="w-full h-auto rounded">
                     </div>
 
                     <div class="bg-white rounded-lg border border-stone-200 p-6">
                         <h2 class="text-stone-800 font-medium mb-4">10 productos más vendidos</h2>
-                        <img src="./assets/images/grafico-productos-vendidos.png"
+                        <img src="./assets/images/sin-imagen.svg"
                             alt="Gráfico de los 10 productos más vendidos" class="w-full h-auto rounded">
                     </div>
 
                 </div>
-            </main>
+            </div>
         </div>
     </main>
 
