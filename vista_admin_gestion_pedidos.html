@@ -68,48 +68,49 @@
     </header>
 
     <main>
-        <!--altura minim igual a toda la altura visible del navegador
-        flex para que los elementos se ordenen horizontalmente-->
         <!--flex-col modo columna en celulares, filas en pantallas grandes-->
         <div class="flex flex-col lg:flex-row min-h-screen">
 
             <!--m 3 margin 3 espacio en los 4 lados arriba abajo derecha izquierda-->
-            <button id="boton-panel" type="button" class="simple-icon-button m-3 lg:hidden"
-                aria-label="Abrir panel" aria-controls="panel-lateral" aria-expanded="false">
+            <button id="boton-panel" type="button" class="simple-icon-button m-3 lg:hidden" aria-label="Abrir panel"
+                aria-controls="panel-lateral" aria-expanded="false">
                 <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
 
             <!--en celulares ocupa todo el ancho de la pantalla con w full
-            en pantallas grandes ocupa solo 2 64
-            como no estamos ocupando page shell se va lo mas posible hacia la izquierda-->
+            en pantallas grandes ocupa solo 2 64-->
             <aside id="panel-lateral" class="hidden w-full flex-col bg-stone-900 lg:flex lg:w-64">
-                <!--padding es el espacio por dentro del elemento, entre su borde y su contenido-->
                 <div class="px-5 py-6 border-b border-stone-800">
                     <p class="text-stone-50 font-semibold text-lg leading-tight">Ferretería<br>Los Maestros</p>
                     <p class="text-stone-500 text-xs mt-1">Panel de administración</p>
                 </div>
 
-                <!--space y 1 agrega espacio vertical entrel elementos hijos-->
+                <!--space y 1 agrega espacio vertical entre elementos hijos-->
                 <nav class="px-3 py-4 space-y-1">
-                    <!--py padding vertical, espacio interno-->
-                    <a href="#" class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                    <a href="vista_admin_usuarios.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
                         Gestión de usuarios
                     </a>
 
-                    <!--border l 3px le agrega un borde a la izquierda de 3 pixeles
-                    -->
-                    <a href="vista_admin_reportes.html" class="flex rounded-lg px-4 py-[0.65rem] text-sm font-semibold text-amber-400">
+                    <a href="vista_admin_reportes.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
                         Reportes
                     </a>
-                    <a href="vista_admin_stock.html" class="flex  rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+                    <a href="vista_admin_stock.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
                         Gestión de inventario
                     </a>
-                    <a href="vista_admin_gestion_pedidos.html" class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+
+                    <!--link activo: solo cambia el color del texto-->
+                    <a href="vista_admin_gestion_pedidos.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm font-semibold text-amber-400">
                         Gestionar pedidos
                     </a>
-                    <a href="vista_admin_cuentas.html" class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
+
+                    <a href="vista_admin_cuentas.html"
+                        class="flex rounded-lg px-4 py-[0.65rem] text-sm text-stone-300 transition-colors hover:bg-stone-800 hover:text-stone-50">
                         Cuentas corrientes
                     </a>
                 </nav>
@@ -117,20 +118,40 @@
 
             <!--en el caso de flex row crece y ocupa todo el espacio disponible horizontal-->
             <div class="flex-1 px-8 py-10">
-                <h1 class="text-3xl font-semibold text-stone-900 text-center mb-20">Reportes - Vista Administrador</h1>
+                <h1 class="text-3xl font-semibold text-stone-900 text-center mb-10">Gestión de pedidos - Vista Administrador</h1>
 
-                <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!--space y 4 agrega espacio vertical entre cada tarjeta de pedido
+                max w 5xl para que las tarjetas ocupen mas ancho-->
+                <div class="max-w-5xl mx-auto space-y-4">
 
-                    <div class="bg-white rounded-lg border border-stone-200 p-6">
-                        <h2 class="text-stone-800 font-medium mb-4">10 clientes más frecuentes</h2>
-                        <img src="./assets/images/sin-imagen.svg"
-                            alt="Gráfico de los 10 clientes más frecuentes" class="w-full h-auto rounded">
+                    <!--tarjeta: numero de pedido a la izquierda, estado al centro, boton a la derecha
+                    grid grid-cols-3 para que las 3 columnas midan lo mismo sin importar el largo del contenido
+                    items center para alinear verticalmente-->
+                    <div class="grid grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
+                        <p class="font-medium text-lg text-stone-800">#0001</p>
+                        <p class="text-center text-stone-600">
+                            <span class="text-sm text-stone-400 block">Estado</span>
+                            <span class="font-semibold text-xl">Pendiente</span>
+                        </p>
+                        <button type="button" class="add-button justify-self-end">Editar estado</button>
                     </div>
 
-                    <div class="bg-white rounded-lg border border-stone-200 p-6">
-                        <h2 class="text-stone-800 font-medium mb-4">10 productos más vendidos</h2>
-                        <img src="./assets/images/sin-imagen.svg"
-                            alt="Gráfico de los 10 productos más vendidos" class="w-full h-auto rounded">
+                    <div class="grid grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
+                        <p class="font-medium text-lg text-stone-800">#0002</p>
+                        <p class="text-center text-stone-600">
+                            <span class="text-sm text-stone-400 block">Estado</span>
+                            <span class="font-semibold text-xl">En preparación</span>
+                        </p>
+                        <button type="button" class="add-button justify-self-end">Editar estado</button>
+                    </div>
+
+                    <div class="grid grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
+                        <p class="font-medium text-lg text-stone-800">#0003</p>
+                        <p class="text-center text-stone-600">
+                            <span class="text-sm text-stone-400 block">Estado</span>
+                            <span class="font-semibold text-xl">Entregado</span>
+                        </p>
+                        <button type="button" class="add-button justify-self-end">Editar estado</button>
                     </div>
 
                 </div>
