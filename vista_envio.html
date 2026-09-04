@@ -117,8 +117,19 @@
             <!--dos opciones de entrega
             mb margin bottom le agrega un margen abajo-->
             <div class="flex flex-col sm:flex-row gap-4 mb-8" id="opciones-modalidad">
+
+                <!--aqui flex 1 permite que la seccion se expanda para que ocupe todo el espacio disponible
+                y se vea bonito porque si no cada radio item quedaria con un tamaño diferente al depender solo del
+                tamaño del texto
+                
+                cursor pointer cambia el cursor a la manito
+                has checked revisa si el input esta seleccionado y le cambia el fondo y el borde de color-->
                 <label
                     class="flex items-center gap-3 border border-stone-200 rounded-lg p-4 flex-1 cursor-pointer has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
+                    <!--todos lsos radios que sean mutuamente excluyentes deben tener el mismo name
+                    checked es para que al solo cargar la pagina este elemento ya este seleccionado
+                    w y h controlan el tamaño del circulito
+                    accent amber es el color del circulito cuando esta marcado-->
                     <input type="radio" name="modalidad" id="retiro-tienda" value="retiro"
                         class="accent-amber-600 w-4 h-4" checked>
                     <span class="font-semibold text-stone-800">Retiro en tienda</span>
@@ -132,36 +143,49 @@
                 </label>
             </div>
 
-            <!-- Bloque inferior: dirección / mapa / totales -->
+            <!--direccion, mapa y total
+            en celulares se vera como un flex col, columna
+            en pantallas grandes se vera como un grid de dos columnas y dos filas-->
             <div class="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-6">
 
-                <!-- 1. Dirección -->
-                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-5 lg:col-start-1 lg:row-start-1"
-                    id="cuadro-direccion">
+                <!--direccion
+                col start 1 row start 1 significa que se posiciona en la primera columna en la primera fila-->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-5 lg:col-start-1 lg:row-start-1" id="cuadro-direccion">
                     <h2 class="font-semibold text-stone-800 mb-4">Dirección de despacho</h2>
-                    <form id="formulario-despacho" class="flex flex-col gap-4">
-                        <div class="flex flex-col gap-1">
-                            <label for="comuna" class="text-sm text-stone-600">Comuna</label>
-                            <input type="text" id="comuna" name="comuna"
-                                class="border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                placeholder="Ej: La Serena">
+
+                    <form id="formulario-despacho" class="flex flex-col space-y-4" novalidate>
+
+                        <p id="despacho-error" class="hidden rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700"
+                            role="alert"></p>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold" for="comuna">Comuna</label>
+                            <input id="comuna" name="comuna" type="text" maxlength="100" required
+                                placeholder="Ej: La Serena"
+                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <label for="direccion" class="text-sm text-stone-600">Dirección</label>
-                            <input type="text" id="direccion" name="direccion"
-                                class="border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                                placeholder="Calle, número, depto/casa">
+
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold" for="direccion">Dirección</label>
+                            <input id="direccion" name="direccion" type="text" maxlength="150" required
+                                placeholder="Calle, número, depto/casa"
+                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                         </div>
+
                     </form>
                 </div>
 
-                <!-- 2. Mapa -->
-                <div
-                    class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                <!--mapa
+                overflow hidden hace que si el contenido se desborda de los limites recorte lo que sobra
+                col start 2 row start 1 columna 2 fila 1 en pantallas grnades pero en celular es el segundo elemento
+                row span 2 indica que se extiende a dos filas de alto-->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden lg:col-start-2 lg:row-start-1 lg:row-span-2">
                     <div id="mapa-envio" style="height: 100%; min-height: 350px;"></div>
                 </div>
 
-                <!-- 3. Totales -->
+                <!--total
+                justify between hace que el primer elemento se vaya a la izquierda y el segundo a la derecha
+                col start 1 row start 2 columna 1 fila 2-->
                 <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-5 flex items-center justify-between lg:col-start-1 lg:row-start-2"
                     id="cuadro-totales">
                     <div>
@@ -176,8 +200,7 @@
 
             </div>
 
-            <button type="button" id="boton-pagar" onclick="window.location.href='index.html'"
-                class="flex items-center gap-2 justify-center mx-auto mt-6 bg-amber-600 hover:bg-amber-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+            <button type="button" id="boton-pagar" class="flex items-center gap-2 justify-center mx-auto mt-6 bg-amber-600 hover:bg-amber-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
                 Pagar
             </button>
 
