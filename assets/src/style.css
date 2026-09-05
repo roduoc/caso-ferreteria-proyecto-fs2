@@ -93,6 +93,17 @@
   }
 
   .add-button:hover { background: #b45309; }
+  .quantity-button {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid #d6d3d1;
+    border-radius: 0.5rem;
+    background: white;
+    font-weight: 700;
+  }
+  .quantity-button:hover { border-color: #f59e0b; background: #fffbeb; }
   .footer-link:hover { color: white; }
 }
 
