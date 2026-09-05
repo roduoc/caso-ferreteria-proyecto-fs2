@@ -64,3 +64,10 @@ Primero se deben instalar las dependencias:
 npm install
 
 npm run build:css
+```
+
+### Uso de IA
+
+Se utilizo herramientas de IA principalmente para los assets y SVGs, y en algunas vistas para corregir temas de diseño y potenciar los estilos de CSS, tambien fue utilizada como herramienta para darnos ideas y darle un enfoque a nuestro proyecto
+
+## FULLSTACKEANDO AURA
