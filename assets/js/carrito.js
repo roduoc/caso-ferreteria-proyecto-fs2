@@ -1,19 +1,23 @@
-// El carrito dura solamente mientras la pestaña del navegador está abierta.
-// No se usa almacenamiento permanente.
-const CLAVE_CARRITO = "carritoLosMaestros";
+// Carrito temporal guardado solamente en este arreglo.
+// Al recargar o cambiar de página vuelve a su estado inicial.
+let carrito = document.querySelector("#cart-list")
+  ? [
+      { codigo: "HM001", cantidad: 1 },
+      { codigo: "PT007", cantidad: 2 },
+    ]
+  : [];
 
 window.obtenerCarrito = function () {
-  const carritoGuardado = sessionStorage.getItem(CLAVE_CARRITO);
-  return carritoGuardado ? JSON.parse(carritoGuardado) : [];
+  return carrito;
 };
 
-window.guardarCarrito = function (carrito) {
-  sessionStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
+window.guardarCarrito = function (nuevoCarrito) {
+  carrito = nuevoCarrito;
   window.actualizarContadorCarrito();
 };
 
 window.cantidadCarrito = function () {
-  return window.obtenerCarrito().reduce((total, item) => total + item.cantidad, 0);
+  return carrito.reduce((total, item) => total + item.cantidad, 0);
 };
 
 window.actualizarContadorCarrito = function () {
@@ -31,7 +35,6 @@ window.agregarAlCarrito = function (codigoProducto, cantidad = 1) {
   const cantidadAgregar = Number(cantidad);
   if (!producto || producto.stock === 0 || cantidadAgregar < 1) return false;
 
-  const carrito = window.obtenerCarrito();
   const itemExistente = carrito.find((item) => item.codigo === codigoProducto);
 
   if (itemExistente) {
@@ -42,7 +45,7 @@ window.agregarAlCarrito = function (codigoProducto, cantidad = 1) {
     carrito.push({ codigo: codigoProducto, cantidad: cantidadAgregar });
   }
 
-  window.guardarCarrito(carrito);
+  window.actualizarContadorCarrito();
   return true;
 };
 
