@@ -6,6 +6,8 @@
     <meta name="description" content="Ferretería Los Maestros, materiales y herramientas en La Serena." />
     <title>Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
+    <script src="./assets/js/productos.js" defer></script>
+    <script src="./assets/js/carrito_sesion.js" defer></script>
     <script src="./assets/src/app.js" defer></script>
   </head>
 
@@ -28,9 +30,10 @@
 
         <nav class="ml-auto hidden items-center gap-6 text-sm font-semibold lg:flex" aria-label="Navegación principal">
           <a class="nav-link active" href="./index.html" aria-current="page">Inicio</a>
-          <a class="nav-link" href="#productos">Productos</a>
+          <a class="nav-link" href="./productos.html">Productos</a>
           <a class="nav-link" href="#nosotros">Nosotros</a>
           <a class="nav-link" href="#blog">Blogs</a>
+          <a class="nav-link" href="./vista_contacto.html">Contacto</a>
         </nav>
 
         <label class="relative hidden xl:block">
@@ -38,24 +41,27 @@
           <input class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 text-sm outline-none focus:border-amber-500" type="search" placeholder="Buscar productos..." />
         </label>
 
-        <a id="cuenta" class="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0" href="#cuenta">Ingresar</a>
+        <a id="cuenta" class="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0" href="./vista_login.html">Ingresar</a>
 
-        <button id="cart-button" class="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold" type="button" aria-label="Carrito con 0 productos">
+        <a id="cart-button" class="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold" href="./carrito.html" aria-label="Carrito con 0 productos">
           <svg aria-hidden="true" viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6" />
             <circle cx="10" cy="20" r="1" /><circle cx="18" cy="20" r="1" />
           </svg>
           <span class="hidden sm:inline">Carrito</span>
           <span id="cart-count" class="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-white bg-amber-400 text-xs font-bold text-stone-900">0</span>
-        </button>
+        </a>
       </div>
 
       <nav id="mobile-menu" class="page-shell border-t border-stone-200 py-3 lg:hidden" aria-label="Navegación móvil" hidden>
         <a class="mobile-link" href="./index.html">Inicio</a>
-        <a class="mobile-link" href="#productos">Productos</a>
+        <a class="mobile-link" href="./productos.html">Productos</a>
         <a class="mobile-link" href="#nosotros">Nosotros</a>
         <a class="mobile-link" href="#blog">Blogs</a>
-        <a class="mobile-link" href="#cuenta">Ingresar</a>
+        <a class="mobile-link" href="./vista_contacto.html">Contacto</a>
+        <a class="mobile-link" href="./vista_login.html">Ingresar</a>
+        <a class="mobile-link" href="./vista_registrarse.html">Crear cuenta</a>
+        <a class="mobile-link" href="./vista_mis_pedidos.html">Mis pedidos</a>
       </nav>
     </header>
 
@@ -68,7 +74,7 @@
             <p class="mt-5 max-w-xl leading-7 text-stone-600">
               Encuentra materiales de construcción, herramientas y artículos de ferretería. Puedes revisar nuestros productos sin iniciar sesión.
             </p>
-            <a class="mt-7 rounded-lg bg-stone-900 px-6 py-3 font-semibold text-white" href="#productos">Ver productos</a>
+            <a class="mt-7 rounded-lg bg-stone-900 px-6 py-3 font-semibold text-white" href="./productos.html">Ver productos</a>
           </div>
           <img class="h-72 w-full object-cover lg:h-full" src="./assets/images/hero-ferreteria.svg" alt="Estanterías con herramientas y materiales de ferretería" />
         </div>
@@ -94,10 +100,10 @@
       <section class="page-shell pb-12" aria-labelledby="categories-title">
         <h2 id="categories-title" class="section-title">Categorías</h2>
         <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <a class="category-box" href="#productos"><span aria-hidden="true">🔨</span> Herramientas</a>
-          <a class="category-box" href="#productos"><span aria-hidden="true">🧱</span> Construcción</a>
-          <a class="category-box" href="#productos"><span aria-hidden="true">💡</span> Electricidad</a>
-          <a class="category-box" href="#productos"><span aria-hidden="true">🖌️</span> Pinturas</a>
+          <a class="category-box" href="./productos.html"><span aria-hidden="true">🔨</span> Herramientas</a>
+          <a class="category-box" href="./productos.html"><span aria-hidden="true">🧱</span> Construcción</a>
+          <a class="category-box" href="./productos.html"><span aria-hidden="true">💡</span> Electricidad</a>
+          <a class="category-box" href="./productos.html"><span aria-hidden="true">🖌️</span> Pinturas</a>
         </div>
       </section>
 
@@ -143,7 +149,7 @@
     </main>
 
     <footer id="contacto" class="bg-stone-900 text-stone-300">
-      <div class="page-shell grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="page-shell grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <h2 class="text-lg font-bold text-white">Ferretería Los Maestros</h2>
           <p class="mt-3 max-w-md text-sm leading-6">Materiales, herramientas y ferretería general para hogares y profesionales.</p>
@@ -152,8 +158,18 @@
           <h2 class="font-bold text-white">Enlaces</h2>
           <ul class="mt-3 space-y-2 text-sm">
             <li><a class="footer-link" href="./index.html">Inicio</a></li>
-            <li><a class="footer-link" href="#productos">Productos</a></li>
-            <li><a class="footer-link" href="#nosotros">Nosotros</a></li>
+            <li><a class="footer-link" href="./productos.html">Productos</a></li>
+            <li><a class="footer-link" href="./carrito.html">Carrito</a></li>
+            <li><a class="footer-link" href="./vista_envio.html">Retiro o despacho</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-bold text-white">Mi cuenta</h2>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><a class="footer-link" href="./vista_login.html">Ingresar</a></li>
+            <li><a class="footer-link" href="./vista_registrarse.html">Crear cuenta</a></li>
+            <li><a class="footer-link" href="./vista_mis_pedidos.html">Mis pedidos</a></li>
+            <li><a class="footer-link" href="./vista_credito_cliente.html">Mi crédito</a></li>
           </ul>
         </div>
         <div>
@@ -163,6 +179,7 @@
             <p>+56 51 200 0000</p>
             <p>ventas@losmaestros.cl</p>
           </address>
+          <a class="footer-link mt-3 inline-block text-sm" href="./vista_contacto.html">Enviar un mensaje</a>
         </div>
       </div>
       <div class="border-t border-stone-700 py-4 text-center text-xs">Proyecto académico DSY1104 · 2026</div>
