@@ -8,8 +8,10 @@
     <title>Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="./assets/js/vista_envio.js" defer></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="./assets/js/vista_contacto.js" defer></script>
 
 </head>
 
@@ -111,8 +113,68 @@
     </header>
 
     <main>
+        <div class="page-shell py-10">
+            <h1 class="text-3xl font-semibold text-stone-900 text-center">Sobre nosotros</h1>
 
-        
+            <div class="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-2">
+
+                <!--columna izquierda-->
+                <div>
+                    <h2 class="text-xl font-bold text-stone-900">Nuestra historia</h2>
+                    <!--text justify justifica el texto
+                    leading controla el espacio vertical entre lineas de texto-->
+                    <p class="mt-3 leading-7 text-stone-600 text-justify">
+                        Ferretería Los Maestros nació en La Serena con el objetivo de ofrecer materiales de
+                        construcción y herramientas de calidad a hogares y profesionales de la región. A lo largo
+                        de los años, nos hemos consolidado como un referente local, atendiendo tanto a clientes
+                        particulares como a contratistas, siempre con un servicio cercano y personalizado.
+                    </p>
+
+                    <address class="mt-6 space-y-2 text-stone-700">
+                        <p><strong class="font-semibold text-stone-900">Dirección:</strong> La Serena, Región de
+                            Coquimbo</p>
+                        <p><strong class="font-semibold text-stone-900">Teléfono:</strong> +56 51 200 0000</p>
+                        <p><strong class="font-semibold text-stone-900">Horario de atención:</strong> Lunes a viernes,
+                            9:00 a 19:00 hrs. Sábados, 9:00 a 14:00 hrs.</p>
+                    </address>
+
+                    <h3 class="mt-8 text-lg font-bold text-stone-900">Contáctanos</h3>
+                    <form id="form-contacto" class="mt-4 space-y-4" novalidate>
+
+                        <p id="contacto-error"
+                            class="hidden rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700"
+                            role="alert">
+                        </p>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold" for="contacto-correo">Correo
+                                electrónico</label>
+                            <input id="contacto-correo" name="correo" type="email" maxlength="100" required
+                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold" for="contacto-mensaje">Mensaje</label>
+                            <textarea id="contacto-mensaje" name="mensaje" rows="4" maxlength="500" required
+                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500"></textarea>
+                        </div>
+
+                        <button class="add-button w-full sm:w-auto" type="submit">Enviar mensaje</button>
+                    </form>
+                </div>
+
+                <!--columna derecha-->
+                <div>
+                    <h2 class="text-xl font-bold text-stone-900">Cómo llegar</h2>
+                    <!--TODO: reemplazar por el mismo mapa Leaflet de vista_envios, apuntando a la ubicacion de la tienda-->
+                    <div class="mt-3 overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm">
+                        <div id="mapa-nosotros" style="height: 100%; min-height: 350px;"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </main>
 
     <footer id="contacto" class="bg-stone-900 text-stone-300">
