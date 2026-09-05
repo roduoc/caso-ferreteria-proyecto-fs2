@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- para que el diseño sea responsivo-->
+    <meta name="viewport" content="width=device-width" />
+    <title>Ferretería Los Maestros</title>
+    <link rel="stylesheet" href="./src/output.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="./assets/js/vista_envio.js" defer></script>
+
+</head>
+
+<body class="bg-stone-100 text-stone-900">
+    <!--le agrega un borde inferior color stone y un fondo blanco al nav -->
+    <header class="border-b border-stone-300 bg-white">
+        <!-- page shell limita el ancho del contenido a un determinado ancho que debe ser el mas pequeño
+       entre dos medidas de pantalla. 
+       flex convierte los elementos hijos en flexbox, que los ordena como una fila horizontal
+       h-20 le da una altura fija al header
+       items center centra verticalmente los elementos-->
+        <div class="page-shell flex h-20 items-center gap-4">
+
+            <!--aria controls nos dice que mobile menu esta siendo controlado por menu button. -->
+            <button id="menu-button" class="simple-icon-button lg:hidden" type="button" aria-label="Abrir menú"
+                aria-controls="mobile-menu" aria-expanded="false">
+                <!--boton hamburguesa dibujado-->
+                <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!--indica que es un link toda esta seccion-->
+            <a href="./index.html" class="flex items-center gap-3" aria-label="Ir al inicio">
+                <img class="size-12" src="./assets/images/logo-los-maestros.svg" alt="" />
+                <span>
+                    <!--block ocupa toda la linea disponible y empuja lo que viene despues a la linea siguiente
+            leading tight controla el espacio vertical entre las lineas de texto
+            tracking tight controla el espacio entre letras de la misma palabra, con tight quedan un poquito mas juntas-->
+                    <strong class="block text-xl leading-tight tracking-tight">Los Maestros</strong>
+                    <!--hidden no se muestra en pantallas pequeñas
+            text y su tamaño
+            fuente negrita
+            uppercase mayusculas
+            tracking y su tamaño especifica el espacio entre letras de la misma palabra
+            sm block que se muestra en pantallas mas grandes que no sean celulares-->
+                    <span
+                        class="hidden text-[0.68rem] font-bold uppercase tracking-[0.18em] text-amber-700 sm:block">Ferretería</span>
+                </span>
+            </a>
+
+            <!--ml auto margin left auto empuja los elementos dentro hacia la derecha-->
+            <nav class="ml-auto hidden items-center gap-6 text-sm font-semibold lg:flex"
+                aria-label="Navegación principal">
+                <a class="nav-link active" href="./index.html" aria-current="page">Inicio</a>
+                <a class="nav-link" href="#productos">Productos</a>
+                <a class="nav-link" href="#nosotros">Nosotros</a>
+                <a class="nav-link" href="#blog">Blogs</a>
+            </nav>
+
+            <!--que se muestre solamente en pantallas grandes-->
+            <label class="hidden xl:block">
+                <!--w es el ancho del input
+          px padding horizontal
+          py padding vertical
+          outline none le quita el borde de color al hacer click
+          focus color le agrega un color al hacer click encima-->
+                <input
+                    class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 text-sm outline-none focus:border-amber-500"
+                    type="search" placeholder="Buscar productos..." />
+            </label>
+
+            <!--boton de ingresar a la cuenta-
+        sm block que se muestre solo en pantallas grandes-->
+            <a id="cuenta"
+                class="hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0"
+                href="#cuenta">Ingresar</a>
+
+            <!--carrito
+        p es el padding, que es espacio vertical y horizontal-->
+            <button id="cart-button"
+                class="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold"
+                type="button" aria-label="Carrito con 0 productos">
+                <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6" />
+                    <circle cx="10" cy="20" r="1" />
+                    <circle cx="18" cy="20" r="1" />
+                </svg>
+                <!--
+          sm inline significa que en pantallas grandes fluye junto al contenido de al lado-->
+                <span class="hidden sm:inline">Carrito</span>
+                <span id="cart-count"
+                    class="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-white bg-amber-400 text-xs font-bold text-stone-900">0</span>
+            </button>
+        </div>
+
+        <!--
+      border t es borde superior
+      no ocupa todo el ancho de pantalla por el page shell
+      -->
+        <nav id="mobile-menu" class="page-shell border-t border-stone-200 py-3 lg:hidden" aria-label="Navegación móvil"
+            hidden>
+            <a class="mobile-link" href="./index.html">Inicio</a>
+            <a class="mobile-link" href="#productos">Productos</a>
+            <a class="mobile-link" href="#nosotros">Nosotros</a>
+            <a class="mobile-link" href="#blog">Blogs</a>
+            <a class="mobile-link" href="#cuenta">Ingresar</a>
+        </nav>
+    </header>
+
+    <main>
+
+        
+    </main>
+
+    <footer id="contacto" class="bg-stone-900 text-stone-300">
+
+        <!--
+      sm grid cols 2 se comporta como 2 columnas en pantallas grandes como tablets
+      en pantallas mas grandes como computador se dividira en 3 columnas
+      por defecto en celular sera solo 1 columna-->
+        <div class="page-shell grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
+
+            <div>
+                <h2 class="text-lg font-bold text-white">Ferretería Los Maestros</h2>
+                <!--
+          margin top separa este parrafo del de abajo para que no queden pegados
+          max w md define un ancho maximo para el texto
+          leading 6 define el espacio vertical entre lineas de texto-->
+                <p class="mt-3 max-w-md text-sm leading-6">Materiales, herramientas y ferretería general para hogares y
+                    profesionales.</p>
+            </div>
+            <div>
+                <h2 class="font-bold text-white">Enlaces</h2>
+                <!--
+          space y 2 es espacio vertical entre los elementos hijos, en este caso de la lista-->
+                <ul class="mt-3 space-y-2 text-sm">
+                    <li><a class="footer-link" href="./index.html">Inicio</a></li>
+                    <li><a class="footer-link" href="#productos">Productos</a></li>
+                    <li><a class="footer-link" href="#nosotros">Nosotros</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold text-white">Contacto</h2>
+                <address class="mt-3 space-y-2 text-sm not-italic">
+                    <p>La Serena, Región de Coquimbo</p>
+                    <p>+56 51 200 0000</p>
+                    <p>ventas@losmaestros.cl</p>
+                </address>
+            </div>
+
+        </div>
+
+        <div class="border-t border-stone-700 py-4 text-center text-xs">Proyecto académico DSY1104 · 2026</div>
+    </footer>
+</body>
+
+</html>
