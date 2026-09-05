@@ -77,12 +77,14 @@ function mostrarProductos() {
   productGrid.innerHTML = productosFiltrados.map((producto) => `
     <article class="product-card flex flex-col">
       <div class="relative bg-stone-100">
-        <img class="h-48 w-full object-contain p-7" src="./assets/images/sin-imagen.svg" alt="${producto.nombre} sin imagen disponible" />
+        <a href="./detalle_producto.html?codigo=${producto.codigo}" aria-label="Ver detalle de ${producto.nombre}">
+          <img class="h-48 w-full object-contain p-7" src="./assets/images/sin-imagen.svg" alt="${producto.nombre} sin imagen disponible" />
+        </a>
         <span class="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-600">${producto.codigo}</span>
       </div>
       <div class="flex flex-1 flex-col p-5">
         <p class="text-xs font-bold uppercase tracking-wider text-amber-700">${producto.categoria} · ${producto.subcategoria}</p>
-        <h2 class="mt-2 text-lg font-bold leading-snug">${producto.nombre}</h2>
+        <h2 class="mt-2 text-lg font-bold leading-snug"><a class="hover:text-amber-700" href="./detalle_producto.html?codigo=${producto.codigo}">${producto.nombre}</a></h2>
         <p class="mt-2 text-sm text-stone-500">Marca ${producto.marca} · ${producto.unidad}</p>
         <p class="mt-3 text-sm font-semibold text-green-700">Stock disponible: ${producto.stock}</p>
         <div class="mt-auto flex items-center justify-between gap-3 pt-5">
