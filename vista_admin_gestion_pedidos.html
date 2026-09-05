@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
-    <script src="./assets/js/vista_admin_reportes.js" defer></script>
+    <script src="./assets/js/vista_admin_gestion_pedidos.js" defer></script>
 </head>
 
 <body class="bg-stone-100 text-stone-900">
@@ -133,30 +133,52 @@
                     grid grid-cols-3 para que las 3 columnas midan lo mismo sin importar el largo del contenido
                     items center para alinear verticalmente-->
                     <div class="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
-                        <p class="font-medium text-lg text-stone-800">#0001</p>
+                        <p class="font-medium text-lg text-stone-800">
+                            <span class="text-sm text-stone-400 block">Número de pedido</span>
+                            #0001
+                        </p>
+
                         <p class="text-left sm:text-center text-stone-600">
                             <span class="text-sm text-stone-400 block">Estado</span>
                             <span class="font-semibold text-xl">Pendiente</span>
                         </p>
-                        <button type="button" class="add-button justify-self-start sm:justify-self-end">Editar estado</button>
+
+                        <div class="flex flex-col gap-2 justify-self-start sm:justify-self-end">
+                            <select class="seleccionar-estado rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm outline-none focus:border-amber-500"></select>
+                            <button type="button" class="boton-editar-estado add-button">Editar estado</button>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
-                        <p class="font-medium text-lg text-stone-800">#0002</p>
+                        <p class="font-medium text-lg text-stone-800">
+                            <span class="text-sm text-stone-400 block">Número de pedido</span>
+                            #0002
+                        </p>
                         <p class="text-left sm:text-center text-stone-600">
                             <span class="text-sm text-stone-400 block">Estado</span>
                             <span class="font-semibold text-xl">En preparación</span>
                         </p>
-                        <button type="button" class="add-button justify-self-start sm:justify-self-end">Editar estado</button>
+
+                        <div class="flex flex-col gap-2 justify-self-start sm:justify-self-end">
+                            <select class="seleccionar-estado rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm outline-none focus:border-amber-500"></select>
+                            <button type="button" class="boton-editar-estado add-button">Editar estado</button>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 bg-white rounded-lg border border-stone-200 p-6">
-                        <p class="font-medium text-lg text-stone-800">#0003</p>
+                        <p class="font-medium text-lg text-stone-800">
+                            <span class="text-sm text-stone-400 block">Número de pedido</span>
+                            #0003
+                        </p>
                         <p class="text-left sm:text-center text-stone-600">
                             <span class="text-sm text-stone-400 block">Estado</span>
                             <span class="font-semibold text-xl">Entregado</span>
                         </p>
-                        <button type="button" class="add-button justify-self-start sm:justify-self-end">Editar estado</button>
+                        
+                        <div class="flex flex-col gap-2 justify-self-start sm:justify-self-end">
+                            <select class="seleccionar-estado rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm outline-none focus:border-amber-500"></select>
+                            <button type="button" class="boton-editar-estado add-button">Editar estado</button>
+                        </div>
                     </div>
 
                 </div>

@@ -27,16 +27,3 @@ botonPanel.addEventListener("click", () => {
   botonPanel.setAttribute("aria-expanded", String(!abierto));
   panelLateral.classList.toggle("hidden");
   });
-
-//////////////////dropdown
-const estadosPedido = ["Pendiente", "En preparación", "Entregado", "Cancelado"];
-const seleccionar = document.querySelectorAll(".seleccionar-estado");
-
-seleccionar.forEach((seleccionar) => {
-  estadosPedido.forEach((estado) => {
-    const option = document.createElement("option");
-    option.value = estado;
-    option.textContent = estado;
-    seleccionar.appendChild(option);
-  });
-});
