@@ -69,5 +69,117 @@ regionSelect.addEventListener("change", () => {
   });
 });
 
-//////////////////////////////////////////////
+//////////////////////////////////////////validacion de campos
 
+//rut sin puntos ni guion
+//^ marca el inicio del string
+//0-9
+function rutValido(rut) {
+  return /^[0-9]{6,8}[0-9kK]$/.test(rut);
+}
+ 
+const dominiosPermitidos = ["duoc.cl", "profesor.duoc.cl", "gmail.com"];
+ 
+function correoValido(correo) {
+  const partes = correo.trim().split("@");
+  if (partes.length !== 2) return false;
+  const dominio = partes[1].toLowerCase();
+  return dominiosPermitidos.includes(dominio);
+}
+ 
+function claveValida(clave) {
+  return clave.length >= 4 && clave.length <= 10;
+}
+ 
+function mostrarError(elementoError, mensaje) {
+  elementoError.textContent = mensaje;
+  elementoError.classList.remove("hidden");
+}
+ 
+function ocultarError(elementoError) {
+  elementoError.classList.add("hidden");
+  elementoError.textContent = "";
+}
+ 
+const formRegistrarse = document.querySelector("#form-registrarse");
+const errorEl = document.querySelector("#registrarse-error");
+ 
+formRegistrarse.addEventListener("submit", (event) => {
+  event.preventDefault();
+ 
+const nombre = document.querySelector("#registrarse-nombre").value.trim();
+const apellidos = document.querySelector("#registrarse-apellidos").value.trim();
+const rut = document.querySelector("#registrarse-rut").value.trim();
+const correo = document.querySelector("#registrarse-correo").value.trim();
+const clave = document.querySelector("#registrarse-clave").value;
+const region = regionSelect.value;
+const comuna = comunaSelect.value;
+const direccion = document.querySelector("#registrarse-direccion").value.trim();
+ 
+if (!rut) {
+  mostrarError(errorEl, "El RUT es obligatorio.");
+  return;
+}
+if (!nombre) {
+  mostrarError(errorEl, "El nombre es obligatorio.");
+  return;
+}
+if (nombre.length > 50) {
+  mostrarError(errorEl, "El nombre no puede superar los 50 caracteres.");
+  return;
+}
+
+if (!apellidos) {
+  mostrarError(errorEl, "Los apellidos son obligatorios.");
+  return;
+}
+if (apellidos.length > 100) {
+  mostrarError(errorEl, "Los apellidos no pueden superar los 100 caracteres.");
+  return;
+}
+if (!rutValido(rut)) {
+  mostrarError(errorEl, "El RUT debe ingresarse sin puntos ni guion (solo números, opcionalmente terminado en K), entre 7 y 9 caracteres.");
+  return;
+}
+
+if (!correo) {
+  mostrarError(errorEl, "El correo electrónico es obligatorio.");
+  return;
+}
+if (correo.length > 100) {
+  mostrarError(errorEl, "El correo no puede superar los 100 caracteres.");
+  return;
+}
+if (!correoValido(correo)) {
+  mostrarError(errorEl, "Solo se aceptan correos @duoc.cl, @profesor.duoc.cl o @gmail.com.");
+  return;
+}
+
+if (!clave) {
+  mostrarError(errorEl, "La contraseña es obligatoria.");
+  return;
+}
+if (!claveValida(clave)) {
+  mostrarError(errorEl, "La contraseña debe tener entre 4 y 10 caracteres.");
+  return;
+}
+if (!region) {
+  mostrarError(errorEl, "Debes seleccionar una región.");
+  return;
+}
+if (!comuna) {
+  mostrarError(errorEl, "Debes seleccionar una comuna.");
+  return;
+}
+
+if (!direccion) {
+  mostrarError(errorEl, "La dirección es obligatoria.");
+  return;
+}
+if (direccion.length > 300) {
+  mostrarError(errorEl, "La dirección no puede superar los 300 caracteres.");
+  return;
+}
+
+ocultarError(errorEl);
+});
