@@ -32,14 +32,15 @@
           <a class="nav-link active" href="./index.html" aria-current="page">Inicio</a>
           <a class="nav-link" href="./productos.html">Productos</a>
           <a class="nav-link" href="#nosotros">Nosotros</a>
-          <a class="nav-link" href="#blog">Blogs</a>
-          <a class="nav-link" href="./vista_contacto.html">Contacto</a>
+          <a class="nav-link" href="./vista_blog.html">Blog</a>
+          <a class="nav-link" href="#contacto">Contacto</a>
         </nav>
 
-        <label class="relative hidden xl:block">
+        <form class="relative hidden xl:block" action="./productos.html" method="get">
           <span class="sr-only">Buscar productos</span>
-          <input class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 text-sm outline-none focus:border-amber-500" type="search" placeholder="Buscar productos..." />
-        </label>
+          <input name="buscar" class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 pr-10 text-sm outline-none focus:border-amber-500" type="search" placeholder="Buscar productos..." />
+          <button class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-amber-700" type="submit" aria-label="Buscar">⌕</button>
+        </form>
 
         <a id="cuenta" class="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0" href="./vista_login.html">Ingresar</a>
 
@@ -57,11 +58,9 @@
         <a class="mobile-link" href="./index.html">Inicio</a>
         <a class="mobile-link" href="./productos.html">Productos</a>
         <a class="mobile-link" href="#nosotros">Nosotros</a>
-        <a class="mobile-link" href="#blog">Blogs</a>
-        <a class="mobile-link" href="./vista_contacto.html">Contacto</a>
+        <a class="mobile-link" href="./vista_blog.html">Blog</a>
+        <a class="mobile-link" href="#contacto">Contacto</a>
         <a class="mobile-link" href="./vista_login.html">Ingresar</a>
-        <a class="mobile-link" href="./vista_registrarse.html">Crear cuenta</a>
-        <a class="mobile-link" href="./vista_mis_pedidos.html">Mis pedidos</a>
       </nav>
     </header>
 
@@ -121,7 +120,7 @@
             <h2 id="blog-title" class="section-title">Blog</h2>
             <p class="mt-2 text-stone-600">Consejos sencillos para tus proyectos.</p>
           </div>
-          <a class="hidden text-sm font-semibold text-amber-700 sm:block" href="#blog">Ver publicaciones</a>
+          <a class="hidden text-sm font-semibold text-amber-700 sm:block" href="./vista_blog.html">Ver más</a>
         </div>
 
         <div class="mt-7 grid gap-5 md:grid-cols-2">
@@ -131,7 +130,7 @@
               <p class="text-xs font-bold uppercase tracking-wider text-amber-700">Consejos</p>
               <h3 class="mt-2 text-xl font-bold">Cómo elegir una herramienta para el hogar</h3>
               <p class="mt-3 text-sm leading-6 text-stone-600">Revisa algunos aspectos básicos antes de comprar tu primera herramienta.</p>
-              <a class="mt-4 inline-block text-sm font-semibold text-amber-700" href="#blog">Leer publicación</a>
+              <a class="mt-4 inline-block text-sm font-semibold text-amber-700" href="./vista_blog.html?articulo=herramientas">Leer publicación</a>
             </div>
           </article>
 
@@ -141,7 +140,7 @@
               <p class="text-xs font-bold uppercase tracking-wider text-amber-700">Construcción</p>
               <h3 class="mt-2 text-xl font-bold">Materiales básicos para una reparación</h3>
               <p class="mt-3 text-sm leading-6 text-stone-600">Una lista breve para preparar arreglos pequeños sin comprar de más.</p>
-              <a class="mt-4 inline-block text-sm font-semibold text-amber-700" href="#blog">Leer publicación</a>
+              <a class="mt-4 inline-block text-sm font-semibold text-amber-700" href="./vista_blog.html?articulo=reparacion">Leer publicación</a>
             </div>
           </article>
         </div>
@@ -160,16 +159,14 @@
             <li><a class="footer-link" href="./index.html">Inicio</a></li>
             <li><a class="footer-link" href="./productos.html">Productos</a></li>
             <li><a class="footer-link" href="./carrito.html">Carrito</a></li>
-            <li><a class="footer-link" href="./vista_envio.html">Retiro o despacho</a></li>
+            <li><a class="footer-link" href="./vista_blog.html">Blog</a></li>
           </ul>
         </div>
         <div>
           <h2 class="font-bold text-white">Mi cuenta</h2>
           <ul class="mt-3 space-y-2 text-sm">
             <li><a class="footer-link" href="./vista_login.html">Ingresar</a></li>
-            <li><a class="footer-link" href="./vista_registrarse.html">Crear cuenta</a></li>
-            <li><a class="footer-link" href="./vista_mis_pedidos.html">Mis pedidos</a></li>
-            <li><a class="footer-link" href="./vista_credito_cliente.html">Mi crédito</a></li>
+            <li><a class="footer-link" href="./carrito.html">Mi carrito</a></li>
           </ul>
         </div>
         <div>
@@ -179,7 +176,7 @@
             <p>+56 51 200 0000</p>
             <p>ventas@losmaestros.cl</p>
           </address>
-          <a class="footer-link mt-3 inline-block text-sm" href="./vista_contacto.html">Enviar un mensaje</a>
+          <a class="footer-link mt-3 inline-block text-sm" href="#contacto">Información de contacto</a>
         </div>
       </div>
       <div class="border-t border-stone-700 py-4 text-center text-xs">Proyecto académico DSY1104 · 2026</div>

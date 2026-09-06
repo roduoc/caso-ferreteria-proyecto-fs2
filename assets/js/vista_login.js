@@ -80,9 +80,9 @@ function validarFormulario({ correoInput, claveInput, errorEl }) {
 /////////////////////fin de validaciones de campo
 
 const rutasPorRol = {
-  admin: "index.html",
-  vendedor: "vista_vendedor.html",
-  cliente: "vista_mis_pedidos.html",
+  admin: "vista_gestion_usuarios.html",
+  vendedor: "vista_vendedor_inventario.html",
+  cliente: "index.html",
 };
 
 // --- Validación Acceder ---
@@ -119,4 +119,3 @@ formAcceder.addEventListener("submit", (event) => {
   const destino = rutasPorRol[usuario.rol];
   window.location.href = destino;
 });
-
