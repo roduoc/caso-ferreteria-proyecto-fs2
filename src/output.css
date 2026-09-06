@@ -16,6 +16,7 @@
     --color-amber-200: oklch(92.4% 0.12 95.746);
     --color-amber-400: oklch(82.8% 0.189 84.429);
     --color-amber-500: oklch(76.9% 0.188 70.08);
+    --color-amber-600: oklch(66.6% 0.179 58.318);
     --color-amber-700: oklch(55.5% 0.163 48.998);
     --color-green-700: oklch(52.7% 0.154 150.069);
     --color-stone-50: oklch(98.5% 0.001 106.423);
@@ -347,6 +348,10 @@
   }
   .inline-block {
     display: inline-block;
+  }
+  .size-4 {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
   }
   .size-6 {
     width: calc(var(--spacing) * 6);
@@ -879,6 +884,9 @@
   .not-italic {
     font-style: normal;
   }
+  .accent-amber-600 {
+    accent-color: var(--color-amber-600);
+  }
   .outline {
     outline-style: var(--tw-outline-style);
     outline-width: 1px;
@@ -898,6 +906,9 @@
     }
     .hover\:bg-amber-50:hover {
       background-color: var(--color-amber-50);
+    }
+    .hover\:bg-amber-500:hover {
+      background-color: var(--color-amber-500);
     }
     .hover\:bg-stone-800:hover {
       background-color: var(--color-stone-800);
@@ -995,6 +1006,9 @@
     }
   }
   @media (width >= 48rem) {
+    .md\:block {
+      display: block;
+    }
     .md\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
