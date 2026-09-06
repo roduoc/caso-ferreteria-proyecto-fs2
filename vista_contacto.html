@@ -4,13 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <!-- para que el diseño sea responsivo-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Crear una cuenta en Ferretería Los Maestros." />
-    <title>Crear cuenta | Ferretería Los Maestros</title>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Información y formulario de contacto de Ferretería Los Maestros." />
+    <title>Contacto | Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="./assets/js/productos.js" defer></script>
     <script src="./assets/js/carrito.js" defer></script>
-    <script src="./assets/js/vistas_registrarse.js" defer></script>
+    <script src="./assets/js/vista_contacto.js" defer></script>
+
 </head>
 
 <body class="flex min-h-screen flex-col bg-stone-100 text-stone-900">
@@ -58,20 +61,19 @@
                 <a class="nav-link" href="./productos.html">Productos</a>
                 <a class="nav-link" href="./index.html#nosotros">Nosotros</a>
                 <a class="nav-link" href="./vista_blog.html">Blog</a>
-                <a class="nav-link" href="./vista_contacto.html">Contacto</a>
+                <a class="nav-link active" href="./vista_contacto.html" aria-current="page">Contacto</a>
             </nav>
 
             <!--que se muestre solamente en pantallas grandes-->
-            <form class="relative hidden xl:block" action="./productos.html" method="get">
+            <form class="hidden xl:block" action="./productos.html" method="get">
                 <!--w es el ancho del input
           px padding horizontal
           py padding vertical
           outline none le quita el borde de color al hacer click
           focus color le agrega un color al hacer click encima-->
                 <input name="buscar"
-                    class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 pr-10 text-sm outline-none focus:border-amber-500"
+                    class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 text-sm outline-none focus:border-amber-500"
                     type="search" placeholder="Buscar productos..." />
-                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-amber-700" type="submit" aria-label="Buscar">⌕</button>
             </form>
 
             <!--boton de ingresar a la cuenta-
@@ -110,106 +112,75 @@
             <a class="mobile-link" href="./vista_blog.html">Blog</a>
             <a class="mobile-link" href="./vista_contacto.html">Contacto</a>
             <a class="mobile-link" href="./vista_login.html">Ingresar</a>
-            <a class="mobile-link" href="./vista_registrarse.html">Crear cuenta</a>
         </nav>
     </header>
 
     <main class="flex-1">
-        <div class="page-shell relative py-8">
-            <!--left 0 top 8 son las coordenadas-->
-            <a href="./index.html"
-                class="absolute left-0 top-8 text-sm font-semibold text-stone-500 hover:text-amber-700">←
-                Volver al inicio</a>
+        <div class="page-shell py-10">
+            <h1 class="text-3xl font-semibold text-stone-900 text-center">Contacto</h1>
 
-            <!--mi cuenta y logo de la tienda-->
-            <div class="flex flex-col items-center pt-18">
-                <h1 class="section-title text-center">Mi Cuenta</h1>
-                <img class="mt-3 size-16" src="./assets/images/logo-los-maestros.svg"
-                    alt="Logo Ferretería Los Maestros" />
-            </div>
+            <div class="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-2">
 
-            <!--
-      mx auto centra el elemento horizontalmente
-      margin top separa el recuadro de lo que esta arriba
-      en pantallas grandes el padding es de 8, aumenta
-      mx auto es margin left auto, reparte el espacio horizontal sobrante a ambos lados
-      en este caso centra el recuadro en la pantalla horizontalmente-->
-            <div class="mx-auto mt-8 w-full max-w-md rounded-xl border border-stone-300 bg-white p-6 sm:p-8">
-                <!--sm grid cols 2 significa 2 columnas en pantallas grandes
-        por defecto 1-->
+                <!--columna izquierda-->
+                <div>
+                    <h2 class="text-xl font-bold text-stone-900">Nuestra historia</h2>
+                    <!--text justify justifica el texto
+                    leading controla el espacio vertical entre lineas de texto-->
+                    <p class="mt-3 leading-7 text-stone-600 text-justify">
+                        Ferretería Los Maestros nació en La Serena con el objetivo de ofrecer materiales de
+                        construcción y herramientas de calidad a hogares y profesionales de la región. A lo largo
+                        de los años, nos hemos consolidado como un referente local, atendiendo tanto a clientes
+                        particulares como a contratistas, siempre con un servicio cercano y personalizado.
+                    </p>
 
-                <!--registrarse-->
-                <div class="flex h-full flex-col rounded-lg border border-stone-200 p-5 sm:p-6">
-                    <h2 class="text-lg font-bold">Registrarse</h2>
+                    <address class="mt-6 space-y-2 text-stone-700">
+                        <p><strong class="font-semibold text-stone-900">Dirección:</strong> La Serena, Región de
+                            Coquimbo</p>
+                        <p><strong class="font-semibold text-stone-900">Teléfono:</strong> +56 51 200 0000</p>
+                        <p><strong class="font-semibold text-stone-900">Horario de atención:</strong> Lunes a viernes,
+                            9:00 a 19:00 hrs. Sábados, 9:00 a 14:00 hrs.</p>
+                    </address>
 
-                    <form id="form-registrarse" class="mt-4 flex flex-1 flex-col space-y-4" novalidate>
-                        <p id="registrarse-error"
+                    <h3 class="mt-8 text-lg font-bold text-stone-900">Contáctanos</h3>
+                    <form id="form-contacto" class="mt-4 space-y-4" novalidate>
+
+                        <p id="contacto-error"
                             class="hidden rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700"
-                            role="alert"></p>
+                            role="alert">
+                        </p>
+                        <p id="contacto-exito"
+                            class="hidden rounded-lg border border-green-300 bg-green-50 px-3 py-2 text-sm font-semibold text-green-700"
+                            role="status">Mensaje enviado correctamente.</p>
 
                         <div>
-                            <label class="mb-1 block text-sm font-semibold">Nombre</label>
-                            <input id="registrarse-nombre" name="nombre" type="text" maxlength="100" required
+                            <label class="mb-1 block text-sm font-semibold" for="contacto-correo">Correo
+                                electrónico</label>
+                            <input id="contacto-correo" name="correo" type="email" maxlength="100" required
                                 class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                         </div>
 
                         <div>
-                            <label class="mb-1 block text-sm font-semibold">Apellidos</label>
-                            <input id="registrarse-apellidos" name="apellidos" type="text" maxlength="100" required
-                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
+                            <label class="mb-1 block text-sm font-semibold" for="contacto-mensaje">Mensaje</label>
+                            <textarea id="contacto-mensaje" name="mensaje" rows="4" maxlength="500" required
+                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500"></textarea>
                         </div>
 
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold">Correo electrónico</label>
-                            <input id="registrarse-correo" name="correo" type="email" maxlength="100" required
-                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
-                        </div>
-
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold">Contraseña</label>
-                            <input id="registrarse-clave" name="clave" type="password" maxlength="10" required
-                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
-                            <p class="mt-1 text-xs text-stone-500">Entre 4 y 10 caracteres.</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                            <div>
-                                <label class="mb-1 block text-sm font-semibold" for="region">Región</label>
-                                <select id="region" name="region" required
-                                    class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500">
-                                    <option value="" disabled selected>Seleccionar</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="mb-1 block text-sm font-semibold" for="comuna">Comuna</label>
-                                <select id="comuna" name="comuna" required disabled
-                                    class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500 disabled:opacity-50">
-                                    <option value="" disabled selected>Seleccionar</option>
-                                </select>
-                            </div>
-
-                        </div>
-
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold">Dirección</label>
-                            <input id="registrarse-direccion" name="direccion" type="text" maxlength="100" required
-                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
-                        </div>
-
-                        <label class="flex items-center gap-2 text-sm font-medium">
-                            <input id="registrarse-contratista" type="checkbox"
-                                class="size-4 rounded border-stone-300 accent-amber-600" />
-                            ¿Eres contratista?
-                        </label>
-
-                        <button class="add-button mt-auto w-full" type="submit">Registrarse</button>
-                        <p class="text-center text-sm text-stone-500">¿Ya tienes una cuenta? <a class="font-semibold text-amber-700 hover:underline" href="./vista_login.html">Ingresar</a></p>
+                        <button class="add-button w-full sm:w-auto" type="submit">Enviar mensaje</button>
                     </form>
                 </div>
+
+                <!--columna derecha-->
+                <div>
+                    <h2 class="text-xl font-bold text-stone-900">Cómo llegar</h2>
+                    <!--TODO: reemplazar por el mismo mapa Leaflet de vista_envios, apuntando a la ubicacion de la tienda-->
+                    <div class="mt-3 overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm">
+                        <div id="mapa-nosotros" style="height: 100%; min-height: 350px;"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
+
     </main>
 
     <footer id="contacto" class="bg-stone-900 text-stone-300">
@@ -236,7 +207,7 @@
                 <ul class="mt-3 space-y-2 text-sm">
                     <li><a class="footer-link" href="./index.html">Inicio</a></li>
                     <li><a class="footer-link" href="./productos.html">Productos</a></li>
-                    <li><a class="footer-link" href="./vista_blog.html">Blog</a></li>
+                    <li><a class="footer-link" href="./index.html#nosotros">Nosotros</a></li>
                 </ul>
             </div>
             <div>

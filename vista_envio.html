@@ -4,13 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <!-- para que el diseño sea responsivo-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Crear una cuenta en Ferretería Los Maestros." />
-    <title>Crear cuenta | Ferretería Los Maestros</title>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Selección de retiro o despacho para completar un pedido." />
+    <title>Entrega | Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="./assets/js/productos.js" defer></script>
     <script src="./assets/js/carrito.js" defer></script>
-    <script src="./assets/js/vistas_registrarse.js" defer></script>
+    <script src="./assets/js/vista_envio.js" defer></script>
+
 </head>
 
 <body class="flex min-h-screen flex-col bg-stone-100 text-stone-900">
@@ -62,16 +65,15 @@
             </nav>
 
             <!--que se muestre solamente en pantallas grandes-->
-            <form class="relative hidden xl:block" action="./productos.html" method="get">
+            <form class="hidden xl:block" action="./productos.html" method="get">
                 <!--w es el ancho del input
           px padding horizontal
           py padding vertical
           outline none le quita el borde de color al hacer click
           focus color le agrega un color al hacer click encima-->
                 <input name="buscar"
-                    class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 pr-10 text-sm outline-none focus:border-amber-500"
+                    class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 text-sm outline-none focus:border-amber-500"
                     type="search" placeholder="Buscar productos..." />
-                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-amber-700" type="submit" aria-label="Buscar">⌕</button>
             </form>
 
             <!--boton de ingresar a la cuenta-
@@ -110,106 +112,104 @@
             <a class="mobile-link" href="./vista_blog.html">Blog</a>
             <a class="mobile-link" href="./vista_contacto.html">Contacto</a>
             <a class="mobile-link" href="./vista_login.html">Ingresar</a>
-            <a class="mobile-link" href="./vista_registrarse.html">Crear cuenta</a>
         </nav>
     </header>
 
     <main class="flex-1">
-        <div class="page-shell relative py-8">
-            <!--left 0 top 8 son las coordenadas-->
-            <a href="./index.html"
-                class="absolute left-0 top-8 text-sm font-semibold text-stone-500 hover:text-amber-700">←
-                Volver al inicio</a>
+        <section class="page-shell py-10">
+            <h1 class="text-2xl font-bold text-stone-800 text-center mb-8">Modalidad de Entrega</h1>
 
-            <!--mi cuenta y logo de la tienda-->
-            <div class="flex flex-col items-center pt-18">
-                <h1 class="section-title text-center">Mi Cuenta</h1>
-                <img class="mt-3 size-16" src="./assets/images/logo-los-maestros.svg"
-                    alt="Logo Ferretería Los Maestros" />
+            <!--dos opciones de entrega
+            mb margin bottom le agrega un margen abajo-->
+            <div class="flex flex-col sm:flex-row gap-4 mb-8" id="opciones-modalidad">
+
+                <!--aqui flex 1 permite que la seccion se expanda para que ocupe todo el espacio disponible
+                y se vea bonito porque si no cada radio item quedaria con un tamaño diferente al depender solo del
+                tamaño del texto
+                
+                cursor pointer cambia el cursor a la manito
+                has checked revisa si el input esta seleccionado y le cambia el fondo y el borde de color-->
+                <label
+                    class="flex items-center gap-3 border border-stone-200 rounded-lg p-4 flex-1 cursor-pointer has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
+                    <!--todos lsos radios que sean mutuamente excluyentes deben tener el mismo name
+                    checked es para que al solo cargar la pagina este elemento ya este seleccionado
+                    w y h controlan el tamaño del circulito
+                    accent amber es el color del circulito cuando esta marcado-->
+                    <input type="radio" name="modalidad" id="retiro-tienda" value="retiro"
+                        class="accent-amber-600 w-4 h-4" checked>
+                    <span class="font-semibold text-stone-800">Retiro en tienda</span>
+                </label>
+
+                <label
+                    class="flex items-center gap-3 border border-stone-200 rounded-lg p-4 flex-1 cursor-pointer has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
+                    <input type="radio" name="modalidad" id="despacho-domicilio" value="despacho"
+                        class="accent-amber-600 w-4 h-4">
+                    <span class="font-semibold text-stone-800">Despacho a domicilio</span>
+                </label>
             </div>
 
-            <!--
-      mx auto centra el elemento horizontalmente
-      margin top separa el recuadro de lo que esta arriba
-      en pantallas grandes el padding es de 8, aumenta
-      mx auto es margin left auto, reparte el espacio horizontal sobrante a ambos lados
-      en este caso centra el recuadro en la pantalla horizontalmente-->
-            <div class="mx-auto mt-8 w-full max-w-md rounded-xl border border-stone-300 bg-white p-6 sm:p-8">
-                <!--sm grid cols 2 significa 2 columnas en pantallas grandes
-        por defecto 1-->
+            <!--direccion, mapa y total
+            en celulares se vera como un flex col, columna
+            en pantallas grandes se vera como un grid de dos columnas y dos filas-->
+            <div class="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-6">
 
-                <!--registrarse-->
-                <div class="flex h-full flex-col rounded-lg border border-stone-200 p-5 sm:p-6">
-                    <h2 class="text-lg font-bold">Registrarse</h2>
+                <!--direccion
+                col start 1 row start 1 significa que se posiciona en la primera columna en la primera fila-->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-5 lg:col-start-1 lg:row-start-1" id="cuadro-direccion">
+                    <h2 class="font-semibold text-stone-800 mb-4">Dirección de despacho</h2>
 
-                    <form id="form-registrarse" class="mt-4 flex flex-1 flex-col space-y-4" novalidate>
-                        <p id="registrarse-error"
-                            class="hidden rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700"
+                    <form id="formulario-despacho" class="flex flex-col space-y-4" novalidate>
+
+                        <p id="despacho-error" class="hidden rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700"
                             role="alert"></p>
 
                         <div>
-                            <label class="mb-1 block text-sm font-semibold">Nombre</label>
-                            <input id="registrarse-nombre" name="nombre" type="text" maxlength="100" required
+                            <label class="mb-1 block text-sm font-semibold" for="comuna">Comuna</label>
+                            <input id="comuna" name="comuna" type="text" maxlength="100" required
+                                placeholder="Ej: La Serena"
                                 class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                         </div>
 
                         <div>
-                            <label class="mb-1 block text-sm font-semibold">Apellidos</label>
-                            <input id="registrarse-apellidos" name="apellidos" type="text" maxlength="100" required
+                            <label class="mb-1 block text-sm font-semibold" for="direccion">Dirección</label>
+                            <input id="direccion" name="direccion" type="text" maxlength="150" required
+                                placeholder="Calle, número, depto/casa"
                                 class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                         </div>
 
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold">Correo electrónico</label>
-                            <input id="registrarse-correo" name="correo" type="email" maxlength="100" required
-                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
-                        </div>
-
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold">Contraseña</label>
-                            <input id="registrarse-clave" name="clave" type="password" maxlength="10" required
-                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
-                            <p class="mt-1 text-xs text-stone-500">Entre 4 y 10 caracteres.</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                            <div>
-                                <label class="mb-1 block text-sm font-semibold" for="region">Región</label>
-                                <select id="region" name="region" required
-                                    class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500">
-                                    <option value="" disabled selected>Seleccionar</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="mb-1 block text-sm font-semibold" for="comuna">Comuna</label>
-                                <select id="comuna" name="comuna" required disabled
-                                    class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500 disabled:opacity-50">
-                                    <option value="" disabled selected>Seleccionar</option>
-                                </select>
-                            </div>
-
-                        </div>
-
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold">Dirección</label>
-                            <input id="registrarse-direccion" name="direccion" type="text" maxlength="100" required
-                                class="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
-                        </div>
-
-                        <label class="flex items-center gap-2 text-sm font-medium">
-                            <input id="registrarse-contratista" type="checkbox"
-                                class="size-4 rounded border-stone-300 accent-amber-600" />
-                            ¿Eres contratista?
-                        </label>
-
-                        <button class="add-button mt-auto w-full" type="submit">Registrarse</button>
-                        <p class="text-center text-sm text-stone-500">¿Ya tienes una cuenta? <a class="font-semibold text-amber-700 hover:underline" href="./vista_login.html">Ingresar</a></p>
                     </form>
                 </div>
+
+                <!--mapa
+                overflow hidden hace que si el contenido se desborda de los limites recorte lo que sobra
+                col start 2 row start 1 columna 2 fila 1 en pantallas grnades pero en celular es el segundo elemento
+                row span 2 indica que se extiende a dos filas de alto-->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                    <div id="mapa-envio" style="height: 100%; min-height: 350px;"></div>
+                </div>
+
+                <!--total
+                justify between hace que el primer elemento se vaya a la izquierda y el segundo a la derecha
+                col start 1 row start 2 columna 1 fila 2-->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-5 flex items-center justify-between lg:col-start-1 lg:row-start-2"
+                    id="cuadro-totales">
+                    <div>
+                        <p class="text-sm text-stone-500">Costo de despacho</p>
+                        <p class="text-lg font-bold text-stone-800" id="costo-despacho">$3.990</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-stone-500">Total de la compra</p>
+                        <p class="text-lg font-bold text-amber-700" id="total-compra">$42.480</p>
+                    </div>
+                </div>
+
             </div>
-        </div>
+
+            <button type="button" id="boton-pagar" class="flex items-center gap-2 justify-center mx-auto mt-6 bg-amber-600 hover:bg-amber-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                Pagar
+            </button>
+
+        </section>
     </main>
 
     <footer id="contacto" class="bg-stone-900 text-stone-300">
@@ -236,7 +236,7 @@
                 <ul class="mt-3 space-y-2 text-sm">
                     <li><a class="footer-link" href="./index.html">Inicio</a></li>
                     <li><a class="footer-link" href="./productos.html">Productos</a></li>
-                    <li><a class="footer-link" href="./vista_blog.html">Blog</a></li>
+                    <li><a class="footer-link" href="./vista_contacto.html">Contacto</a></li>
                 </ul>
             </div>
             <div>
