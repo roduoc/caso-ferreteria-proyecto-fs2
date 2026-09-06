@@ -25,6 +25,9 @@ const categorySelect = document.querySelector("#category-select");
 const orderSelect = document.querySelector("#order-select");
 const catalogMessage = document.querySelector("#catalog-message");
 
+const busquedaInicial = new URLSearchParams(window.location.search).get("buscar");
+if (busquedaInicial) searchInput.value = busquedaInicial;
+
 function formatoPrecio(precio) {
   return new Intl.NumberFormat("es-CL", {
     style: "currency",

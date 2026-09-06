@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Carrito de compras de Ferretería Los Maestros." />
-    <title>Carrito | Ferretería Los Maestros</title>
+    <meta name="description" content="Consejos para proyectos y reparaciones de Ferretería Los Maestros." />
+    <title>Blog | Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
     <script src="./assets/js/productos.js" defer></script>
     <script src="./assets/js/carrito.js" defer></script>
-    <script src="./assets/js/vista_carrito.js" defer></script>
+    <script src="./assets/js/vista_blog.js" defer></script>
   </head>
 
   <body class="flex min-h-screen flex-col bg-stone-100 text-stone-900">
@@ -27,7 +27,7 @@
           <a class="nav-link" href="./index.html">Inicio</a>
           <a class="nav-link" href="./productos.html">Productos</a>
           <a class="nav-link" href="./index.html#nosotros">Nosotros</a>
-          <a class="nav-link" href="./vista_blog.html">Blog</a>
+          <a class="nav-link active" href="./vista_blog.html" aria-current="page">Blog</a>
           <a class="nav-link" href="#contacto">Contacto</a>
         </nav>
 
@@ -38,7 +38,7 @@
         </form>
 
         <a class="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0" href="./vista_login.html">Ingresar</a>
-        <a id="cart-button" class="relative flex items-center gap-2 rounded-lg border border-amber-500 bg-amber-50 p-2.5 text-sm font-semibold" href="./carrito.html" aria-label="Carrito con 0 productos" aria-current="page">
+        <a id="cart-button" class="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold hover:border-amber-500" href="./carrito.html" aria-label="Carrito con 0 productos">
           <svg aria-hidden="true" viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6" /><circle cx="10" cy="20" r="1" /><circle cx="18" cy="20" r="1" /></svg>
           <span class="hidden sm:inline">Carrito</span>
           <span id="cart-count" class="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-white bg-amber-400 text-xs font-bold">0</span>
@@ -56,44 +56,46 @@
     </header>
 
     <main class="flex-1">
-      <section class="page-shell py-9 sm:py-12">
-        <a class="text-sm font-semibold text-stone-500 hover:text-amber-700" href="./productos.html">← Seguir comprando</a>
-        <h1 class="mt-5 text-3xl font-bold sm:text-4xl">Carrito de compras</h1>
-        <p class="mt-2 text-stone-600">Revisa los productos y cantidades antes de continuar.</p>
-
-        <section id="empty-cart" class="mt-8 rounded-xl border border-stone-200 bg-white px-6 py-14 text-center">
-          <div class="mx-auto grid size-16 place-items-center rounded-full bg-amber-100 text-3xl" aria-hidden="true">🛒</div>
-          <h2 class="mt-5 text-xl font-bold">Tu carrito está vacío</h2>
-          <p class="mt-2 text-stone-500">Agrega productos del catálogo para comenzar tu compra.</p>
-          <a class="add-button mt-6 inline-block" href="./productos.html">Ver productos</a>
-        </section>
-
-        <div id="cart-content" class="mt-8 hidden grid gap-6 lg:grid-cols-[1fr_22rem] lg:items-start">
-          <section aria-labelledby="cart-products-title">
-            <div class="mb-4 flex items-center justify-between gap-4">
-              <h2 id="cart-products-title" class="text-xl font-bold">Productos seleccionados</h2>
-              <button id="clear-cart" class="text-sm font-semibold text-red-700 hover:underline" type="button">Vaciar carrito</button>
-            </div>
-            <div id="cart-list" class="space-y-4"></div>
-          </section>
-
-          <aside class="rounded-xl border border-stone-200 bg-white p-6 lg:sticky lg:top-5" aria-labelledby="summary-title">
-            <h2 id="summary-title" class="text-xl font-bold">Resumen</h2>
-            <div class="mt-5 flex justify-between border-b border-stone-200 pb-4 text-sm"><span class="text-stone-600">Subtotal</span><strong id="cart-subtotal">$0</strong></div>
-            <div class="flex justify-between border-b border-stone-200 py-4 text-sm"><span class="text-stone-600">Despacho</span><span>Por definir</span></div>
-            <div class="flex items-center justify-between pt-5"><strong>Total</strong><strong id="cart-total" class="text-2xl">$0</strong></div>
-            <button id="continue-button" class="add-button mt-6 w-full" type="button">Continuar pedido</button>
-            <p class="mt-3 text-center text-xs leading-5 text-stone-500">Podrás iniciar sesión y elegir retiro o despacho en el siguiente paso.</p>
-          </aside>
+      <section class="border-b border-amber-200 bg-amber-50">
+        <div class="page-shell py-10 sm:py-14">
+          <a class="text-sm font-semibold text-stone-500 hover:text-amber-700" href="./index.html#blog">← Volver al inicio</a>
+          <p id="blog-category" class="mt-8 text-xs font-bold uppercase tracking-widest text-amber-700"></p>
+          <h1 id="blog-heading" class="mt-3 max-w-3xl text-3xl font-bold leading-tight sm:text-5xl"></h1>
+          <p id="blog-summary" class="mt-5 max-w-2xl text-lg leading-8 text-stone-600"></p>
         </div>
       </section>
+
+      <div class="page-shell grid gap-8 py-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
+        <article class="rounded-xl border border-stone-200 bg-white p-6 sm:p-9">
+          <img class="mb-7 h-56 w-full rounded-lg bg-stone-100 object-contain p-8" src="./assets/images/sin-imagen.svg" alt="Publicación sin imagen disponible" />
+          <div id="blog-content" class="space-y-5 leading-8 text-stone-700"></div>
+          <div class="mt-8 rounded-lg border border-amber-200 bg-amber-50 p-5">
+            <p class="text-xs font-bold uppercase tracking-wider text-amber-700">Consejo de Los Maestros</p>
+            <p id="blog-tip" class="mt-2 font-semibold"></p>
+          </div>
+        </article>
+
+        <aside class="h-fit rounded-xl border border-stone-200 bg-white p-5" aria-labelledby="other-posts-title">
+          <h2 id="other-posts-title" class="text-lg font-bold">Más publicaciones</h2>
+          <div class="mt-4 space-y-3">
+            <a class="block rounded-lg border border-stone-200 p-4 hover:border-amber-500 hover:bg-amber-50" href="./vista_blog.html?articulo=herramientas">
+              <span class="text-xs font-bold uppercase text-amber-700">Consejos</span>
+              <strong class="mt-1 block">Cómo elegir una herramienta</strong>
+            </a>
+            <a class="block rounded-lg border border-stone-200 p-4 hover:border-amber-500 hover:bg-amber-50" href="./vista_blog.html?articulo=reparacion">
+              <span class="text-xs font-bold uppercase text-amber-700">Construcción</span>
+              <strong class="mt-1 block">Materiales para una reparación</strong>
+            </a>
+          </div>
+        </aside>
+      </div>
     </main>
 
     <footer id="contacto" class="bg-stone-900 text-stone-300">
-      <div class="page-shell grid gap-8 py-9 sm:grid-cols-2 lg:grid-cols-3">
-        <div><h2 class="font-bold text-white">Ferretería Los Maestros</h2><p class="mt-2 text-sm leading-6">Materiales, herramientas y ferretería general.</p></div>
-        <div><h2 class="font-bold text-white">Enlaces</h2><ul class="mt-2 space-y-2 text-sm"><li><a class="footer-link" href="./index.html">Inicio</a></li><li><a class="footer-link" href="./productos.html">Productos</a></li><li><a class="footer-link" href="./carrito.html">Carrito</a></li></ul></div>
-        <div><h2 class="font-bold text-white">Contacto</h2><address class="mt-2 space-y-2 text-sm not-italic"><p>La Serena, Región de Coquimbo</p><p>+56 51 200 0000</p><p>ventas@losmaestros.cl</p></address></div>
+      <div class="page-shell grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div><h2 class="text-lg font-bold text-white">Ferretería Los Maestros</h2><p class="mt-3 max-w-md text-sm leading-6">Materiales, herramientas y ferretería general para hogares y profesionales.</p></div>
+        <div><h2 class="font-bold text-white">Enlaces</h2><ul class="mt-3 space-y-2 text-sm"><li><a class="footer-link" href="./index.html">Inicio</a></li><li><a class="footer-link" href="./productos.html">Productos</a></li><li><a class="footer-link" href="./vista_blog.html">Blog</a></li><li><a class="footer-link" href="./carrito.html">Carrito</a></li></ul></div>
+        <div><h2 class="font-bold text-white">Contacto</h2><address class="mt-3 space-y-2 text-sm not-italic"><p>La Serena, Región de Coquimbo</p><p>+56 51 200 0000</p><p>ventas@losmaestros.cl</p></address></div>
       </div>
       <div class="border-t border-stone-700 py-4 text-center text-xs">Proyecto académico DSY1104 · 2026</div>
     </footer>

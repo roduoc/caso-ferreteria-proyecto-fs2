@@ -32,8 +32,15 @@
           <a class="nav-link" href="./index.html">Inicio</a>
           <a class="nav-link active" href="./productos.html" aria-current="page">Productos</a>
           <a class="nav-link" href="./index.html#nosotros">Nosotros</a>
-          <a class="nav-link" href="./index.html#blog">Blogs</a>
+          <a class="nav-link" href="./vista_blog.html">Blog</a>
+          <a class="nav-link" href="#contacto">Contacto</a>
         </nav>
+
+        <form class="relative hidden xl:block" action="./productos.html" method="get">
+          <span class="sr-only">Buscar productos</span>
+          <input name="buscar" class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 pr-10 text-sm outline-none focus:border-amber-500" type="search" placeholder="Buscar productos..." />
+          <button class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-amber-700" type="submit" aria-label="Buscar">⌕</button>
+        </form>
 
         <a class="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0" href="./vista_login.html">Ingresar</a>
 
@@ -51,7 +58,8 @@
         <a class="mobile-link" href="./index.html">Inicio</a>
         <a class="mobile-link" href="./productos.html">Productos</a>
         <a class="mobile-link" href="./index.html#nosotros">Nosotros</a>
-        <a class="mobile-link" href="./index.html#blog">Blogs</a>
+        <a class="mobile-link" href="./vista_blog.html">Blog</a>
+        <a class="mobile-link" href="#contacto">Contacto</a>
         <a class="mobile-link" href="./vista_login.html">Ingresar</a>
       </nav>
     </header>
@@ -101,7 +109,7 @@
 
     <p id="notification" class="hidden" role="status" aria-live="polite"></p>
 
-    <footer class="bg-stone-900 text-stone-300">
+    <footer id="contacto" class="bg-stone-900 text-stone-300">
       <div class="page-shell grid gap-8 py-9 sm:grid-cols-2 lg:grid-cols-3">
         <div><h2 class="font-bold text-white">Ferretería Los Maestros</h2><p class="mt-2 text-sm leading-6">Materiales, herramientas y ferretería general.</p></div>
         <div><h2 class="font-bold text-white">Enlaces</h2><ul class="mt-2 space-y-2 text-sm"><li><a class="footer-link" href="./index.html">Inicio</a></li><li><a class="footer-link" href="./productos.html">Productos</a></li><li><a class="footer-link" href="./carrito.html">Carrito</a></li></ul></div>
