@@ -82,7 +82,7 @@ function validarFormulario({ correoInput, claveInput, errorEl }) {
 const rutasPorRol = {
   admin: "vista_gestion_usuarios.html",
   vendedor: "vista_vendedor_inventario.html",
-  cliente: "index.html",
+  cliente: "vista_mis_pedidos.html",
 };
 
 // --- Validación Acceder ---

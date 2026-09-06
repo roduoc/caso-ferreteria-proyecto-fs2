@@ -113,7 +113,7 @@ clearCartButton.addEventListener("click", () => {
 });
 
 continueButton.addEventListener("click", () => {
-  window.location.href = "vista_login.html";
+  window.location.href = "vista_envio.html";
 });
 
 mostrarCarrito();

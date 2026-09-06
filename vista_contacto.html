@@ -5,17 +5,18 @@
     <meta charset="UTF-8" />
     <!-- para que el diseño sea responsivo-->
     <meta name="viewport" content="width=device-width" />
-    <title>Ferretería Los Maestros</title>
+    <meta name="description" content="Información y formulario de contacto de Ferretería Los Maestros." />
+    <title>Contacto | Ferretería Los Maestros</title>
     <link rel="stylesheet" href="./src/output.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="./assets/js/productos.js" defer></script>
+    <script src="./assets/js/carrito.js" defer></script>
     <script src="./assets/js/vista_contacto.js" defer></script>
 
 </head>
 
-<body class="bg-stone-100 text-stone-900">
+<body class="flex min-h-screen flex-col bg-stone-100 text-stone-900">
     <!--le agrega un borde inferior color stone y un fondo blanco al nav -->
     <header class="border-b border-stone-300 bg-white">
         <!-- page shell limita el ancho del contenido a un determinado ancho que debe ser el mas pequeño
@@ -56,35 +57,36 @@
             <!--ml auto margin left auto empuja los elementos dentro hacia la derecha-->
             <nav class="ml-auto hidden items-center gap-6 text-sm font-semibold lg:flex"
                 aria-label="Navegación principal">
-                <a class="nav-link active" href="./index.html" aria-current="page">Inicio</a>
-                <a class="nav-link" href="#productos">Productos</a>
-                <a class="nav-link" href="#nosotros">Nosotros</a>
-                <a class="nav-link" href="#blog">Blogs</a>
+                <a class="nav-link" href="./index.html">Inicio</a>
+                <a class="nav-link" href="./productos.html">Productos</a>
+                <a class="nav-link" href="./index.html#nosotros">Nosotros</a>
+                <a class="nav-link" href="./vista_blog.html">Blog</a>
+                <a class="nav-link active" href="./vista_contacto.html" aria-current="page">Contacto</a>
             </nav>
 
             <!--que se muestre solamente en pantallas grandes-->
-            <label class="hidden xl:block">
+            <form class="hidden xl:block" action="./productos.html" method="get">
                 <!--w es el ancho del input
           px padding horizontal
           py padding vertical
           outline none le quita el borde de color al hacer click
           focus color le agrega un color al hacer click encima-->
-                <input
+                <input name="buscar"
                     class="w-52 rounded-lg border border-stone-300 bg-stone-50 px-4 py-2 text-sm outline-none focus:border-amber-500"
                     type="search" placeholder="Buscar productos..." />
-            </label>
+            </form>
 
             <!--boton de ingresar a la cuenta-
         sm block que se muestre solo en pantallas grandes-->
             <a id="cuenta"
                 class="hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0"
-                href="#cuenta">Ingresar</a>
+                href="./vista_login.html">Ingresar</a>
 
             <!--carrito
         p es el padding, que es espacio vertical y horizontal-->
-            <button id="cart-button"
+            <a id="cart-button" href="./carrito.html"
                 class="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold"
-                type="button" aria-label="Carrito con 0 productos">
+                aria-label="Carrito con 0 productos">
                 <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6" />
                     <circle cx="10" cy="20" r="1" />
@@ -95,7 +97,7 @@
                 <span class="hidden sm:inline">Carrito</span>
                 <span id="cart-count"
                     class="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-white bg-amber-400 text-xs font-bold text-stone-900">0</span>
-            </button>
+            </a>
         </div>
 
         <!--
@@ -105,16 +107,17 @@
         <nav id="mobile-menu" class="page-shell border-t border-stone-200 py-3 lg:hidden" aria-label="Navegación móvil"
             hidden>
             <a class="mobile-link" href="./index.html">Inicio</a>
-            <a class="mobile-link" href="#productos">Productos</a>
-            <a class="mobile-link" href="#nosotros">Nosotros</a>
-            <a class="mobile-link" href="#blog">Blogs</a>
-            <a class="mobile-link" href="#cuenta">Ingresar</a>
+            <a class="mobile-link" href="./productos.html">Productos</a>
+            <a class="mobile-link" href="./index.html#nosotros">Nosotros</a>
+            <a class="mobile-link" href="./vista_blog.html">Blog</a>
+            <a class="mobile-link" href="./vista_contacto.html">Contacto</a>
+            <a class="mobile-link" href="./vista_login.html">Ingresar</a>
         </nav>
     </header>
 
-    <main>
+    <main class="flex-1">
         <div class="page-shell py-10">
-            <h1 class="text-3xl font-semibold text-stone-900 text-center">Sobre nosotros</h1>
+            <h1 class="text-3xl font-semibold text-stone-900 text-center">Contacto</h1>
 
             <div class="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-2">
 
@@ -145,6 +148,9 @@
                             class="hidden rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700"
                             role="alert">
                         </p>
+                        <p id="contacto-exito"
+                            class="hidden rounded-lg border border-green-300 bg-green-50 px-3 py-2 text-sm font-semibold text-green-700"
+                            role="status">Mensaje enviado correctamente.</p>
 
                         <div>
                             <label class="mb-1 block text-sm font-semibold" for="contacto-correo">Correo
@@ -200,8 +206,8 @@
           space y 2 es espacio vertical entre los elementos hijos, en este caso de la lista-->
                 <ul class="mt-3 space-y-2 text-sm">
                     <li><a class="footer-link" href="./index.html">Inicio</a></li>
-                    <li><a class="footer-link" href="#productos">Productos</a></li>
-                    <li><a class="footer-link" href="#nosotros">Nosotros</a></li>
+                    <li><a class="footer-link" href="./productos.html">Productos</a></li>
+                    <li><a class="footer-link" href="./index.html#nosotros">Nosotros</a></li>
                 </ul>
             </div>
             <div>
