@@ -1,11 +1,9 @@
-// Carrito temporal guardado solamente en este arreglo.
-// Al recargar o cambiar de página vuelve a su estado inicial.
-let carrito = document.querySelector("#cart-list")
-  ? [
-      { codigo: "HM001", cantidad: 1 },
-      { codigo: "PT007", cantidad: 2 },
-    ]
-  : [];
+// Productos de prueba del carrito.
+// No se guardan en el navegador: al recargar vuelven a estas cantidades.
+let carrito = [
+  { codigo: "HM001", cantidad: 1 },
+  { codigo: "PT007", cantidad: 2 },
+];
 
 window.obtenerCarrito = function () {
   return carrito;
