@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 760" role="img" aria-labelledby="title desc">
+  <title id="title">Interior de Ferretería Los Maestros</title>
+  <desc id="desc">Estanterías ordenadas con herramientas, cajas y materiales de construcción.</desc>
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#eeeae1"/><stop offset="1" stop-color="#d5cfc1"/></linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8b8274"/><stop offset="1" stop-color="#514c44"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd15c"/><stop offset="1" stop-color="#f5a800"/></linearGradient>
+  </defs>
+  <rect width="900" height="760" fill="url(#wall)"/>
+  <path d="M0 590 900 500v260H0Z" fill="url(#floor)"/>
+  <rect x="38" y="70" width="362" height="525" rx="18" fill="#2a302b"/>
+  <rect x="500" y="70" width="362" height="472" rx="18" fill="#2a302b"/>
+  <g fill="#f8f6f0">
+    <rect x="58" y="105" width="322" height="8" rx="4"/><rect x="58" y="225" width="322" height="8" rx="4"/><rect x="58" y="345" width="322" height="8" rx="4"/><rect x="58" y="465" width="322" height="8" rx="4"/>
+    <rect x="520" y="105" width="322" height="8" rx="4"/><rect x="520" y="225" width="322" height="8" rx="4"/><rect x="520" y="345" width="322" height="8" rx="4"/><rect x="520" y="465" width="322" height="8" rx="4"/>
+  </g>
+  <g>
+    <g transform="translate(82 128)"><rect width="72" height="78" rx="8" fill="#f5a800"/><rect x="14" y="18" width="44" height="8" rx="4" fill="#1f241f"/><rect x="14" y="35" width="29" height="6" rx="3" fill="#fff0c6"/></g>
+    <g transform="translate(170 125)"><rect width="82" height="82" rx="8" fill="#cfc6b8"/><circle cx="41" cy="41" r="24" fill="#69635b"/><circle cx="41" cy="41" r="8" fill="#e8e3d9"/></g>
+    <g transform="translate(270 138)"><path d="M10 55 26 8h36l16 47Z" fill="#c95338"/><rect y="55" width="88" height="12" rx="6" fill="#8d3524"/></g>
+    <g transform="translate(75 253)"><rect width="126" height="67" rx="7" fill="#ece6d8"/><path d="M20 20h86M20 35h56" stroke="#8f877a" stroke-width="7" stroke-linecap="round"/></g>
+    <g transform="translate(225 252)"><rect width="128" height="70" rx="7" fill="#405d74"/><path d="M20 20h88M20 38h64" stroke="#a8c2d4" stroke-width="7" stroke-linecap="round"/></g>
+    <g transform="translate(80 375)"><path d="m0 70 23-61h20L32 70Z" fill="#f5a800"/><path d="m72 70 23-61h20l-11 61Z" fill="#d7d0c2"/><rect x="-6" y="68" width="132" height="11" rx="5" fill="#111"/></g>
+    <g transform="translate(235 372)"><rect width="120" height="73" rx="10" fill="#bdc4b5"/><rect x="18" y="18" width="84" height="11" rx="5" fill="#66705e"/><rect x="18" y="40" width="50" height="8" rx="4" fill="#f2f0e9"/></g>
+  </g>
+  <g>
+    <g transform="translate(540 125)"><rect width="90" height="80" rx="8" fill="#f5a800"/><path d="M20 53 35 20h20l15 33" fill="none" stroke="#1f241f" stroke-width="10" stroke-linecap="round"/></g>
+    <g transform="translate(652 130)"><rect width="158" height="70" rx="8" fill="#e2ddd2"/><circle cx="36" cy="35" r="20" fill="#c95338"/><path d="M70 24h65M70 43h45" stroke="#817b70" stroke-width="8" stroke-linecap="round"/></g>
+    <g transform="translate(540 255)"><rect width="125" height="65" rx="7" fill="#335b51"/><path d="M18 19h89M18 37h56" stroke="#9ac3b6" stroke-width="7" stroke-linecap="round"/></g>
+    <g transform="translate(688 252)"><rect width="123" height="70" rx="7" fill="#b64f39"/><path d="M20 20h83M20 39h52" stroke="#f0c3b8" stroke-width="7" stroke-linecap="round"/></g>
+    <g transform="translate(540 375)"><circle cx="45" cy="38" r="36" fill="#d6d0c4"/><circle cx="45" cy="38" r="23" fill="#5c5852"/><circle cx="45" cy="38" r="7" fill="#e8e3d9"/></g>
+    <g transform="translate(640 370)"><path d="M20 0h112l-12 80H8Z" fill="url(#glow)"/><path d="M36 20h67M31 40h76" stroke="#775100" stroke-width="7" stroke-linecap="round"/></g>
+  </g>
+  <path d="M405 0h90l44 760H361Z" fill="#fff" opacity=".2"/>
+  <circle cx="450" cy="57" r="24" fill="#fff6d9"/><path d="M412 57h76" stroke="#f5a800" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Logo Ferretería Los Maestros</title>
+  <rect x="3" y="3" width="58" height="58" rx="15" fill="#292524"/>
+  <path d="M32 8 54 20v24L32 56 10 44V20Z" fill="none" stroke="#fbbf24" stroke-width="3"/>
+  <path d="m21 20 23 23" fill="none" stroke="#fff7d6" stroke-width="4" stroke-linecap="round"/>
+  <path d="m38 18 8 8-5 5-8-8Z" fill="#fbbf24"/>
+  <path d="m26 34-8 8" fill="none" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/>
+  <path d="M18 18c4-3 9-2 12 1l-6 6c-3-3-4-7-6-7Z" fill="#fff7d6"/>
+</svg>
