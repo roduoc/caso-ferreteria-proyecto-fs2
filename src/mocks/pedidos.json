@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "clienteId": 3,
+    "fecha": "2026-09-15",
+    "estado": "Pendiente",
+    "medioPago": "contado",
+    "items": [
+      { "codigo": "MC001", "nombre": "Cemento Polpaico gris 25 kg", "cantidad": 4, "precioUnitario": 5990 },
+      { "codigo": "MC005", "nombre": "Arena fina construcción 25 kg", "cantidad": 6, "precioUnitario": 1800 }
+    ],
+    "total": 34760
+  },
+  {
+    "id": 2,
+    "clienteId": 4,
+    "fecha": "2026-09-17",
+    "estado": "En preparación",
+    "medioPago": "cuenta_corriente",
+    "items": [
+      { "codigo": "MC007", "nombre": "Ladrillo fiscal N°5", "cantidad": 200, "precioUnitario": 380 },
+      { "codigo": "MC003", "nombre": "Mortero cola cerámica 25 kg", "cantidad": 5, "precioUnitario": 5200 }
+    ],
+    "total": 102000
+  },
+  {
+    "id": 3,
+    "clienteId": 3,
+    "fecha": "2026-09-20",
+    "estado": "Entregado",
+    "medioPago": "contado",
+    "items": [
+      { "codigo": "PT001", "nombre": "Pintura látex interior 1 galón blanco", "cantidad": 2, "precioUnitario": 9990 }
+    ],
+    "total": 19980
+  }
+]
