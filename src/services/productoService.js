@@ -33,7 +33,9 @@ export async function actualizarProducto(codigo, cambios) {
     throw new Error('La cantidad debe ser un número entero de 0 o más');
   }
 
+  //carga los productos
   const productos = leer(CLAVE, productosMock);
+  //busca el producto por codigo
   const indice = productos.findIndex((p) => p.codigo === codigo);
   if (indice === -1) throw new Error('Producto no encontrado');
 
