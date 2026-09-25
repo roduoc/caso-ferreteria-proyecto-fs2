@@ -1,18 +1,80 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+//routes es en el contenedor de rutas
+//route cada ruta individual
+import { Routes, Route } from 'react-router-dom';
 
-function App() {
+import LayoutNormal from './layouts/LayoutNormal';
+import LayoutAdmin from './layouts/LayoutAdmin';
+
+import Home from './pages/Home';
+import Productos from './pages/Productos.jsx';
+import DetalleProducto from './pages/DetalleProducto.jsx';
+import Carrito from './pages/Carrito';
+import Login from './pages/Login';
+import Registro from './pages/Registro';
+import SobreNosotros from './pages/SobreNosotros';
+import Envios from './pages/Envios';
+import MisPedidos from './pages/MisPedidos';
+import MiCredito from './pages/MiCredito';
+import VistaBlog from './pages/VistaBlog';
+
+import VendedorInventario from './pages/vendedor/VendedorInventario';
+import VendedorGestionPedidos from './pages/vendedor/VendedorGestionPedidos';
+
+import AdminGestionPedidos from './pages/admin/AdminGestionPedidos';
+import AdminInventario from './pages/admin/AdminInventario';
+import AdminGestionUsuarios from './pages/admin/AdminGestionUsuarios';
+import AdminGestionUsuariosEditar from './pages/admin/AdminGestionUsuariosEditar';
+import AdminReportes from './pages/admin/AdminReportes';
+import AdminHistorial from './pages/admin/AdminHistorial';
+import AdminHistorialVer from './pages/admin/AdminHistorialVer';
+
+const linksVendedor = [
+  { ruta: '/vendedor/inventario', texto: 'Inventario' },
+  { ruta: '/vendedor/pedidos', texto: 'Gestión de pedidos' },
+];
+
+const linksAdmin = [
+  { ruta: '/admin/pedidos', texto: 'Gestión de pedidos' },
+  { ruta: '/admin/inventario', texto: 'Inventario' },
+  { ruta: '/admin/usuarios', texto: 'Gestión de usuarios' },
+  { ruta: '/admin/reportes', texto: 'Reportes' },
+  { ruta: '/admin/historial', texto: 'Historial' },
+];
+
+export default function App() {
   return (
-    <>
-      <Navbar />
-      <main>{/* contenido de cada vista va aquí */}</main>
-      <Footer />
-    </>
-  )
-}
+    <Routes>
+      {/* */}
+      {/*element le dice que componente mostrar en esa ruta*/}
+      <Route element={<LayoutNormal />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/productos" element={<Productos />} />
+        <Route path="/producto/:codigo" element={<DetalleProducto />} />
+        <Route path="/carrito" element={<Carrito />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/registro" element={<Registro />} />
+        <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+        <Route path="/envios" element={<Envios />} />
+        <Route path="/mis-pedidos" element={<MisPedidos />} />
+        <Route path="/mi-credito" element={<MiCredito />} />
+        <Route path="/vista-blog" element={<VistaBlog />} />
+      </Route>
 
-export default App
+      {/*links y subtitulo son datos para el layoutpanel*/}
+      <Route element={<LayoutAdmin links={linksVendedor} subtitulo="Panel de vendedor" />}>
+        <Route path="/vendedor/inventario" element={<VendedorInventario />} />
+        <Route path="/vendedor/pedidos" element={<VendedorGestionPedidos />} />
+      </Route>
+
+      <Route element={<LayoutAdmin links={linksAdmin} subtitulo="Panel de administrador" />}>
+        <Route path="/admin/pedidos" element={<AdminGestionPedidos />} />
+        <Route path="/admin/inventario" element={<AdminInventario />} />
+        <Route path="/admin/usuarios" element={<AdminGestionUsuarios />} />
+        <Route path="/admin/usuarios/:id" element={<AdminGestionUsuariosEditar />} />
+        <Route path="/admin/reportes" element={<AdminReportes />} />
+        <Route path="/admin/historial" element={<AdminHistorial />} />
+        <Route path="/admin/historial/:id" element={<AdminHistorialVer />} />
+      </Route>
+    </Routes>
+  );
+}

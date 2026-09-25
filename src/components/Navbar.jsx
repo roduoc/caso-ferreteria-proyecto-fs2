@@ -1,5 +1,6 @@
 //use state le da memoria a la pagina
 import { useState } from 'react';
+import logo from '../assets/logo-los-maestros.svg';
 
 //los escribimos aca para recorrerlos mas tarde y no escribirlos dos veces
 const navLinks = [
@@ -44,7 +45,7 @@ function Header() {
 
                 {/* Logo mas nombre*/}
                 <a href="./index.html" className="flex items-center gap-3" aria-label="Ir al inicio">
-                    <img className="size-12" src="./src/assets/logo-los-maestros.svg" alt="" />
+                    <img className="size-12" src={logo} alt="" />
                     <span>
                         <strong className="block text-xl leading-tight tracking-tight">Los Maestros</strong>
                         <span className="hidden text-[0.68rem] font-bold uppercase tracking-[0.18em] text-amber-700 sm:block">
