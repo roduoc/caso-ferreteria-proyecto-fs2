@@ -3,7 +3,7 @@ import sinImagen from '../assets/sin-imagen.svg';
 
 //tarjeta de un producto en la consulta de stock
 //onGuardar: funcion que recibe el codigo y los cambios, los entrega a la pagina
-export default function TarjetaStock({ producto, onGuardar }) {
+export default function TarjetaStock({ producto, onGuardar, onEliminar, mostrarStockBajo }) {
     //lo que el usuario escribe en cada input
     const [nuevoPrecio, setNuevoPrecio] = useState('');
     const [nuevaCantidad, setNuevaCantidad] = useState('');
@@ -42,15 +42,23 @@ export default function TarjetaStock({ producto, onGuardar }) {
                 <p className="mt-1 text-stone-600">Precio: <span className="font-semibold">${producto.precio.toLocaleString('es-CL')}</span></p>
                 <p className="text-stone-600">Cantidad: <span className="font-semibold">{producto.stock}</span></p>
 
+
+                {mostrarStockBajo && producto.stockBajo && (
+                    <p className="mt-2 inline-block rounded bg-amber-100 px-2 py-0.5 text-sm font-semibold text-amber-800">
+                        Stock bajo: el mínimo es {producto.stockMinimo}
+                    </p>
+                )}
+
                 {mensaje && (
                     <p role="alert" className={`mt-2 text-sm font-semibold ${mensaje.tipo === 'exito' ? 'text-green-700' : 'text-red-600'}`}>
                         {mensaje.texto}
                     </p>
                 )}
-                
+
             </div>
 
-            <div className="flex gap-4">
+            {/*con flex wrap lo que se sale de la linea pasa a la linea siguiente*/}
+            <div className="flex flex-wrap sm:flex-nowrap gap-4">
 
                 <div className="flex flex-col gap-2">
 
@@ -59,10 +67,7 @@ export default function TarjetaStock({ producto, onGuardar }) {
                         onChange={(e) => setNuevoPrecio(e.target.value)}
                         className="w-28 rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm outline-none focus:border-amber-500" />
                     <button type="button" className="add-button"
-                        onClick={() => {
-                            if (nuevoPrecio === '') return setMensaje({ tipo: 'error', texto: 'Ingresa un precio' });
-                            guardar({ precio: Number(nuevoPrecio) }, setNuevoPrecio, 'Precio actualizado correctamente');
-                        }}>
+                        onClick={() => guardar({ precio: nuevoPrecio }, setNuevoPrecio, 'Precio actualizado correctamente')}>
                         Editar precio
                     </button>
                 </div>
@@ -74,14 +79,27 @@ export default function TarjetaStock({ producto, onGuardar }) {
                         onChange={(e) => setNuevaCantidad(e.target.value)}
                         className="w-28 rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm outline-none focus:border-amber-500" />
                     <button type="button" className="add-button"
-                        onClick={() => {
-                            if (nuevaCantidad === '') return setMensaje({ tipo: 'error', texto: 'Ingresa una cantidad' });
-                            guardar({ stock: Number(nuevaCantidad) }, setNuevaCantidad, 'Cantidad actualizada correctamente');
-                        }}>
+                        onClick={() => guardar({ stock: nuevaCantidad }, setNuevaCantidad, 'Cantidad actualizada correctamente')}>
                         Editar cantidad
                     </button>
 
                 </div>
+
+                {/*el boton solo aparece si la pagina entrego onEliminar*/}
+                {onEliminar && (
+                    //w-full en celulares ocupa todo el ancho, asi queda abajo de los otros botones
+                    //sm:w-auto en pantallas grandes vuelve a su tamano normal, al lado de los otros
+                    //justify end manda el boton hacia abajo
+                    //w auto significa que el boton mide solo lo que mide su contenido
+                    <div className="flex flex-col justify-end sm:w-auto">
+                        <button type="button"
+                            className="rounded-lg border border-red-300 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+                            onClick={() => onEliminar(producto.codigo)}>
+                            Eliminar
+                        </button>
+                    </div>
+                )}
+
             </div>
         </div>
     );

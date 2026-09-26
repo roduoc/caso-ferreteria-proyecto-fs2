@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { listarProductos, actualizarProducto } from '../../services/productoService';
-import TarjetaStock from '../../components/TarjetaStockVendedor';
+import TarjetaStock from '../../components/TarjetaStock';
 
 export default function VendedorInventario() {
     const [productos, setProductos] = useState([]);

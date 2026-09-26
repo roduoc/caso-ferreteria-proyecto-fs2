@@ -29,3 +29,12 @@ export async function cambiarEstado(id, nuevoEstado) {
 
   return crearPedidoDTO(pedidos[indice]);
 }
+
+//devuelve solo los pedidos de un cliente, para el historial de compras
+export async function listarPedidosCliente(clienteId) {
+  await esperar();
+  const pedidos = leer(CLAVE, pedidosMock);
+  return pedidos
+    .filter((p) => p.clienteId === clienteId)
+    .map(crearPedidoDTO);
+}

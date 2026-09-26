@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { listarPedidos, cambiarEstado } from '../../services/pedidoService';
-import TarjetaPedidoVendedor from '../../components/TarjetaPedidoVendedor';
+import TarjetaPedidoVendedor from '../../components/TarjetaPedido';
 
 export default function VendedorGestionPedidos() {
   const [pedidos, setPedidos] = useState([]);

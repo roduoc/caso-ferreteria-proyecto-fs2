@@ -1,0 +1,20 @@
+[
+  {
+    "id": 3,
+    "tipoCliente": "particular",
+    "cuentaCorrienteHabilitada": false,
+    "saldoAdeudado": 0
+  },
+  {
+    "id": 4,
+    "tipoCliente": "contratista",
+    "cuentaCorrienteHabilitada": true,
+    "saldoAdeudado": 102000
+  },
+  {
+    "id": 5,
+    "tipoCliente": "contratista",
+    "cuentaCorrienteHabilitada": false,
+    "saldoAdeudado": 0
+  }
+]

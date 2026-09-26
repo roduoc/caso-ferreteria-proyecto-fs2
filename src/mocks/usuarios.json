@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "rut": "111111111",
+    "nombre": "Carla",
+    "apellidos": "Rojas Muñoz",
+    "correo": "admin@duoc.cl",
+    "clave": "admin123",
+    "rol": "admin",
+    "region": "Coquimbo",
+    "comuna": "La Serena",
+    "direccion": "Av. Francisco de Aguirre 100",
+    "fechaRegistro": "2026-01-10"
+  },
+  {
+    "id": 2,
+    "rut": "222222222",
+    "nombre": "Pedro",
+    "apellidos": "Soto Vega",
+    "correo": "vendedor@duoc.cl",
+    "clave": "vende123",
+    "rol": "vendedor",
+    "region": "Coquimbo",
+    "comuna": "La Serena",
+    "direccion": "Calle Balmaceda 250",
+    "fechaRegistro": "2026-02-03"
+  },
+  {
+    "id": 3,
+    "rut": "123456785",
+    "nombre": "Juan",
+    "apellidos": "Pérez Díaz",
+    "correo": "juan.perez@gmail.com",
+    "clave": "juan123",
+    "rol": "cliente",
+    "region": "Coquimbo",
+    "comuna": "Coquimbo",
+    "direccion": "Pasaje Los Aromos 45",
+    "fechaRegistro": "2026-03-15"
+  },
+  {
+    "id": 4,
+    "rut": "98765432K",
+    "nombre": "Ana",
+    "apellidos": "Torres Fuentes",
+    "correo": "ana.torres@gmail.com",
+    "clave": "ana123",
+    "rol": "cliente",
+    "region": "Coquimbo",
+    "comuna": "La Serena",
+    "direccion": "Av. del Mar 3200",
+    "fechaRegistro": "2026-04-02"
+  },
+  {
+    "id": 5,
+    "rut": "156789012",
+    "nombre": "Luis",
+    "apellidos": "Fuentes Araya",
+    "correo": "luis.fuentes@duoc.cl",
+    "clave": "luis123",
+    "rol": "cliente",
+    "region": "Coquimbo",
+    "comuna": "Ovalle",
+    "direccion": "Calle Vicuña Mackenna 780",
+    "fechaRegistro": "2026-05-20"
+  }
+]
