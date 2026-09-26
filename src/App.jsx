@@ -27,6 +27,7 @@ import AdminGestionUsuariosEditar from './pages/admin/AdminGestionUsuariosEditar
 import AdminReportes from './pages/admin/AdminReportes';
 import AdminHistorial from './pages/admin/AdminHistorial';
 import AdminHistorialVer from './pages/admin/AdminHistorialVer';
+import AdminCredito from './pages/admin/AdminCredito.jsx'
 
 const linksVendedor = [
   { ruta: '/vendedor/inventario', texto: 'Inventario' },
@@ -39,6 +40,7 @@ const linksAdmin = [
   { ruta: '/admin/usuarios', texto: 'Gestión de usuarios' },
   { ruta: '/admin/reportes', texto: 'Reportes' },
   { ruta: '/admin/historial', texto: 'Historial' },
+  { ruta: '/admin/credito', texto: 'Crédito'},
 ];
 
 export default function App() {
@@ -74,6 +76,7 @@ export default function App() {
         <Route path="/admin/reportes" element={<AdminReportes />} />
         <Route path="/admin/historial" element={<AdminHistorial />} />
         <Route path="/admin/historial/:id" element={<AdminHistorialVer />} />
+        <Route path="/admin/credeito" element={<AdminCredito /> } />
       </Route>
     </Routes>
   );

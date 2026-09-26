@@ -1,27 +1,20 @@
 import pedidosMock from '../mocks/pedidos.json';
-import { crearPedidoDTO, ESTADOS_PEDIDO } from '../models/Pedido';
+import { crearPedidoDTO } from '../models/Pedido';
 import { leer, guardar, esperar } from './storage';
 
 const CLAVE = 'pedidos';
 
-//devuelve todos los pedidos, los mas nuevos primero
+//devuelve todos los pedidos
 //lo usan el vendedor y el admin
 export async function listarPedidos() {
   await esperar();
   const pedidos = leer(CLAVE, pedidosMock);
-
-  return [...pedidos]
-    .sort((a, b) => b.id - a.id)
-    .map(crearPedidoDTO);
+  return pedidos.map(crearPedidoDTO);
 }
 
 //cambia el estado de un pedido
 export async function cambiarEstado(id, nuevoEstado) {
   await esperar();
-
-  if (!ESTADOS_PEDIDO.includes(nuevoEstado)) {
-    throw new Error('Estado no válido');
-  }
 
   const pedidos = leer(CLAVE, pedidosMock);
   const indice = pedidos.findIndex((p) => p.id === id);
@@ -35,4 +28,13 @@ export async function cambiarEstado(id, nuevoEstado) {
   guardar(CLAVE, pedidos);
 
   return crearPedidoDTO(pedidos[indice]);
+}
+
+//devuelve solo los pedidos de un cliente, para el historial de compras
+export async function listarPedidosCliente(clienteId) {
+  await esperar();
+  const pedidos = leer(CLAVE, pedidosMock);
+  return pedidos
+    .filter((p) => p.clienteId === clienteId)
+    .map(crearPedidoDTO);
 }
