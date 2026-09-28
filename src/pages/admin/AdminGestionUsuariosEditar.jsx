@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { obtenerUsuario, actualizarUsuario, ROLES } from '../../services/usuarioService';
 import regionesComunas from '../../mocks/regionesComunas.json';
+import { obtenerCliente } from '../../services/clienteService';
 
 //los const que estan afuera son los que no cambian
 //los const dentro de la funcion dependen del estado
@@ -20,9 +21,20 @@ export default function AdminGestionUsuariosEditar() {
     const [noEncontrado, setNoEncontrado] = useState(false);
 
     //pide el usuario y llena el formulario con sus datos actuales
+
+    //con async usamos await para esperar que se ejecute la funcion
     useEffect(() => {
         obtenerUsuario(usuarioId)
-            .then((usuario) => {
+            .then(async (usuario) => {
+                //valores por defecto, por si no es cliente o despues lo cambian a cliente
+                let tipoCliente = 'particular';
+                let cuentaCorrienteHabilitada = false;
+
+                if (usuario.rol === 'cliente') {
+                    const cliente = await obtenerCliente(usuario.id);
+                    tipoCliente = cliente.tipoCliente;
+                    cuentaCorrienteHabilitada = cliente.cuentaCorrienteHabilitada;
+                }
                 setFormulario({
                     id: usuario.id,
                     rut: usuario.rut,
@@ -33,12 +45,21 @@ export default function AdminGestionUsuariosEditar() {
                     region: usuario.region,
                     comuna: usuario.comuna,
                     direccion: usuario.direccion,
+                    tipoCliente,
+                    cuentaCorrienteHabilitada
                 });
                 setNoEncontrado(false);
                 setMensaje(null);
             })
             .catch(() => setNoEncontrado(true));
     }, [usuarioId]);
+
+    useEffect(() => {
+        if (!mensaje) return;
+        const temporizador = setTimeout(() => setMensaje(null), 3000);
+        //si llega otro mensaje antes de los 3 segundos, se cancela el temporizador anterior
+        return () => clearTimeout(temporizador);
+    }, [mensaje]);
 
     //actualiza solo el campo que se esta escribiendo
     function cambiarCampo(e) {
@@ -47,6 +68,17 @@ export default function AdminGestionUsuariosEditar() {
 
     function cambiarRegion(e) {
         setFormulario({ ...formulario, region: e.target.value, comuna: '' });
+    }
+
+    function cambiarTipoCliente(e) {
+        //marcado = contratista, desmarcado = particular
+        const tipo = e.target.checked ? 'contratista' : 'particular';
+        setFormulario({ ...formulario, tipoCliente: tipo, cuentaCorrienteHabilitada: false });
+    }
+
+    //se usa e.target.checked (true o false)
+    function cambiarCuentaCorriente(e) {
+        setFormulario({ ...formulario, cuentaCorrienteHabilitada: e.target.checked });
     }
 
     async function guardar(e) {
@@ -71,6 +103,7 @@ export default function AdminGestionUsuariosEditar() {
     }
 
     //muestra un espacio vacio mientras los datos del usuario todavia no llegan
+    //o si cambian de usuario
     if (!formulario || formulario.id !== usuarioId) {
         return <div className="flex-1 px-8 py-10" />;
     }
@@ -163,6 +196,28 @@ export default function AdminGestionUsuariosEditar() {
                             <input id="direccion" name="direccion" type="text" maxLength="300"
                                 value={formulario.direccion} onChange={cambiarCampo} className={claseInput} />
                         </div>
+
+                        {/*datos de cliente: solo aparecen si el rol elegido es cliente*/}
+                        {formulario.rol === 'cliente' && (
+                            <label className="flex items-center gap-2 text-sm font-semibold text-stone-700 cursor-pointer">
+                                <input type="checkbox" name="tipoCliente"
+                                    checked={formulario.tipoCliente === 'contratista'}
+                                    onChange={cambiarTipoCliente}
+                                    className="accent-amber-600 w-4 h-4" />
+                                Es contratista
+                            </label>
+                        )}
+
+                        {/*la cuenta corriente solo se puede habilitar para contratistas*/}
+                        {formulario.rol === 'cliente' && formulario.tipoCliente === 'contratista' && (
+                            <label className="flex items-center gap-2 text-sm font-semibold text-stone-700 cursor-pointer">
+                                <input type="checkbox" name="cuentaCorrienteHabilitada"
+                                    checked={formulario.cuentaCorrienteHabilitada}
+                                    onChange={cambiarCuentaCorriente}
+                                    className="accent-amber-600 w-4 h-4" />
+                                Cuenta corriente habilitada
+                            </label>
+                        )}
 
                     </div>
 

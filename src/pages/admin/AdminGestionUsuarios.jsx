@@ -31,6 +31,19 @@ export default function AdminGestionUsuarios() {
         listarUsuarios().then(setUsuarios);
     }, []);
 
+    useEffect(() => {
+        if (!mensajeCrear) return;
+        const temporizador = setTimeout(() => setMensajeCrear(null), 3000);
+        //si llega otro mensaje antes de los 3 segundos, se cancela el temporizador anterior
+        return () => clearTimeout(temporizador);
+    }, [mensajeCrear]);
+
+    useEffect(() => {
+        if (!mensajeEliminar) return;
+        const temporizador = setTimeout(() => setMensajeEliminar(null), 3000);
+        return () => clearTimeout(temporizador);
+    }, [mensajeEliminar]);
+
     //actualiza solo el campo que se esta escribiendo
     function cambiarCampo(e) {
         setFormulario({ ...formulario, [e.target.name]: e.target.value });

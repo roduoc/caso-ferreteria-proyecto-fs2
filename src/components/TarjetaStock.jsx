@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import sinImagen from '../assets/sin-imagen.svg';
 
 //tarjeta de un producto en la consulta de stock
@@ -27,6 +27,13 @@ export default function TarjetaStock({ producto, onGuardar, onEliminar, mostrarS
             setMensaje({ tipo: 'error', texto: error.message });
         }
     }
+
+    useEffect(() => {
+            if (!mensaje) return;
+            const temporizador = setTimeout(() => setMensaje(null), 3000);
+            //si llega otro mensaje antes de los 3 segundos, se cancela el temporizador anterior
+            return () => clearTimeout(temporizador);
+        }, [mensaje]);
 
     return (
         //flex items center para que la foto y el texto queden alineados verticalmente al medio
