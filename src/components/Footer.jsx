@@ -1,3 +1,5 @@
+import { Link, NavLink } from 'react-router-dom';
+
 function Footer() {
     return (
         <footer id="contacto" className="bg-stone-900 text-stone-300">
@@ -12,19 +14,19 @@ function Footer() {
                 <div>
                     <h2 className="font-bold text-white">Enlaces</h2>
                     <ul className="mt-3 space-y-2 text-sm">
-                        <li><a className="footer-link" href="./index.html">Inicio</a></li>
-                        <li><a className="footer-link" href="./productos.html">Productos</a></li>
-                        <li><a className="footer-link" href="./carrito.html">Carrito</a></li>
-                        <li><a className="footer-link" href="./vista_blog.html">Blog</a></li>
+                        <li><NavLink className="footer-link" to="/">Inicio</NavLink></li>
+                        <li><NavLink className="footer-link" to="/productos">Productos</NavLink></li>
+                        <li><NavLink className="footer-link" to="/carrito">Carrito</NavLink></li>
+                        <li><NavLink className="footer-link" to="/vista-blog">Blog</NavLink></li>
                     </ul>
                 </div>
 
                 <div>
                     <h2 className="font-bold text-white">Mi cuenta</h2>
                     <ul className="mt-3 space-y-2 text-sm">
-                        <li><a className="footer-link" href="./vista_login.html">Ingresar</a></li>
-                        <li><a className="footer-link" href="./vista_registrarse.html">Crear cuenta</a></li>
-                        <li><a className="footer-link" href="./carrito.html">Mi carrito</a></li>
+                        <li><NavLink className="footer-link" to="/login">Ingresar</NavLink></li>
+                        <li><NavLink className="footer-link" to="/registro">Crear cuenta</NavLink></li>
+                        <li><NavLink className="footer-link" to="/carrito">Mi carrito</NavLink></li>
                     </ul>
                 </div>
 
@@ -39,9 +41,9 @@ function Footer() {
                             <a className="footer-link" href="mailto:ventas@losmaestros.cl">ventas@losmaestros.cl</a>
                         </p>
                     </address>
-                    <a className="footer-link mt-3 inline-block text-sm" href="./vista_contacto.html">
+                    <NavLink className="footer-link mt-3 inline-block text-sm" to="/sobre-nosotros">
                         Información de contacto
-                    </a>
+                    </NavLink>
                 </div>
             </div>
 

@@ -11,7 +11,7 @@ const navLinks = [
     { href: './vista_contacto.html', label: 'Contacto' },
 ];
 
-function Header() {
+function Navbar() {
     //variable menu abierto, empieza en false
     //funcion setmenuabierto para cambiarla
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -44,7 +44,7 @@ function Header() {
                 </button>
 
                 {/* Logo mas nombre*/}
-                <a href="./index.html" className="flex items-center gap-3" aria-label="Ir al inicio">
+                <Link to="/" className="flex items-center gap-3" aria-label="Ir al inicio">
                     <img className="size-12" src={logo} alt="" />
                     <span>
                         <strong className="block text-xl leading-tight tracking-tight">Los Maestros</strong>
@@ -52,7 +52,7 @@ function Header() {
                             Ferretería
                         </span>
                     </span>
-                </a>
+                </Link>
 
                 {/* Inicio, productos, nosotros, blog, contacto*/}
                 <nav className="ml-auto hidden items-center gap-6 text-sm font-semibold lg:flex" aria-label="Navegación principal">
@@ -79,25 +79,46 @@ function Header() {
                     </button>
                 </form>
 
-                {/*Ingresar*/}
-                <a
-                    id="cuenta"
-                    className="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0"
-                    href="./vista_login.html">
-                    Ingresar
-                </a>
-                {/*Crear cuenta*/}
-                <a
-                    className="hidden rounded-lg bg-amber-400 px-6 py-2 text-sm font-semibold text-stone-900 hover:bg-amber-500 md:block whitespace-nowrap"
-                    href="./vista_registrarse.html" >
-                    Crear cuenta
-                </a>
+                {!sesion ? (
+                    <>
+                        {/*Ingresar*/}
+                        <Link
+                            id="cuenta"
+                            className="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0"
+                            to="/login">
+                            Ingresar
+                        </Link>
+                        {/*Crear cuenta*/}
+                        <Link
+                            className="hidden rounded-lg bg-amber-400 px-6 py-2 text-sm font-semibold text-stone-900 hover:bg-amber-500 md:block whitespace-nowrap"
+                            to="/registro">
+                            Crear cuenta
+                        </Link>
+                    </>
+                ) : (
+                    <>
+                        {sesion.rol === 'cliente' && (
+                            <Link
+                                className="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0 whitespace-nowrap"
+                                to="/mis-pedidos">
+                                Mis pedidos
+                            </Link>
+                        )}
+                        {/*borra la sesion y vuelve al inicio*/}
+                        <Link
+                            className="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0 whitespace-nowrap"
+                            to="/"
+                            onClick={cerrarSesion}>
+                            Cerrar sesión
+                        </Link>
+                    </>
+                )}
 
                 {/*Carrito*/}
-                <a
+                <NavLink
                     id="cart-button"
                     className="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold"
-                    href="./carrito.html"
+                    to="/carrito"
                     aria-label="Carrito con 0 productos">
 
                     <svg aria-hidden="true" viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2">
@@ -111,7 +132,7 @@ function Header() {
                         className="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-white bg-amber-400 text-xs font-bold text-stone-900">
                         0
                     </span>
-                </a>
+                </NavLink>
             </div>
 
             {/*El onclick funciona tocando cualquier elemento del nav*/}
@@ -129,11 +150,29 @@ function Header() {
                         {link.label}
                     </a>
                 ))}
-                <a className="mobile-link" href="./vista_login.html">Ingresar</a>
-                <a className="mobile-link" href="./vista_registrarse.html">Crear cuenta</a>
+                {navLinks.map((link) => (
+                    <NavLink key={link.label} className="mobile-link" to={link.href}>
+                        {link.label}
+                    </NavLink>
+                ))}
+
+                
+                {!sesion ? (
+                    <>
+                        <Link className="mobile-link" to="/login">Ingresar</Link>
+                        <Link className="mobile-link" to="/registro">Crear cuenta</Link>
+                    </>
+                ) : (
+                    <>
+                        {sesion.rol === 'cliente' && (
+                            <Link className="mobile-link" to="/mis-pedidos">Mis pedidos</Link>
+                        )}
+                        <Link className="mobile-link" to="/" onClick={cerrarSesion}>Cerrar sesión</Link>
+                    </>
+                )}
             </nav>
         </header>
     );
 }
 
-export default Header;
+export default Navbar;

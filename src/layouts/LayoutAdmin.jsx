@@ -8,6 +8,9 @@ import FooterAdmin from '../components/FooterAdmin';
 import { obtenerSesion } from '../services/usuarioService';
 
 export default function LayoutPanel({ links, subtitulo, rol }) {
+    //use no memo excluye a este componente de la memorizacion automatica
+    //en cada render se evaluan de nuevo todas las expresiones
+    'use no memo';
     const [panelAbierto, setPanelAbierto] = useState(false);
 
     const sesion = obtenerSesion();

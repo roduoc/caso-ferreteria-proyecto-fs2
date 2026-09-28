@@ -56,10 +56,13 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+        <Route path="/vista-blog" element={<VistaBlog />} />
+      </Route>
+
+      <Route element={<LayoutNormal rol="cliente" />}>
         <Route path="/envios" element={<Envios />} />
         <Route path="/mis-pedidos" element={<MisPedidos />} />
         <Route path="/mi-credito" element={<MiCredito />} />
-        <Route path="/vista-blog" element={<VistaBlog />} />
       </Route>
 
       {/*links y subtitulo son datos para el layoutpanel*/}
