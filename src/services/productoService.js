@@ -24,6 +24,7 @@ export async function obtenerProducto(codigo) {
 //cambia el precio y/o el stock de un producto
 export async function actualizarProducto(codigo, cambios) {
   await esperar();
+  const nuevosDatos = {};
 
   if (cambios.precio !== undefined) {
     if (cambios.precio === '') throw new Error('Ingresa un precio');

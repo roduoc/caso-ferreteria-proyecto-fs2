@@ -76,7 +76,7 @@ export default function App() {
         <Route path="/admin/reportes" element={<AdminReportes />} />
         <Route path="/admin/historial" element={<AdminHistorial />} />
         <Route path="/admin/historial/:id" element={<AdminHistorialVer />} />
-        <Route path="/admin/credeito" element={<AdminCredito /> } />
+        <Route path="/admin/credito" element={<AdminCredito /> } />
       </Route>
     </Routes>
   );
