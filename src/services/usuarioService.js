@@ -208,3 +208,53 @@ export async function eliminarUsuario(id) {
   //filter deja a todos menos al usuario eliminado
   guardar(CLAVE, usuarios.filter((u) => u.id !== id));
 }
+
+//login
+const CLAVE_SESION = 'sesion';
+
+function validarLogin(correo, clave) {
+  if (!correo.trim()) throw new Error('No puede haber campos en blanco.');
+  if (correo.trim().length > 100) throw new Error('El correo no puede superar los 100 caracteres.');
+
+  const partes = correo.trim().split('@');
+  if (partes.length !== 2 || !DOMINIOS_PERMITIDOS.includes(partes[1].toLowerCase())) {
+    throw new Error('Solo se aceptan correos @duoc.cl, @profesor.duoc.cl o @gmail.com.');
+  }
+
+  if (!clave) throw new Error('No puede haber campos en blanco.');
+  if (clave.length < 4 || clave.length > 10) {
+    throw new Error('La contraseña debe tener entre 4 y 10 caracteres.');
+  }
+}
+
+//busca un usuario con ese correo y clave
+//si lo encuentra, guarda su dto en localStorage como el usuario con la sesion iniciada
+export async function iniciarSesion(correo, clave) {
+  await esperar();
+  validarLogin(correo, clave);
+  const usuarios = leer(CLAVE, usuariosMock);
+
+  //revisa usuario por usuario y compara el correo y la clave
+  const usuario = usuarios.find(
+    (u) => u.correo.toLowerCase() === correo.trim().toLowerCase() && u.clave === clave
+  );
+
+  if (!usuario) throw new Error('Correo o contraseña incorrectos.');
+
+  //clave sesion aqui es sesion, se guarda el dto del usuario en sesion
+  const usuarioDTO = crearUsuarioDTO(usuario);
+  guardar(CLAVE_SESION, usuarioDTO);
+  return usuarioDTO;
+}
+
+//devuelve el usuario con la sesion iniciada, o null
+//no es async porque los layouts la necesitan antes de dibujar la pagina
+export function obtenerSesion() {
+  const guardado = localStorage.getItem(CLAVE_SESION);
+  return guardado ? JSON.parse(guardado) : null;
+}
+
+//borra la sesion de localStorage
+export function cerrarSesion() {
+  localStorage.removeItem(CLAVE_SESION);
+}

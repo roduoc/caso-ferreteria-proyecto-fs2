@@ -2,12 +2,18 @@ import { useState } from 'react';
 //navlink sabe si su ruta es la pagina en la que estas
 //sirve para saber si un link esta activo con isActive
 //para darle un estilo distinto a ese link
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, Navigate } from 'react-router-dom';
 import NavbarAdmin from '../components/NavbarAdmin';
 import FooterAdmin from '../components/FooterAdmin';
+import { obtenerSesion } from '../services/usuarioService';
 
-export default function LayoutPanel({ links, subtitulo }) {
+export default function LayoutPanel({ links, subtitulo, rol }) {
     const [panelAbierto, setPanelAbierto] = useState(false);
+
+    const sesion = obtenerSesion();
+    if (!sesion || sesion.rol !== rol) {
+        return <Navigate to="/login" replace />;
+    }
 
     return (
         <>

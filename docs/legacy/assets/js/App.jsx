@@ -46,6 +46,9 @@ const linksAdmin = [
 export default function App() {
   return (
     <Routes>
+      {/*el login va fuera de los layouts, por eso no tiene navbar ni footer*/}
+      <Route path="/login" element={<Login />} />
+
       {/* */}
       {/*element le dice que componente mostrar en esa ruta*/}
       <Route element={<LayoutNormal />}>
@@ -53,7 +56,6 @@ export default function App() {
         <Route path="/productos" element={<Productos />} />
         <Route path="/producto/:codigo" element={<DetalleProducto />} />
         <Route path="/carrito" element={<Carrito />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/sobre-nosotros" element={<SobreNosotros />} />
         <Route path="/envios" element={<Envios />} />
@@ -62,7 +64,8 @@ export default function App() {
         <Route path="/vista-blog" element={<VistaBlog />} />
       </Route>
 
-      {/*links y subtitulo son datos para el layoutpanel*/}
+      {/*links y subtitulo son datos para el layoutpanel
+      rol es el rol que debe tener la sesion para poder entrar a ese panel*/}
       <Route element={<LayoutAdmin links={linksVendedor} subtitulo="Panel de vendedor" rol="vendedor" />}>
         <Route path="/vendedor/inventario" element={<VendedorInventario />} />
         <Route path="/vendedor/pedidos" element={<VendedorGestionPedidos />} />

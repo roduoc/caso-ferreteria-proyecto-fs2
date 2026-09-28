@@ -36,22 +36,24 @@ export default function AdminCredito() {
             {/*space y 4 agrega espacio vertical entre cada tarjeta*/}
             <div className="max-w-5xl mx-auto space-y-4">
 
+                {/*revisa si ya llegaron los clientes del service
+                y si despues del filtro quedo algun cliente*/}
                 {clientes.length > 0 && clientesCredito.length === 0 && (
                     <p className="text-center text-stone-500">No hay clientes con cuenta corriente.</p>
                 )}
 
-                {/*una tarjeta por cada cliente con credito*/}
                 {clientesCredito.map((cliente) => {
-                    //los pagos que son de este cliente
                     const pagosCliente = pagos.filter((p) => p.clienteId === cliente.id);
                     //reduce suma todos los montos, parte desde 0
+                    //reduce a la izquierda es el que se acumula
+                    //reduce a la derecha es el elemento actual de la lista
                     const totalPagado = pagosCliente.reduce((suma, p) => suma + p.monto, 0);
 
                     return (
                         <div key={cliente.id} className="rounded-lg border border-stone-200 bg-white p-6">
 
-                            {/*nombre a la izquierda, saldo al centro, total pagado a la derecha*/}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-4">
+                            {/*nombre y correo a la izquierda, saldo adeudado a la derecha*/}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
                                 <div className="flex items-center gap-4">
                                     <span className="block text-lg leading-7 text-stone-900">#{cliente.id}</span>
                                     <div>
@@ -59,13 +61,9 @@ export default function AdminCredito() {
                                         <p className="text-sm text-stone-500">{cliente.correo}</p>
                                     </div>
                                 </div>
-                                <p className="text-stone-600 text-left sm:text-center">
+                                <p className="text-stone-600 text-left sm:text-right">
                                     <span className="text-xs text-stone-400 block">Saldo adeudado</span>
                                     <span className="font-semibold text-lg">{formatearPrecio(cliente.saldoAdeudado)}</span>
-                                </p>
-                                <p className="text-stone-600 text-left sm:text-right">
-                                    <span className="text-xs text-stone-400 block">Total pagado</span>
-                                    <span className="font-semibold text-lg">{formatearPrecio(totalPagado)}</span>
                                 </p>
                             </div>
 
