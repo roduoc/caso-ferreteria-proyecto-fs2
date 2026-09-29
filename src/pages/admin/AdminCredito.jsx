@@ -44,10 +44,6 @@ export default function AdminCredito() {
 
                 {clientesCredito.map((cliente) => {
                     const pagosCliente = pagos.filter((p) => p.clienteId === cliente.id);
-                    //reduce suma todos los montos, parte desde 0
-                    //reduce a la izquierda es el que se acumula
-                    //reduce a la derecha es el elemento actual de la lista
-                    const totalPagado = pagosCliente.reduce((suma, p) => suma + p.monto, 0);
 
                     return (
                         <div key={cliente.id} className="rounded-lg border border-stone-200 bg-white p-6">

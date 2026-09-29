@@ -1,6 +1,6 @@
 import { useState } from 'react';
 //usenavigate sirve para cambiar de pagina desde el codigo, reemplaza a window.location.href
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../assets/logo-los-maestros.svg';
 import { iniciarSesion } from '../services/usuarioService';
 
@@ -17,22 +17,31 @@ export default function Login() {
     //reemplaza a mostrarError y ocultarError: si error tiene texto se muestra, si esta vacio se oculta
     const [error, setError] = useState('');
 
+    //navigate permite cambiar de ruta
     const navigate = useNavigate();
+    const location = useLocation();
 
     //prevent default cancela que se recargue la pagina al hacer submit para manejarlo nosotros
     async function manejarSubmit(event) {
-        event.preventDefault();
-
-        try {
-            //el service valida los campos y revisa si el correo y la clave coinciden con algun usuario
-            //si algo falla lanza un error, y el catch muestra su mensaje
-            const usuario = await iniciarSesion(correo, clave);
-            setError('');
-            navigate(rutasPorRol[usuario.rol]);
-        } catch (e) {
-            setError(e.message);
+            event.preventDefault();
+    
+            try {
+                //el service valida los campos y revisa si el correo y la clave coinciden con algun usuario
+                //si algo falla lanza un error, y el catch muestra su mensaje
+                const usuario = await iniciarSesion(correo, clave);
+                setError('');
+    
+                //si un cliente venia de una pagina protegida vuelve ahi
+                const desde = location.state?.desde;
+                if (usuario.rol === 'cliente' && desde) {
+                    navigate(desde);
+                } else {
+                    navigate(rutasPorRol[usuario.rol]);
+                }
+            } catch (e) {
+                setError(e.message);
+            }
         }
-    }
 
     return (
         <main>

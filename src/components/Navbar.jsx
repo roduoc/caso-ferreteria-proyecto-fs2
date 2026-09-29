@@ -1,20 +1,45 @@
 //use state le da memoria a la pagina
 import { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/logo-los-maestros.svg';
+import { obtenerSesion, cerrarSesion } from '../services/usuarioService';
 
 //los escribimos aca para recorrerlos mas tarde y no escribirlos dos veces
+
 const navLinks = [
-    { href: './index.html', label: 'Inicio' },
-    { href: './productos.html', label: 'Productos' },
-    { href: '#nosotros', label: 'Nosotros' },
-    { href: './vista_blog.html', label: 'Blog' },
-    { href: './vista_contacto.html', label: 'Contacto' },
+    { href: '/', label: 'Inicio' },
+    { href: '/productos', label: 'Productos' },
+    { href: '/sobre-nosotros', label: 'Nosotros' },
+    { href: '/vista-blog', label: 'Blog' },
+    { href: '/sobre-nosotros', label: 'Contacto' },
 ];
 
 function Navbar() {
+
+    //use no memo excluye a este componente de la memorizacion automatica
+    //en cada render se evaluan de nuevo todas las expresiones
+    //se usa porque obtener sesion no recibe props ni estados, y eso significa
+    //que nunca cambia para el compiler, entonces la ejecuta una sola vez y luego la lee desde ahí
+
+    //obtener sesion lee localstorage, y localstorage esta fuera de react
+    //cuando se inicia sesion localstorage cambia pero el compiler no se entera
+    //y sigue leyendo el primer obtener sesion
+
+    //la sesion ya se habia actualizado al iniciar sesion
+    //pero al re renderizar con use no memo se vuelve a leer obtener session
+
+    //al cambiar de pagina se re renderiza layout y sus hijos
+    //que es el outlet, o sea, la pagina actual se re renderiza tambien
+
+    //cuando se cambia de outlet cambia el tipo de componente y se redibuja
+    //pero el navbar no cambia entre vistas privadas y publicas de clientes
+    'use no memo';
+
     //variable menu abierto, empieza en false
     //funcion setmenuabierto para cambiarla
     const [menuAbierto, setMenuAbierto] = useState(false);
+
+    const sesion = obtenerSesion();
 
     //togglemenu invierte el valor actual, si estaba en true pasa a false y al reves
     //
@@ -58,9 +83,9 @@ function Navbar() {
                 <nav className="ml-auto hidden items-center gap-6 text-sm font-semibold lg:flex" aria-label="Navegación principal">
                     {/*cada href lleva al link.href y su texto es el link.label*/}
                     {navLinks.map((link) => (
-                        <a key={link.href} className="nav-link" href={link.href}>
+                        <NavLink key={link.label} className="nav-link" to={link.href}>
                             {link.label}
-                        </a>
+                        </NavLink>
                     ))}
                 </nav>
 
@@ -146,17 +171,12 @@ function Navbar() {
                 onClick={cerrarMenu}>
 
                 {navLinks.map((link) => (
-                    <a key={link.href} className="mobile-link" href={link.href}>
-                        {link.label}
-                    </a>
-                ))}
-                {navLinks.map((link) => (
                     <NavLink key={link.label} className="mobile-link" to={link.href}>
                         {link.label}
                     </NavLink>
                 ))}
 
-                
+
                 {!sesion ? (
                     <>
                         <Link className="mobile-link" to="/login">Ingresar</Link>

@@ -47,7 +47,9 @@ export default function App() {
   return (
     <Routes>
       {/* */}
-      {/*element le dice que componente mostrar en esa ruta*/}
+      {/*element le dice que componente mostrar en esa ruta
+      al estar los layout a la misma altura o nivel dentro de routes
+      dibujar uno destruye el otro*/}
       <Route element={<LayoutNormal />}>
         <Route path="/" element={<Home />} />
         <Route path="/productos" element={<Productos />} />
