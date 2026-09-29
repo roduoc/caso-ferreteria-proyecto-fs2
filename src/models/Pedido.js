@@ -1,5 +1,5 @@
 //estados posibles de un pedido, se usan para armar el select
-export const ESTADOS_PEDIDO = ['Pendiente', 'En preparación', 'Entregado', 'Cancelado'];
+export const ESTADOS_PEDIDO = ['Pendiente', 'En preparación', 'Despachado', 'Entregado'];
 
 //dto de pedido
 export function crearPedidoDTO(p) {

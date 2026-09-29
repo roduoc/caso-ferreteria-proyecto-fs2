@@ -14,6 +14,12 @@ const CLAVE = 'usuarios';
 const CLAVE_CLIENTES = 'clientes';
 const CLAVE_ULTIMO_ID = 'ultimoIdUsuario';
 
+export const rutasPorRol = {
+  admin: '/admin/usuarios',
+  vendedor: '/vendedor/inventario',
+  cliente: '/mis-pedidos',
+};
+
 export const ROLES = ['admin', 'vendedor', 'cliente'];
 
 //dominios de correo permitidos
@@ -257,4 +263,10 @@ export function obtenerSesion() {
 //borra la sesion de localStorage
 export function cerrarSesion() {
   localStorage.removeItem(CLAVE_SESION);
+}
+
+export async function registrarCliente(datos) {
+  await crearUsuario({ ...datos, rol: 'cliente', cuentaCorrienteHabilitada: false });
+
+  return iniciarSesion(datos.correo, datos.clave);
 }
