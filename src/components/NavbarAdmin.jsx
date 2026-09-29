@@ -2,6 +2,7 @@ import { useState } from 'react';
 //link es el reemplazo de la etiqueta de html <a> para los links
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo-los-maestros.svg';
+import { cerrarSesion } from '../services/usuarioService';
 
 export default function HeaderPanel() {
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -51,7 +52,8 @@ export default function HeaderPanel() {
                 {/* boton de ingresar a la cuenta
             sm block que se muestre solo en pantallas grandes */}
                 <Link
-                    to="/"
+                    to="/login"
+                    onClick={cerrarSesion}
                     className="hidden ml-auto rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block"
                 >
                     Cerrar sesión
@@ -64,7 +66,7 @@ export default function HeaderPanel() {
             {menuAbierto && (
                 <nav id="mobile-menu" className="page-shell border-t border-stone-200 py-3 lg:hidden">
                     <Link className="mobile-link" to="/" onClick={() => setMenuAbierto(false)}>Inicio</Link>
-                    <Link className="mobile-link" to="/" onClick={() => setMenuAbierto(false)}>Cerrar sesión</Link>
+                    <Link className="mobile-link" to="/login" onClick={cerrarSesion}>Cerrar sesión</Link>
                 </nav>
             )}
         </header>

@@ -1,20 +1,45 @@
 //use state le da memoria a la pagina
 import { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/logo-los-maestros.svg';
+import { obtenerSesion, cerrarSesion } from '../services/usuarioService';
 
 //los escribimos aca para recorrerlos mas tarde y no escribirlos dos veces
+
 const navLinks = [
-    { href: './index.html', label: 'Inicio' },
-    { href: './productos.html', label: 'Productos' },
-    { href: '#nosotros', label: 'Nosotros' },
-    { href: './vista_blog.html', label: 'Blog' },
-    { href: './vista_contacto.html', label: 'Contacto' },
+    { href: '/', label: 'Inicio' },
+    { href: '/productos', label: 'Productos' },
+    { href: '/sobre-nosotros', label: 'Nosotros' },
+    { href: '/vista-blog', label: 'Blog' },
+    { href: '/sobre-nosotros', label: 'Contacto' },
 ];
 
-function Header() {
+function Navbar() {
+
+    //use no memo excluye a este componente de la memorizacion automatica
+    //en cada render se evaluan de nuevo todas las expresiones
+    //se usa porque obtener sesion no recibe props ni estados, y eso significa
+    //que nunca cambia para el compiler, entonces la ejecuta una sola vez y luego la lee desde ahí
+
+    //obtener sesion lee localstorage, y localstorage esta fuera de react
+    //cuando se inicia sesion localstorage cambia pero el compiler no se entera
+    //y sigue leyendo el primer obtener sesion
+
+    //la sesion ya se habia actualizado al iniciar sesion
+    //pero al re renderizar con use no memo se vuelve a leer obtener session
+
+    //al cambiar de pagina se re renderiza layout y sus hijos
+    //que es el outlet, o sea, la pagina actual se re renderiza tambien
+
+    //cuando se cambia de outlet cambia el tipo de componente y se redibuja
+    //pero el navbar no cambia entre vistas privadas y publicas de clientes
+    'use no memo';
+
     //variable menu abierto, empieza en false
     //funcion setmenuabierto para cambiarla
     const [menuAbierto, setMenuAbierto] = useState(false);
+
+    const sesion = obtenerSesion();
 
     //togglemenu invierte el valor actual, si estaba en true pasa a false y al reves
     //
@@ -44,7 +69,7 @@ function Header() {
                 </button>
 
                 {/* Logo mas nombre*/}
-                <a href="./index.html" className="flex items-center gap-3" aria-label="Ir al inicio">
+                <Link to="/" className="flex items-center gap-3" aria-label="Ir al inicio">
                     <img className="size-12" src={logo} alt="" />
                     <span>
                         <strong className="block text-xl leading-tight tracking-tight">Los Maestros</strong>
@@ -52,15 +77,15 @@ function Header() {
                             Ferretería
                         </span>
                     </span>
-                </a>
+                </Link>
 
                 {/* Inicio, productos, nosotros, blog, contacto*/}
                 <nav className="ml-auto hidden items-center gap-6 text-sm font-semibold lg:flex" aria-label="Navegación principal">
                     {/*cada href lleva al link.href y su texto es el link.label*/}
                     {navLinks.map((link) => (
-                        <a key={link.href} className="nav-link" href={link.href}>
+                        <NavLink key={link.label} className="nav-link" to={link.href}>
                             {link.label}
-                        </a>
+                        </NavLink>
                     ))}
                 </nav>
 
@@ -79,25 +104,46 @@ function Header() {
                     </button>
                 </form>
 
-                {/*Ingresar*/}
-                <a
-                    id="cuenta"
-                    className="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0"
-                    href="./vista_login.html">
-                    Ingresar
-                </a>
-                {/*Crear cuenta*/}
-                <a
-                    className="hidden rounded-lg bg-amber-400 px-6 py-2 text-sm font-semibold text-stone-900 hover:bg-amber-500 md:block whitespace-nowrap"
-                    href="./vista_registrarse.html" >
-                    Crear cuenta
-                </a>
+                {!sesion ? (
+                    <>
+                        {/*Ingresar*/}
+                        <Link
+                            id="cuenta"
+                            className="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0"
+                            to="/login">
+                            Ingresar
+                        </Link>
+                        {/*Crear cuenta*/}
+                        <Link
+                            className="hidden rounded-lg bg-amber-400 px-6 py-2 text-sm font-semibold text-stone-900 hover:bg-amber-500 md:block whitespace-nowrap"
+                            to="/registro">
+                            Crear cuenta
+                        </Link>
+                    </>
+                ) : (
+                    <>
+                        {sesion.rol === 'cliente' && (
+                            <Link
+                                className="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0 whitespace-nowrap"
+                                to="/mis-pedidos">
+                                Mis pedidos
+                            </Link>
+                        )}
+                        {/*borra la sesion y vuelve al inicio*/}
+                        <Link
+                            className="ml-auto hidden rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold sm:block lg:ml-0 whitespace-nowrap"
+                            to="/"
+                            onClick={cerrarSesion}>
+                            Cerrar sesión
+                        </Link>
+                    </>
+                )}
 
                 {/*Carrito*/}
-                <a
+                <NavLink
                     id="cart-button"
                     className="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold"
-                    href="./carrito.html"
+                    to="/carrito"
                     aria-label="Carrito con 0 productos">
 
                     <svg aria-hidden="true" viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2">
@@ -111,7 +157,7 @@ function Header() {
                         className="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-white bg-amber-400 text-xs font-bold text-stone-900">
                         0
                     </span>
-                </a>
+                </NavLink>
             </div>
 
             {/*El onclick funciona tocando cualquier elemento del nav*/}
@@ -125,15 +171,28 @@ function Header() {
                 onClick={cerrarMenu}>
 
                 {navLinks.map((link) => (
-                    <a key={link.href} className="mobile-link" href={link.href}>
+                    <NavLink key={link.label} className="mobile-link" to={link.href}>
                         {link.label}
-                    </a>
+                    </NavLink>
                 ))}
-                <a className="mobile-link" href="./vista_login.html">Ingresar</a>
-                <a className="mobile-link" href="./vista_registrarse.html">Crear cuenta</a>
+
+
+                {!sesion ? (
+                    <>
+                        <Link className="mobile-link" to="/login">Ingresar</Link>
+                        <Link className="mobile-link" to="/registro">Crear cuenta</Link>
+                    </>
+                ) : (
+                    <>
+                        {sesion.rol === 'cliente' && (
+                            <Link className="mobile-link" to="/mis-pedidos">Mis pedidos</Link>
+                        )}
+                        <Link className="mobile-link" to="/" onClick={cerrarSesion}>Cerrar sesión</Link>
+                    </>
+                )}
             </nav>
         </header>
     );
 }
 
-export default Header;
+export default Navbar;

@@ -2,12 +2,46 @@ import { useState } from 'react';
 //navlink sabe si su ruta es la pagina en la que estas
 //sirve para saber si un link esta activo con isActive
 //para darle un estilo distinto a ese link
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, Navigate } from 'react-router-dom';
 import NavbarAdmin from '../components/NavbarAdmin';
 import FooterAdmin from '../components/FooterAdmin';
+import { obtenerSesion } from '../services/usuarioService';
 
-export default function LayoutPanel({ links, subtitulo }) {
+export default function LayoutPanel({ links, subtitulo, rol }) {
+    //use no memo excluye a este componente de la memorizacion automatica
+    //en cada render se evaluan de nuevo todas las expresiones
+    //se usa porque obtener sesion no recibe props ni estados, y eso significa
+    //que nunca cambia para el compiler, entonces la ejecuta una sola vez y luego la lee desde ahí
+
+    //obtener sesion lee localstorage, y localstorage esta fuera de react
+    //cuando se inicia sesion localstorage cambia pero el compiler no se entera
+    //y sigue leyendo el primer obtener sesion
+
+    //la sesion ya se habia actualizado al iniciar sesion
+    //pero al re renderizar con use no memo se vuelve a leer obtener session
+
+    //al cambiar de pagina se re renderiza layout y sus hijos
+    //que es el outlet, o sea, la pagina actual se re renderiza tambien
+    'use no memo';
     const [panelAbierto, setPanelAbierto] = useState(false);
+
+    //si nadie inicio sesion, o el rol no es el de este panel, se manda al login
+    //asi un vendedor no puede entrar al panel de admin escribiendo la url
+
+    //no tiene if rol porque siempre recibe un rol
+
+    //replace es para reemplazar la url en la que se estaba por la de destino
+    //sirve para cuando la pagina de la que te vas no deberia quedar en el historial
+    //se usa para evitar loops
+    //por ejemplo inicio, /admin/credito, /login
+
+    //si entrara un vendedor, lo mandaria al login, pero al devolverse lo volveria a mandar al login
+    //porque la pagina anterior tiene vista protegida
+    //nunca podria volver a inicio
+    const sesion = obtenerSesion();
+    if (!sesion || sesion.rol !== rol) {
+        return <Navigate to="/login" replace />;
+    }
 
     return (
         <>

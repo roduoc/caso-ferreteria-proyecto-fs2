@@ -28,3 +28,13 @@ export function guardar(clave, datos) {
 export function esperar(ms = 200) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+//claveContador es una entrada nueva en localstorage 
+//se crea cuando se llama por primera vez a siguienteid
+//se basa en los json, por eso recuerda todos los id
+export function siguienteId(claveContador, lista) {
+  const ultimoId = leer(claveContador, Math.max(0, ...lista.map((item) => item.id)));
+  const nuevoId = ultimoId + 1;
+  guardar(claveContador, nuevoId);
+  return nuevoId;
+}

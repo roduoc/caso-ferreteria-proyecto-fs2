@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ESTADOS_PEDIDO } from '../models/Pedido';
 
 //tarjeta de un pedido en la gestion de pedidos
@@ -18,6 +18,13 @@ export default function TarjetaPedido({ pedido, onCambiarEstado }) {
             setMensaje({ tipo: 'error', texto: error.message });
         }
     }
+
+    useEffect(() => {
+            if (!mensaje) return;
+            const temporizador = setTimeout(() => setMensaje(null), 3000);
+            //si llega otro mensaje antes de los 3 segundos, se cancela el temporizador anterior
+            return () => clearTimeout(temporizador);
+        }, [mensaje]);
 
     //numero del pedido
     const numero = pedido.id
