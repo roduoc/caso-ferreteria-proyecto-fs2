@@ -20,8 +20,8 @@ export async function cambiarEstado(id, nuevoEstado) {
   const indice = pedidos.findIndex((p) => p.id === id);
   if (indice === -1) throw new Error('Pedido no encontrado');
 
-  if (pedidos[indice].estado === 'Entregado' || pedidos[indice].estado === 'Cancelado') {
-    throw new Error('Un pedido entregado o cancelado ya no se puede cambiar');
+  if (pedidos[indice].estado === 'Entregado') {
+    throw new Error('Un pedido entregado ya no se puede cambiar');
   }
 
   pedidos[indice] = { ...pedidos[indice], estado: nuevoEstado };

@@ -1,15 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 //usenavigate sirve para cambiar de pagina desde el codigo, reemplaza a window.location.href
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import logo from '../assets/logo-los-maestros.svg';
-import { iniciarSesion } from '../services/usuarioService';
-
-//a que pagina se va cada rol despues de iniciar sesion
-const rutasPorRol = {
-    admin: '/admin/usuarios',
-    vendedor: '/vendedor/inventario',
-    cliente: '/mis-pedidos',
-};
+import { iniciarSesion, obtenerSesion, rutasPorRol } from '../services/usuarioService';
 
 export default function Login() {
     const [correo, setCorreo] = useState('');
@@ -21,27 +14,40 @@ export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    useEffect(() => {
+        if (!error) return;
+        const temporizador = setTimeout(() => setError(null), 3000);
+        //si llega otro mensaje antes de los 3 segundos, se cancela el temporizador anterior
+        return () => clearTimeout(temporizador);
+    }, [error]);
+
+    const sesion = obtenerSesion();
+    if (sesion) {
+        return <Navigate to={rutasPorRol[sesion.rol]} replace />;
+    }
+
+
     //prevent default cancela que se recargue la pagina al hacer submit para manejarlo nosotros
     async function manejarSubmit(event) {
-            event.preventDefault();
-    
-            try {
-                //el service valida los campos y revisa si el correo y la clave coinciden con algun usuario
-                //si algo falla lanza un error, y el catch muestra su mensaje
-                const usuario = await iniciarSesion(correo, clave);
-                setError('');
-    
-                //si un cliente venia de una pagina protegida vuelve ahi
-                const desde = location.state?.desde;
-                if (usuario.rol === 'cliente' && desde) {
-                    navigate(desde);
-                } else {
-                    navigate(rutasPorRol[usuario.rol]);
-                }
-            } catch (e) {
-                setError(e.message);
+        event.preventDefault();
+
+        try {
+            //el service valida los campos y revisa si el correo y la clave coinciden con algun usuario
+            //si algo falla lanza un error, y el catch muestra su mensaje
+            const usuario = await iniciarSesion(correo, clave);
+            setError('');
+
+            //si un cliente venia de una pagina protegida vuelve ahi
+            const desde = location.state?.desde;
+            if (usuario.rol === 'cliente' && desde) {
+                navigate(desde);
+            } else {
+                navigate(rutasPorRol[usuario.rol]);
             }
+        } catch (e) {
+            setError(e.message);
         }
+    }
 
     return (
         <main>
