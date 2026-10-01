@@ -3,15 +3,10 @@ import { Link } from 'react-router-dom';
 import placeholder from '../assets/placeholder.avif';
 import { obtenerSesion } from '../services/usuarioService';
 import { listarPedidosCliente } from '../services/pedidoService';
+import { obtenerCliente } from '../services/clienteService';
 
-const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
-    'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-
-//convierte una fecha 2026-09-15 al formato 15 de septiembre, 2026, igual que en el html
 function formatearFecha(fecha) {
-    const [anio, mes, dia] = fecha.split('-');
-    //Number quita el 0 de adelante: '09' pasa a 9, y MESES[9 - 1] es 'septiembre'
-    return `${Number(dia)} de ${MESES[Number(mes) - 1]}, ${anio}`;
+    return fecha.split('-').reverse().join('/');
 }
 
 function formatoPrecio(precio) {
@@ -22,8 +17,6 @@ function formatoPrecio(precio) {
     }).format(precio);
 }
 
-//los colores de la etiqueta de cada estado, los mismos del html
-//despachado no estaba en el html, por eso se le dio azul
 const COLORES_ESTADO = {
     'Pendiente': 'bg-red-100 text-red-800',
     'En preparación': 'bg-amber-100 text-amber-800',
@@ -33,14 +26,13 @@ const COLORES_ESTADO = {
 
 export default function MisPedidos() {
     const [pedidos, setPedidos] = useState([]);
-    //para no mostrar "no tienes pedidos" mientras el service todavia responde
     const [cargando, setCargando] = useState(true);
+    const [cliente, setCliente] = useState(null);
 
-    //pide solo los pedidos del cliente que inicio sesion
-    //el layout ya reviso que hay sesion de cliente, y el id de la sesion es el mismo del cliente
     useEffect(() => {
         const sesion = obtenerSesion();
         listarPedidosCliente(sesion.id).then((pedidosCliente) => {
+            obtenerCliente(sesion.id).then(setCliente);
             setPedidos(pedidosCliente);
             setCargando(false);
         });
@@ -60,19 +52,20 @@ export default function MisPedidos() {
                     {/*botón mi credito
                     justify end empuja el elemento hacia la derecha, va en el padre
                     transition colors le agrega una animación al pasar por encima, hover, cambio de color*/}
-                    <div className="flex justify-end mt-8">
-                        <Link to="/mi-credito"
-                            className=" items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors">
-                            Ver mi crédito
-                        </Link>
-                    </div>
+                    {cliente && cliente.cuentaCorrienteHabilitada && (
+                        <div className="flex justify-end mt-8">
+                            <Link to="/mi-credito"
+                                className=" items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors">
+                                Ver mi crédito
+                            </Link>
+                        </div>
+                    )}
 
                     {/*si el cliente todavia no ha comprado nada*/}
                     {!cargando && pedidos.length === 0 && (
                         <p className="bg-white rounded-xl border border-stone-200 p-8 text-center text-stone-600">Todavía no tienes pedidos.</p>
                     )}
 
-                    {/*un recuadro por pedido, reemplaza a los pedido 1, 2 y 3 escritos a mano*/}
                     {pedidos.map((pedido) => (
                         <div key={pedido.id} className="bg-white rounded-xl shadow-sm border border-stone-200 p-5">
                             {/*fecha y estado
@@ -85,23 +78,45 @@ export default function MisPedidos() {
                                 </span>
                             </div>
 
-                            {/*productos*/}
-                            <div className="grid grid-cols-1 gap-4">
+                            {/*productos
+                            details esconde su contenido y summary es lo que siempre se ve
+                            al hacer click en summary se abre, y al hacer click de nuevo se cierra
+                            group permite que la flechita sepa si details esta abierto*/}
+                            <details className="group">
+                                {/*list none le quita el triangulo que el navegador pone por defecto*/}
+                                <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold text-amber-700">
+                                    Ver productos ({pedido.items.length})
+                                    {/*group open rotate 180 da vuelta la flechita cuando details esta abierto*/}
+                                    <svg viewBox="0 0 24 24" className="size-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </summary>
 
-                                {/*items center alinea verticalmente los elementos, para que esten a la misma altura
+                                <div className="mt-4 grid grid-cols-1 gap-4">
+
+                                    {/*items center alinea verticalmente los elementos, para que esten a la misma altura
                                 gap 3 genera un espacio horizontal entre la imagen y el texto de nombre producto cantidad y precio*/}
-                                {pedido.items.map((item) => (
-                                    <div key={item.codigo} className="flex items-center gap-3 border border-stone-100 rounded-lg p-3">
-                                        <img src={placeholder} alt={item.nombre}
-                                            className="w-16 h-16 object-cover rounded-lg border border-stone-100" />
-                                        <div className="flex flex-col">
-                                            <p className="font-semibold text-stone-800 text-sm">{item.nombre}</p>
-                                            <p className="text-stone-500 text-xs">Cantidad: {item.cantidad}</p>
-                                            <p className="text-amber-700 font-bold text-sm mt-1">{formatoPrecio(item.precioUnitario)}</p>
+                                    {pedido.items.map((item) => (
+                                        <div key={item.codigo} className="flex items-center gap-3 border border-stone-100 rounded-lg p-3">
+                                            <img src={placeholder} alt={item.nombre}
+                                                className="w-16 h-16 object-cover rounded-lg border border-stone-100" />
+                                            <div className="flex flex-col">
+                                                <p className="font-semibold text-stone-800 text-sm">{item.nombre}</p>
+                                                <p className="text-stone-500 text-xs">Cantidad: {item.cantidad}</p>
+                                                <p className="text-amber-700 font-bold text-sm mt-1">{formatoPrecio(item.precioUnitario)}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
 
+                                </div>
+                            </details>
+
+                            {/*total de la compra
+                            border t es borde superior, separa el total de los productos
+                            justify between deja "Total" a la izquierda y el monto a la derecha*/}
+                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-stone-200">
+                                <span className="text-sm font-semibold text-stone-600">Total</span>
+                                <span className="text-lg font-bold text-stone-800">{formatoPrecio(pedido.total)}</span>
                             </div>
                         </div>
                     ))}
