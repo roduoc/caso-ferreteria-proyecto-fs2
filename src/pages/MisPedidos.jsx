@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import placeholder from '../assets/placeholder.avif';
 import { obtenerSesion } from '../services/usuarioService';
 import { listarPedidosCliente } from '../services/pedidoService';
 import { obtenerCliente } from '../services/clienteService';
+import sinImagen from '../assets/sin-imagen.svg';
 
 function formatearFecha(fecha) {
     return fecha.split('-').reverse().join('/');
@@ -98,7 +98,7 @@ export default function MisPedidos() {
                                 gap 3 genera un espacio horizontal entre la imagen y el texto de nombre producto cantidad y precio*/}
                                     {pedido.items.map((item) => (
                                         <div key={item.codigo} className="flex items-center gap-3 border border-stone-100 rounded-lg p-3">
-                                            <img src={placeholder} alt={item.nombre}
+                                            <img src={sinImagen} alt={item.nombre}
                                                 className="w-16 h-16 object-cover rounded-lg border border-stone-100" />
                                             <div className="flex flex-col">
                                                 <p className="font-semibold text-stone-800 text-sm">{item.nombre}</p>
