@@ -1,8 +1,9 @@
 //use state le da memoria a la pagina
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../assets/logo-los-maestros.svg';
 import { obtenerSesion, cerrarSesion } from '../services/usuarioService';
+import { obtenerCarrito } from '../services/carritoService';
 
 //los escribimos aca para recorrerlos mas tarde y no escribirlos dos veces
 
@@ -38,8 +39,25 @@ function Navbar() {
     //variable menu abierto, empieza en false
     //funcion setmenuabierto para cambiarla
     const [menuAbierto, setMenuAbierto] = useState(false);
+    const [cantidadCarrito, setCantidadCarrito] = useState(0);
 
     const sesion = obtenerSesion();
+
+    useEffect(() => {
+        async function actualizarContador() {
+            const carrito = await obtenerCarrito();
+            setCantidadCarrito(carrito.reduce((total, item) => total + item.cantidad, 0));
+        }
+
+        actualizarContador();
+        window.addEventListener('carritoActualizado', actualizarContador);
+        window.addEventListener('storage', actualizarContador);
+
+        return () => {
+            window.removeEventListener('carritoActualizado', actualizarContador);
+            window.removeEventListener('storage', actualizarContador);
+        };
+    }, []);
 
     //togglemenu invierte el valor actual, si estaba en true pasa a false y al reves
     //
@@ -144,7 +162,7 @@ function Navbar() {
                     id="cart-button"
                     className="relative flex items-center gap-2 rounded-lg border border-stone-300 p-2.5 text-sm font-semibold"
                     to="/carrito"
-                    aria-label="Carrito con 0 productos">
+                    aria-label={`Carrito con ${cantidadCarrito} productos`}>
 
                     <svg aria-hidden="true" viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6" />
@@ -155,7 +173,7 @@ function Navbar() {
                     <span
                         id="cart-count"
                         className="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full border-2 border-white bg-amber-400 text-xs font-bold text-stone-900">
-                        0
+                        {cantidadCarrito}
                     </span>
                 </NavLink>
             </div>

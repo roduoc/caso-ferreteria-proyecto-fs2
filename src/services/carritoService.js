@@ -12,6 +12,28 @@ export async function obtenerCarrito() {
   return leer(CLAVE, []);
 }
 
+//devuelve los productos del carrito con sus datos y subtotal
+export async function obtenerDetalleCarrito() {
+  await esperar();
+  const carrito = leer(CLAVE, []);
+  const productos = leer(CLAVE_PRODUCTOS, productosMock);
+
+  return carrito.flatMap((item) => {
+    const producto = productos.find((p) => p.codigo === item.codigo);
+    if (!producto) return [];
+
+    return [{
+      ...producto,
+      cantidad: item.cantidad,
+      subtotal: producto.precio * item.cantidad,
+    }];
+  });
+}
+
+function avisarCambio() {
+  window.dispatchEvent(new Event('carritoActualizado'));
+}
+
 //si quien llama no pasa una cantidad, por defecto es 1
 export async function agregarAlCarrito(codigo, cantidad = 1) {
   await esperar();
@@ -43,5 +65,46 @@ export async function agregarAlCarrito(codigo, cantidad = 1) {
   }
 
   guardar(CLAVE, carrito);
+  avisarCambio();
   return carrito;
+}
+
+export async function actualizarCantidad(codigo, cantidad) {
+  await esperar();
+  const nuevaCantidad = Number(cantidad);
+  const productos = leer(CLAVE_PRODUCTOS, productosMock);
+  const producto = productos.find((p) => p.codigo === codigo);
+  if (!producto) throw new Error('Producto no encontrado.');
+
+  if (!Number.isInteger(nuevaCantidad) || nuevaCantidad < 1) {
+    throw new Error('La cantidad debe ser mayor a 0.');
+  }
+  if (nuevaCantidad > producto.stock) {
+    throw new Error('No hay más stock disponible.');
+  }
+
+  const carrito = leer(CLAVE, []);
+  const item = carrito.find((elemento) => elemento.codigo === codigo);
+  if (!item) throw new Error('El producto no está en el carrito.');
+
+  item.cantidad = nuevaCantidad;
+  guardar(CLAVE, carrito);
+  avisarCambio();
+  return carrito;
+}
+
+export async function eliminarDelCarrito(codigo) {
+  await esperar();
+  const carrito = leer(CLAVE, []);
+  const nuevoCarrito = carrito.filter((item) => item.codigo !== codigo);
+  guardar(CLAVE, nuevoCarrito);
+  avisarCambio();
+  return nuevoCarrito;
+}
+
+export async function vaciarCarrito() {
+  await esperar();
+  guardar(CLAVE, []);
+  avisarCambio();
+  return [];
 }
