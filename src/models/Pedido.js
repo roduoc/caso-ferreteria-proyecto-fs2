@@ -9,6 +9,8 @@ export function crearPedidoDTO(p) {
     fecha: p.fecha,
     estado: p.estado,
     medioPago: p.medioPago,
+    entrega: p.entrega,
+    costoEnvio: p.costoEnvio || 0,
     items: p.items,
     total: p.total,
   };
