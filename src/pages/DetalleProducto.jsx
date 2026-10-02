@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import sinImagen from '../assets/sin-imagen.svg';
 import { obtenerProducto } from '../services/productoService';
+import { agregarAlCarrito } from '../services/carritoService';
 
 function formatoPrecio(precio) {
     return new Intl.NumberFormat('es-CL', {
@@ -18,6 +19,7 @@ export default function DetalleProducto() {
     const [producto, setProducto] = useState(null);
     const [noEncontrado, setNoEncontrado] = useState(false);
     const [cantidad, setCantidad] = useState(1);
+    const [mensaje, setMensaje] = useState(null);
 
     useEffect(() => {
         obtenerProducto(codigo)
@@ -57,6 +59,15 @@ export default function DetalleProducto() {
     function corregirCantidad() {
         if (Number(cantidad) < 1) setCantidad(1);
         if (Number(cantidad) > producto.stock) setCantidad(producto.stock);
+    }
+
+    async function anadir() {
+        try {
+            await agregarAlCarrito(producto.codigo, cantidad);
+            setMensaje({ texto: 'Producto añadido al carrito.', tipo: 'ok' });
+        } catch (error) {
+            setMensaje({ texto: error.message, tipo: 'error' });
+        }
     }
 
     return (
@@ -101,8 +112,16 @@ export default function DetalleProducto() {
                                     <button className="quantity-button" type="button" aria-label="Aumentar cantidad" onClick={aumentarCantidad}>+</button>
                                 </div>
                             </div>
-                            <button className="add-button min-h-10 flex-1" type="button">Añadir al carrito</button>
+                            <button className="add-button min-h-10 flex-1" type="button" onClick={anadir}>Añadir al carrito</button>
                         </div>
+                        {mensaje && (
+                            <p className={mensaje.tipo === 'error'
+                                ? 'mt-4 rounded-lg bg-red-50 p-3 text-sm font-semibold text-red-700'
+                                : 'mt-4 rounded-lg bg-emerald-50 p-3 text-sm font-semibold text-emerald-700'}
+                                role="status">
+                                {mensaje.texto}
+                            </p>
+                        )}
                         <p className="mt-4 text-xs leading-5 text-stone-500">El producto se reserva solamente después de confirmar el pedido.</p>
                     </div>
                 </div>

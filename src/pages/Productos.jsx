@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import sinImagen from '../assets/sin-imagen.svg';
 import { listarProductos } from '../services/productoService';
+import { agregarAlCarrito } from '../services/carritoService';
 
 function formatoPrecio(precio) {
     return new Intl.NumberFormat('es-CL', {
@@ -63,6 +64,14 @@ export default function Productos() {
         setNotificacion({ texto: mensaje, tipo });
     }
 
+    async function anadir(codigo) {
+        try {
+            await agregarAlCarrito(codigo);
+            mostrarMensaje('Producto añadido al carrito.', 'ok');
+        } catch (error) {
+            mostrarMensaje(error.message, 'error');
+        }
+    }
 
     const productosFiltrados = obtenerProductosFiltrados();
     const textoProducto = productosFiltrados.length === 1 ? 'producto encontrado' : 'productos encontrados';
@@ -136,7 +145,7 @@ export default function Productos() {
                                     <p className="mt-3 text-sm font-semibold text-green-700">Stock disponible: {producto.stock}</p>
                                     <div className="mt-auto flex items-center justify-between gap-3 pt-5">
                                         <strong className="text-xl">{formatoPrecio(producto.precio)}</strong>
-                                        <button className="add-button" type="button">Añadir</button>
+                                        <button className="add-button" type="button" onClick={() => anadir(producto.codigo)}>Añadir</button>
                                     </div>
                                 </div>
                             </article>
