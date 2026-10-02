@@ -51,7 +51,7 @@ export async function actualizarProducto(codigo, cambios) {
   if (indice === -1) throw new Error('Producto no encontrado');
 
   //se copia el producto con los cambios encima
-  productos[indice] = { ...productos[indice], ...cambios };
+  productos[indice] = { ...productos[indice], ...nuevosDatos };
   guardar(CLAVE, productos);
 
   return crearProductoDTO(productos[indice]);
@@ -127,4 +127,3 @@ export async function eliminarProducto(codigo) {
   //filter deja todos los productos menos el que se elimina
   guardar(CLAVE, productos.filter((p) => p.codigo !== codigo));
 }
-
