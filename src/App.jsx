@@ -16,6 +16,9 @@ import Envios from './pages/Envios';
 import MisPedidos from './pages/MisPedidos';
 import MiCredito from './pages/MiCredito';
 import VistaBlog from './pages/VistaBlog';
+import Pago from './pages/Pago';
+import CompraExitosa from './pages/CompraExitosa';
+import CompraFallida from './pages/CompraFallida';
 
 import VendedorInventario from './pages/vendedor/VendedorInventario';
 import VendedorGestionPedidos from './pages/vendedor/VendedorGestionPedidos';
@@ -63,6 +66,9 @@ export default function App() {
 
       <Route element={<LayoutNormal rol="cliente" />}>
         <Route path="/envios" element={<Envios />} />
+        <Route path="/pago" element={<Pago />} />
+        <Route path="/compra-exitosa" element={<CompraExitosa />} />
+        <Route path="/compra-fallida" element={<CompraFallida />} />
         <Route path="/mis-pedidos" element={<MisPedidos />} />
         <Route path="/mi-credito" element={<MiCredito />} />
       </Route>
