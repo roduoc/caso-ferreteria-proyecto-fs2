@@ -26,8 +26,8 @@ export default function TarjetaProducto({ producto }) {
         <p className="text-xs font-bold uppercase tracking-wide text-amber-700">{producto.categoria}</p>
         <h3 className="mt-2 font-bold leading-5">{producto.nombre}</h3>
         <p className="mt-2 text-sm text-stone-500">{producto.marca} · {producto.unidad}</p>
-        <p className={`mt-2 text-xs font-semibold ${producto.stock > 0 ? 'text-emerald-700' : 'text-red-700'}`}>
-          {producto.stock > 0 ? `${producto.stock} unidades disponibles` : 'Sin stock'}
+        <p className={`mt-3 text-sm font-semibold ${producto.stock > 0 ? 'text-green-700' : 'text-red-700'}`}>
+          {producto.stock > 0 ? `Stock disponible: ${producto.stock}` : 'Sin stock'}
         </p>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-5">

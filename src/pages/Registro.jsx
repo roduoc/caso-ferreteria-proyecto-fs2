@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 //usenavigate sirve para cambiar de pagina desde el codigo, reemplaza a window.location.href
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate , useLocation} from 'react-router-dom';
 import logo from '../assets/logo-los-maestros.svg';
 import { registrarCliente, obtenerSesion, rutasPorRol  } from '../services/usuarioService';
 import regionesComunas from '../mocks/regionesComunas.json';
@@ -21,6 +21,7 @@ export default function Registro() {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         if (!error) return;
@@ -59,7 +60,8 @@ export default function Registro() {
             //crea la cuenta e inicia la sesion. si algo falla lanza un error y el catch muestra su mensaje
             await registrarCliente(formulario);
             setError('');
-            navigate('/mis-pedidos');
+            //viene del link de registrarse que agregamos al login
+            navigate(location.state?.desde || '/mis-pedidos');
         } catch (e) {
             setError(e.message);
         }
@@ -105,36 +107,36 @@ export default function Registro() {
                             )}
 
                             <div>
-                                <label className="mb-1 block text-sm font-semibold">Rut</label>
-                                <input name="rut" type="text" maxLength="100" required
+                                <label className="mb-1 block text-sm font-semibold" htmlFor='rut'>Rut</label>
+                                <input id="rut" name="rut" type="text" maxLength="100" required
                                     value={formulario.rut} onChange={cambiarCampo}
                                     className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-sm font-semibold">Nombre</label>
-                                <input name="nombre" type="text" maxLength="100" required
+                                <label className="mb-1 block text-sm font-semibold" htmlFor='nombre'>Nombre</label>
+                                <input id="nombre" name="nombre" type="text" maxLength="100" required
                                     value={formulario.nombre} onChange={cambiarCampo}
                                     className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-sm font-semibold">Apellidos</label>
-                                <input name="apellidos" type="text" maxLength="100" required
+                                <label className="mb-1 block text-sm font-semibold" htmlFor='apellidos'>Apellidos</label>
+                                <input id="apellidos" name="apellidos" type="text" maxLength="100" required
                                     value={formulario.apellidos} onChange={cambiarCampo}
                                     className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-sm font-semibold">Correo electrónico</label>
-                                <input name="correo" type="email" maxLength="100" required
+                                <label className="mb-1 block text-sm font-semibold" htmlFor='correo'>Correo electrónico</label>
+                                <input id="correo" name="correo" type="email" maxLength="100" required
                                     value={formulario.correo} onChange={cambiarCampo}
                                     className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-sm font-semibold">Contraseña</label>
-                                <input name="clave" type="password" maxLength="10" required
+                                <label className="mb-1 block text-sm font-semibold" htmlFor='clave'>Contraseña</label>
+                                <input id="clave" name="clave" type="password" maxLength="10" required
                                     value={formulario.clave} onChange={cambiarCampo}
                                     className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                                 <p className="mt-1 text-xs text-stone-500">Entre 4 y 10 caracteres.</p>
@@ -172,8 +174,8 @@ export default function Registro() {
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-sm font-semibold">Dirección</label>
-                                <input name="direccion" type="text" maxLength="100" required
+                                <label className="mb-1 block text-sm font-semibold" htmlFor='direccion'>Dirección</label>
+                                <input id="direccion" name="direccion" type="text" maxLength="100" required
                                     value={formulario.direccion} onChange={cambiarCampo}
                                     className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>

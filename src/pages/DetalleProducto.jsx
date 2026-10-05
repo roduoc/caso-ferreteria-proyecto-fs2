@@ -93,10 +93,15 @@ export default function DetalleProducto() {
                         <h1 className="mt-3 text-3xl font-bold leading-tight sm:text-4xl">{producto.nombre}</h1>
                         <p className="mt-4 leading-7 text-stone-600">Producto disponible en Ferretería Los Maestros. Consulta su información y selecciona la cantidad que necesitas.</p>
 
+                        {/**/}
+                        {/*dl description list, caja que agrupa los pares*/}
                         <dl className="mt-6 grid grid-cols-2 gap-4 rounded-lg border border-stone-200 bg-stone-50 p-4 text-sm">
+                            {/*dt description term, nombre del dato
+                            dd description details valor del dato
+                            los div que envuelven cada par sirven para que el grid cols los ordene en columnas*/}
                             <div><dt className="text-stone-500">Marca</dt><dd className="mt-1 font-semibold">{producto.marca}</dd></div>
                             <div><dt className="text-stone-500">Unidad de venta</dt><dd className="mt-1 font-semibold">{producto.unidad}</dd></div>
-                            <div><dt className="text-stone-500">Disponibilidad</dt><dd className="mt-1 font-semibold text-green-700">En stock</dd></div>
+                            <div><dt className="text-stone-500">Disponibilidad</dt><dd className={`mt-1 font-semibold ${producto.stock > 0 ? 'text-green-700' : 'text-red-700'}`}>{producto.stock > 0 ? 'En stock' : 'Sin stock'}</dd></div>
                             <div><dt className="text-stone-500">Stock disponible</dt><dd className="mt-1 font-semibold">{producto.stock} {producto.stock === 1 ? 'unidad' : 'unidades'}</dd></div>
                         </dl>
 

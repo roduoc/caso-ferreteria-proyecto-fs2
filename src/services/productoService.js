@@ -51,7 +51,7 @@ export async function actualizarProducto(codigo, cambios) {
   if (indice === -1) throw new Error('Producto no encontrado');
 
   //se copia el producto con los cambios encima
-  productos[indice] = { ...productos[indice], ...cambios };
+  productos[indice] = { ...productos[indice], ...nuevosDatos };
   guardar(CLAVE, productos);
 
   return crearProductoDTO(productos[indice]);

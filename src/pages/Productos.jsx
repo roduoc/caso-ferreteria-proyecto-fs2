@@ -142,7 +142,9 @@ export default function Productos() {
                                     <p className="text-xs font-bold uppercase tracking-wider text-amber-700">{producto.categoria} · {producto.subcategoria}</p>
                                     <h2 className="mt-2 text-lg font-bold leading-snug"><Link className="hover:text-amber-700" to={`/producto/${producto.codigo}`}>{producto.nombre}</Link></h2>
                                     <p className="mt-2 text-sm text-stone-500">Marca {producto.marca} · {producto.unidad}</p>
-                                    <p className="mt-3 text-sm font-semibold text-green-700">Stock disponible: {producto.stock}</p>
+                                    <p className={`mt-3 text-sm font-semibold ${producto.stock > 0 ? 'text-green-700' : 'text-red-700'}`}>
+                                        {producto.stock > 0 ? `Stock disponible: ${producto.stock}` : 'Sin stock'}
+                                    </p>
                                     <div className="mt-auto flex items-center justify-between gap-3 pt-5">
                                         <strong className="text-xl">{formatoPrecio(producto.precio)}</strong>
                                         <button className="add-button" type="button" onClick={() => anadir(producto.codigo)}>Añadir</button>
