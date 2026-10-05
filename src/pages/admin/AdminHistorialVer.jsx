@@ -66,7 +66,7 @@ export default function AdminHistorialVer() {
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
                             <div>
                                 <span className="text-xs text-stone-400 block">N° de pedido</span>
-                                <span className="font-semibold text-stone-800">#{String(pedido.id).padStart(4, '0')}</span>
+                                <span className="font-semibold text-stone-800">#{String(pedido.id)}</span>
                             </div>
                             <div>
                                 <span className="text-xs text-stone-400 block">Fecha</span>
