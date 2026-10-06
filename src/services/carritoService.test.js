@@ -52,4 +52,14 @@ describe('carritoService', () => {
     await vaciarCarrito();
     expect(await obtenerCarrito()).toEqual([]);
   });
+
+  it('rechaza productos inexistentes y cantidades inválidas', async () => {
+    await expect(agregarAlCarrito('NOEXISTE')).rejects.toThrow(/no encontrado/i);
+    await expect(agregarAlCarrito('MC001', 0)).rejects.toThrow(/entero mayor a 0/i);
+    await expect(agregarAlCarrito('MC001', 1.5)).rejects.toThrow(/entero mayor a 0/i);
+    await expect(actualizarCantidad('NOEXISTE', 1)).rejects.toThrow(/no encontrado/i);
+    await expect(actualizarCantidad('MC001', 0)).rejects.toThrow(/mayor a 0/i);
+    await expect(actualizarCantidad('MC001', 81)).rejects.toThrow(/stock/i);
+    await expect(actualizarCantidad('MC001', 1)).rejects.toThrow(/no está en el carrito/i);
+  });
 });
