@@ -1,8 +1,9 @@
 import pedidosMock from '../mocks/pedidos.json';
 import productosMock from '../mocks/productos.json';
 import clientesMock from '../mocks/clientes.json';
-import { crearPedidoDTO } from '../models/Pedido';
+import { crearPedidoDTO, ESTADOS_PEDIDO } from '../models/Pedido';
 import { leer, guardar, esperar, siguienteId } from './storage';
+import { obtenerSesion } from './usuarioService';
 
 const CLAVE = 'pedidos';
 const CLAVE_PRODUCTOS = 'productos';
@@ -14,6 +15,9 @@ const CLAVE_ULTIMO_ID = 'ultimoIdPedido';
 //lo usan el vendedor y el admin
 export async function listarPedidos() {
   await esperar();
+  if (!['admin', 'vendedor'].includes(obtenerSesion()?.rol)) {
+    throw new Error('No tienes permiso para gestionar pedidos');
+  }
   const pedidos = leer(CLAVE, pedidosMock);
   return pedidos.map(crearPedidoDTO);
 }
@@ -21,6 +25,12 @@ export async function listarPedidos() {
 //cambia el estado de un pedido
 export async function cambiarEstado(id, nuevoEstado) {
   await esperar();
+
+  if (!['admin', 'vendedor'].includes(obtenerSesion()?.rol)) {
+    throw new Error('No tienes permiso para gestionar pedidos');
+  }
+
+  if (!ESTADOS_PEDIDO.includes(nuevoEstado)) throw new Error('Estado de pedido no válido');
 
   const pedidos = leer(CLAVE, pedidosMock);
   const indice = pedidos.findIndex((p) => p.id === id);
@@ -39,6 +49,10 @@ export async function cambiarEstado(id, nuevoEstado) {
 //devuelve solo los pedidos de un cliente, para el historial de compras
 export async function listarPedidosCliente(clienteId) {
   await esperar();
+  const sesion = obtenerSesion();
+  if (!sesion || (sesion.rol !== 'admin' && (sesion.rol !== 'cliente' || sesion.id !== clienteId))) {
+    throw new Error('No tienes permiso para consultar estos pedidos');
+  }
   const pedidos = leer(CLAVE, pedidosMock);
   return pedidos
     .filter((p) => p.clienteId === clienteId)
@@ -48,6 +62,14 @@ export async function listarPedidosCliente(clienteId) {
 //crea el pedido usando el carrito actual y descuenta el stock
 export async function crearPedido(clienteId, datosEntrega, medioPago) {
   await esperar();
+
+  const sesion = obtenerSesion();
+  if (!sesion || sesion.rol !== 'cliente' || sesion.id !== clienteId) {
+    throw new Error('Inicia sesión como cliente para comprar.');
+  }
+  if (!['contado', 'cuenta_corriente'].includes(medioPago)) {
+    throw new Error('Selecciona un medio de pago válido.');
+  }
 
   const carrito = leer(CLAVE_CARRITO, []);
   if (carrito.length === 0) throw new Error('El carrito está vacío.');

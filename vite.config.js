@@ -21,6 +21,12 @@ export default defineConfig({
       reporter: ['text', 'html', 'json-summary'],
       include: ['src/services/**/*.{js,jsx}', 'src/components/**/*.{js,jsx}'],
       exclude: ['src/test/**'],
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+      },
     },
   },
 })
