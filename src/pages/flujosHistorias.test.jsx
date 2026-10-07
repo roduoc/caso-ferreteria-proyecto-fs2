@@ -10,11 +10,13 @@ import AdminHistorialVer from './admin/AdminHistorialVer';
 import { agregarAlCarrito } from '../services/carritoService';
 import { obtenerCliente } from '../services/clienteService';
 import { actualizarProducto } from '../services/productoService';
-import { iniciarSesion } from '../services/usuarioService';
+import { cerrarSesion, iniciarSesion } from '../services/usuarioService';
 
 describe('HU 4: catálogo sin autenticación', () => {
   it('muestra nombre, precio y el stock actualizado al entrar', async () => {
+    await iniciarSesion('admin@duoc.cl', '1234');
     await actualizarProducto('MC001', { stock: 7 });
+    cerrarSesion();
     render(<MemoryRouter initialEntries={['/productos']}><Productos /></MemoryRouter>);
     const nombre = await screen.findByRole('heading', { name: 'Cemento Polpaico gris 25 kg' });
     const tarjeta = nombre.closest('article');

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { agregarAlCarrito, obtenerCarrito } from './carritoService';
 import { obtenerCliente } from './clienteService';
+import { listarPagosCliente, registrarPago } from './pagoService';
 import { cambiarEstado, crearPedido, listarPedidos, listarPedidosCliente } from './pedidoService';
 import { obtenerProducto } from './productoService';
 import { cerrarSesion, iniciarSesion } from './usuarioService';
@@ -33,6 +34,19 @@ describe('compra a crédito', () => {
     const pedido = await crearPedido(sesion.id, { modalidad: 'retiro' }, 'contado');
     expect(pedido.costoEnvio).toBe(0);
     expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(saldoAntes);
+  });
+
+  it('mantiene la venta a cuenta corriente pendiente hasta registrar su cancelación', async () => {
+    const sesion = await loginCliente();
+    await agregarAlCarrito('MC001');
+    const pedido = await crearPedido(sesion.id, { modalidad: 'retiro' }, 'cuenta_corriente');
+    expect(pedido.medioPago).toBe('cuenta_corriente');
+    const saldoPendiente = (await obtenerCliente(sesion.id)).saldoAdeudado;
+    expect(saldoPendiente).toBeGreaterThanOrEqual(pedido.total);
+    const pago = await registrarPago(sesion.id, saldoPendiente);
+    expect(pago.monto).toBe(saldoPendiente);
+    expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(0);
+    expect((await listarPagosCliente(sesion.id)).some((p) => p.id === pago.id)).toBe(true);
   });
 
   it('rechaza crédito no habilitado y conserva carrito, stock y deuda', async () => {

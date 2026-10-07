@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { cerrarSesion, iniciarSesion } from './usuarioService';
 import {
   actualizarProducto,
+  actualizarStock,
   crearProducto,
   eliminarProducto,
   listarProductos,
@@ -20,6 +22,9 @@ const productoNuevo = {
 };
 
 describe('productoService', () => {
+  beforeEach(async () => {
+    await iniciarSesion('admin@duoc.cl', '1234');
+  });
   it('lista los productos simulados como DTO', async () => {
     const productos = await listarProductos();
 
@@ -57,6 +62,33 @@ describe('productoService', () => {
     await eliminarProducto('TS001');
 
     await expect(obtenerProducto('TS001')).rejects.toThrow('Producto no encontrado');
+    expect(JSON.parse(localStorage.getItem('productos')).find((p) => p.codigo === 'TS001')).toMatchObject({ activo: false });
+    expect((await listarProductos()).some((p) => p.codigo === 'TS001')).toBe(false);
+  });
+
+  it('activa la alerta solo al quedar bajo el stock mínimo', async () => {
+    const alLimite = await actualizarProducto('MC001', { stock: 20 });
+    expect(alLimite.stockMinimo).toBe(20);
+    expect(alLimite.stockBajo).toBe(false);
+    const bajoMinimo = await actualizarProducto('MC001', { stock: 19 });
+    expect(bajoMinimo.stockBajo).toBe(true);
+  });
+
+  it('rechaza crear o dar de baja productos sin rol administrador', async () => {
+    cerrarSesion();
+    await expect(crearProducto(productoNuevo)).rejects.toThrow(/administrador/i);
+    await expect(eliminarProducto('MC001')).rejects.toThrow(/administrador/i);
+    await expect(actualizarProducto('MC001', { precio: 10 })).rejects.toThrow(/administrador/i);
+  });
+
+  it('permite al vendedor reponer stock, pero no cambiar el precio', async () => {
+    cerrarSesion();
+    await iniciarSesion('vendedor@duoc.cl', '1234');
+    await expect(actualizarProducto('MC001', { precio: 1000 })).rejects.toThrow(/administrador/i);
+    await expect(crearProducto(productoNuevo)).rejects.toThrow(/administrador/i);
+    await expect(eliminarProducto('MC001')).rejects.toThrow(/administrador/i);
+    expect((await actualizarStock('MC001', 25)).stock).toBe(25);
+    await expect(actualizarStock('MC001', -1)).rejects.toThrow(/cantidad/i);
   });
 
   it.each([

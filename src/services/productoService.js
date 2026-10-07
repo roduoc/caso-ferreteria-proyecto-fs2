@@ -1,6 +1,7 @@
 import productosMock from '../mocks/productos.json';
 import { crearProductoDTO } from '../models/Producto';
 import { leer, guardar, esperar } from './storage';
+import { obtenerSesion } from './usuarioService';
 
 const CLAVE = 'productos';
 
@@ -8,7 +9,7 @@ const CLAVE = 'productos';
 export async function listarProductos() {
   await esperar();
   const productos = leer(CLAVE, productosMock);
-  return productos.map(crearProductoDTO);
+  return productos.filter((p) => p.activo !== false).map(crearProductoDTO);
 }
 
 //devuelve un producto segun su codigo
@@ -17,12 +18,25 @@ export async function obtenerProducto(codigo) {
   const productos = leer(CLAVE, productosMock);
   const producto = productos.find((p) => p.codigo === codigo);
 
-  if (!producto) throw new Error('Producto no encontrado');
+  if (!producto || producto.activo === false) throw new Error('Producto no encontrado');
   return crearProductoDTO(producto);
 }
 
 //cambia el precio y/o el stock de un producto
 export async function actualizarProducto(codigo, cambios) {
+  if (obtenerSesion()?.rol !== 'admin') throw new Error('Solo el administrador puede editar productos');
+  return guardarCambiosProducto(codigo, cambios);
+}
+
+//El vendedor puede reponer existencias, pero no cambiar precios ni otros datos del catálogo.
+export async function actualizarStock(codigo, stock) {
+  if (!['admin', 'vendedor'].includes(obtenerSesion()?.rol)) {
+    throw new Error('No tienes permiso para actualizar el stock');
+  }
+  return guardarCambiosProducto(codigo, { stock });
+}
+
+async function guardarCambiosProducto(codigo, cambios) {
   await esperar();
   const nuevosDatos = {};
 
@@ -48,7 +62,7 @@ export async function actualizarProducto(codigo, cambios) {
   const productos = leer(CLAVE, productosMock);
   //busca el producto por codigo
   const indice = productos.findIndex((p) => p.codigo === codigo);
-  if (indice === -1) throw new Error('Producto no encontrado');
+  if (indice === -1 || productos[indice].activo === false) throw new Error('Producto no encontrado');
 
   //se copia el producto con los cambios encima
   productos[indice] = { ...productos[indice], ...nuevosDatos };
@@ -61,6 +75,7 @@ export async function actualizarProducto(codigo, cambios) {
 //crea un producto nuevo, solo lo usa el admin
 export async function crearProducto(datos) {
   await esperar();
+  if (obtenerSesion()?.rol !== 'admin') throw new Error('Solo el administrador puede crear productos');
 
   //los datos llegan tal como estan en el formulario, todos como texto
   //primero se revisa que ningun campo este vacio
@@ -105,6 +120,7 @@ export async function crearProducto(datos) {
     precio,
     stock,
     stockMinimo,
+    activo: true,
   };
 
   //push lo agrega a la lista de productos
@@ -117,13 +133,16 @@ export async function crearProducto(datos) {
 //elimina un producto segun su codigo, solo lo usa el admin
 export async function eliminarProducto(codigo) {
   await esperar();
+  if (obtenerSesion()?.rol !== 'admin') throw new Error('Solo el administrador puede dar de baja productos');
   //carga los productos
   const productos = leer(CLAVE, productosMock);
 
-  if (!productos.some((p) => p.codigo === codigo)) {
+  const indice = productos.findIndex((p) => p.codigo === codigo && p.activo !== false);
+  if (indice === -1) {
     throw new Error('Producto no encontrado');
   }
 
-  //filter deja todos los productos menos el que se elimina
-  guardar(CLAVE, productos.filter((p) => p.codigo !== codigo));
+  //La baja conserva el registro para mantener los pedidos históricos.
+  productos[indice] = { ...productos[indice], activo: false };
+  guardar(CLAVE, productos);
 }

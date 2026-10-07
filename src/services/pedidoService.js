@@ -85,7 +85,7 @@ export async function crearPedido(clienteId, datosEntrega, medioPago) {
 
   const items = carrito.map((itemCarrito) => {
     const producto = productos.find((p) => p.codigo === itemCarrito.codigo);
-    if (!producto) throw new Error('Uno de los productos ya no existe.');
+    if (!producto || producto.activo === false) throw new Error('Uno de los productos ya no existe.');
     if (itemCarrito.cantidad > producto.stock) {
       throw new Error(`No hay stock suficiente de ${producto.nombre}.`);
     }
