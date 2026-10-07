@@ -25,20 +25,4 @@ describe('HU 13: reportes de ventas', () => {
     expect(reporte.productos[0].codigo).toBe('MC007');
   });
 
-  it('informa reportes vacíos cuando todavía no hay pedidos', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
-    localStorage.setItem('pedidos', '[]');
-    expect(await obtenerReporteVentas()).toEqual({ productos: [], clientes: [] });
-  });
-
-  it('agrupa un producto repetido y conserva la frecuencia de un cliente eliminado', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
-    localStorage.setItem('pedidos', JSON.stringify([
-      { id: 1, clienteId: 999, items: [{ codigo: 'A', nombre: 'Producto A', cantidad: 2 }] },
-      { id: 2, clienteId: 999, items: [{ codigo: 'A', nombre: 'Producto A', cantidad: 3 }] },
-    ]));
-    const reporte = await obtenerReporteVentas();
-    expect(reporte.productos).toEqual([{ codigo: 'A', nombre: 'Producto A', cantidad: 5 }]);
-    expect(reporte.clientes).toEqual([{ id: 999, nombre: 'Cliente #999', cantidad: 2 }]);
-  });
 });

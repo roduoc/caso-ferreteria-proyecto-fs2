@@ -13,8 +13,10 @@ describe('pagoService: abonos de deuda', () => {
     expect((await listarPagos()).some((p) => p.id === pago.id)).toBe(true);
   });
 
-  it.each([0, -1, 1.5])('rechaza un abono inválido de %s', async (monto) => {
-    await expect(registrarPago(4, monto)).rejects.toThrow(/entero mayor a 0/i);
+  it('rechaza abonos que no sean enteros positivos', async () => {
+    for (const monto of [0, -1, 1.5]) {
+      await expect(registrarPago(4, monto)).rejects.toThrow(/entero mayor a 0/i);
+    }
   });
 
   it('rechaza cliente inexistente, crédito no habilitado y abono mayor a la deuda', async () => {

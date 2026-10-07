@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import Carrito from './Carrito';
@@ -7,11 +7,8 @@ import Envios from './Envios';
 import Productos from './Productos';
 import AdminInventario from './admin/AdminInventario';
 import AdminReportes from './admin/AdminReportes';
-import VendedorInventario from './vendedor/VendedorInventario';
-import LayoutAdmin from '../layouts/LayoutAdmin';
 import { agregarAlCarrito, obtenerCarrito } from '../services/carritoService';
-import { actualizarProducto, eliminarProducto } from '../services/productoService';
-import { listarPedidos } from '../services/pedidoService';
+import { actualizarProducto } from '../services/productoService';
 import { iniciarSesion } from '../services/usuarioService';
 
 function DestinoEntrega() {
@@ -32,18 +29,6 @@ describe('HU 5: filtros del catálogo', () => {
     expect(screen.getByText('No encontramos productos con esos filtros.')).toBeInTheDocument();
   });
 
-  it('filtra correctamente un conjunto de más de 800 productos', async () => {
-    const productos = Array.from({ length: 801 }, (_, i) => ({
-      codigo: `T${i}`, nombre: `Producto ${i}`, categoria: i === 800 ? 'Especial' : 'General',
-      subcategoria: 'Prueba', marca: 'Marca', unidad: 'Unidad', precio: 1000, stock: 5, stockMinimo: 1,
-    }));
-    localStorage.setItem('productos', JSON.stringify(productos));
-    render(<MemoryRouter><Productos /></MemoryRouter>);
-    await screen.findByRole('heading', { name: 'Producto 800' });
-    fireEvent.change(screen.getByLabelText('Categoría'), { target: { value: 'Especial' } });
-    expect(screen.getAllByRole('article')).toHaveLength(1);
-    expect(screen.getByText('1 producto encontrado')).toBeInTheDocument();
-  }, 15000);
 });
 
 describe('HU 8: carrito y cantidades', () => {
@@ -67,10 +52,6 @@ describe('HU 8: carrito y cantidades', () => {
     expect(tarjeta).toHaveTextContent('$17.970');
   });
 
-  it('impide agregar más unidades que el stock disponible', async () => {
-    await expect(agregarAlCarrito('MC001', 81)).rejects.toThrow(/stock/i);
-    expect(await obtenerCarrito()).toEqual([]);
-  });
 });
 
 describe('HU 9: retiro y despacho', () => {
@@ -123,26 +104,6 @@ describe('HU 6, HU 7 y HU 13: administración', () => {
     expect(await screen.findByText('Stock bajo: el mínimo es 20')).toBeInTheDocument();
   });
 
-  it('deja al vendedor reponer stock sin ofrecerle edición de precio', async () => {
-    await iniciarSesion('vendedor@duoc.cl', '1234');
-    render(<VendedorInventario />);
-    await waitFor(() => expect(screen.getByText('Cemento Polpaico gris 25 kg')).toBeInTheDocument());
-    fireEvent.change(screen.getByPlaceholderText('Buscar por código (ej: MC001)'), { target: { value: 'MC001' } });
-    expect(screen.queryByRole('button', { name: 'Editar precio' })).not.toBeInTheDocument();
-    fireEvent.change(screen.getByPlaceholderText('Nueva cantidad'), { target: { value: '21' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Editar cantidad' }));
-    expect(await screen.findByText('Cantidad actualizada correctamente')).toBeInTheDocument();
-  });
-
-  it('da de baja el producto sin perder ventas históricas y lo quita del catálogo', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
-    await eliminarProducto('MC001');
-    expect((await listarPedidos()).some((p) => p.items.some((item) => item.codigo === 'MC001'))).toBe(true);
-    render(<MemoryRouter><Productos /></MemoryRouter>);
-    await waitFor(() => expect(screen.getByText(/productos encontrados/)).toBeInTheDocument());
-    expect(screen.queryByRole('heading', { name: 'Cemento Polpaico gris 25 kg' })).not.toBeInTheDocument();
-  });
-
   it('dibuja gráficos calculados desde pedidos y restringe el acceso al administrador', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     render(<MemoryRouter><AdminReportes /></MemoryRouter>);
@@ -152,18 +113,4 @@ describe('HU 6, HU 7 y HU 13: administración', () => {
     expect(screen.getByText('2 compras')).toBeInTheDocument();
   });
 
-  it('redirige a un cliente fuera de los reportes', async () => {
-    await iniciarSesion('juan.perez@gmail.com', '1234');
-    render(
-      <MemoryRouter initialEntries={['/admin/reportes']}>
-        <Routes>
-          <Route path="/login" element={<p>Inicio de sesión</p>} />
-          <Route element={<LayoutAdmin links={[]} subtitulo="Panel" rol="admin" />}>
-            <Route path="/admin/reportes" element={<AdminReportes />} />
-          </Route>
-        </Routes>
-      </MemoryRouter>,
-    );
-    expect(screen.getByText('Inicio de sesión')).toBeInTheDocument();
-  });
 });

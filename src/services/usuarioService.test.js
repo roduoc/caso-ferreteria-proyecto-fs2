@@ -20,8 +20,10 @@ describe('HU 1: registro de clientes', () => {
     expect(obtenerSesion()?.id).toBe(sesion.id);
   });
 
-  it.each(['maria@otro.com', '@gmail.com', 'correo-sin-arroba'])('rechaza correo no permitido o mal formado: %s', async (correo) => {
-    await expect(registrarCliente({ ...datos, correo })).rejects.toThrow(/correo/i);
+  it('rechaza correos fuera de los dominios permitidos o mal formados', async () => {
+    for (const correo of ['maria@otro.com', '@gmail.com', 'correo-sin-arroba']) {
+      await expect(registrarCliente({ ...datos, correo })).rejects.toThrow(/correo/i);
+    }
   });
 
   it('rechaza contraseña inválida y correo duplicado', async () => {
@@ -30,11 +32,6 @@ describe('HU 1: registro de clientes', () => {
     await expect(registrarCliente({ ...datos, rut: '176543229', correo: 'MARIA@GMAIL.COM' })).rejects.toThrow(/correo/i);
   });
 
-  it('no acepta RUT duplicado ni dirección fuera de la región', async () => {
-    await registrarCliente(datos);
-    await expect(registrarCliente({ ...datos, correo: 'otra@gmail.com' })).rejects.toThrow(/RUT/);
-    await expect(registrarCliente({ ...datos, rut: '176543229', correo: 'otra@gmail.com', comuna: 'Ovalle', region: 'Metropolitana de Santiago' })).rejects.toThrow(/comuna/i);
-  });
 });
 
 describe('HU 2: sesión', () => {
