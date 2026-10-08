@@ -12,7 +12,7 @@ async function verHistorialCliente(page, id) {
   await expect(page).toHaveURL(new RegExp(`#/admin/historial/${id}$`))
 }
 
-test.describe('HU-12 Consultar historial de compras por cliente', () => {
+test.describe('Consultar historial de compras por cliente', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/#/login')
     await ingresar(page, 'admin@duoc.cl', '1234')
