@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listarProductos, actualizarProducto } from '../../services/productoService';
+import { listarProductos, actualizarStock } from '../../services/productoService';
 import TarjetaStock from '../../components/TarjetaStock';
 
 export default function VendedorInventario() {
@@ -25,7 +25,7 @@ export default function VendedorInventario() {
 
     async function guardarCambios(codigo, cambios) {
         //actualizado es el producto ya actualizado, en forma de dto
-        const actualizado = await actualizarProducto(codigo, cambios);
+        const actualizado = await actualizarStock(codigo, cambios.stock);
         //recorre la lista de productos y cuando encuentra el codigo del que cambió
         //lo actualiza, si no, deja el producto que ya estaba
         setProductos((lista) => lista.map((p) => (p.codigo === codigo ? actualizado : p)));
@@ -65,7 +65,7 @@ export default function VendedorInventario() {
                 {/*se crea una por cada producto
                 la pagina le pasa el producto a mostrar*/}
                 {productosFiltrados.map((producto) => (
-                    <TarjetaStock key={producto.codigo} producto={producto} onGuardar={guardarCambios} />
+                    <TarjetaStock key={producto.codigo} producto={producto} onGuardar={guardarCambios} soloStock />
                 ))}
 
             </div>

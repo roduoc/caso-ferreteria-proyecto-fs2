@@ -20,7 +20,7 @@ export async function obtenerDetalleCarrito() {
 
   return carrito.flatMap((item) => {
     const producto = productos.find((p) => p.codigo === item.codigo);
-    if (!producto) return [];
+    if (!producto || producto.activo === false) return [];
 
     return [{
       ...producto,
@@ -40,7 +40,7 @@ export async function agregarAlCarrito(codigo, cantidad = 1) {
 
   const productos = leer(CLAVE_PRODUCTOS, productosMock);
   const producto = productos.find((p) => p.codigo === codigo);
-  if (!producto) throw new Error('Producto no encontrado.');
+  if (!producto || producto.activo === false) throw new Error('Producto no encontrado.');
 
   const cantidadAgregar = Number(cantidad);
   if (!Number.isInteger(cantidadAgregar) || cantidadAgregar < 1) {
@@ -74,7 +74,7 @@ export async function actualizarCantidad(codigo, cantidad) {
   const nuevaCantidad = Number(cantidad);
   const productos = leer(CLAVE_PRODUCTOS, productosMock);
   const producto = productos.find((p) => p.codigo === codigo);
-  if (!producto) throw new Error('Producto no encontrado.');
+  if (!producto || producto.activo === false) throw new Error('Producto no encontrado.');
 
   if (!Number.isInteger(nuevaCantidad) || nuevaCantidad < 1) {
     throw new Error('La cantidad debe ser mayor a 0.');

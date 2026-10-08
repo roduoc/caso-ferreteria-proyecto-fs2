@@ -11,6 +11,6 @@ export function crearProductoDTO(p) {
     stock: p.stock,
     stockMinimo: p.stockMinimo,
     //true si quedan pocas unidades, sirve para marcar el producto en el inventario como stock bajo
-    stockBajo: p.stock <= p.stockMinimo,
+    stockBajo: p.stock < p.stockMinimo,
   };
 }

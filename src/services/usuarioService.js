@@ -22,12 +22,17 @@ export const rutasPorRol = {
 
 export const ROLES = ['admin', 'vendedor', 'cliente'];
 
+function exigirAdministrador() {
+  if (obtenerSesion()?.rol !== 'admin') throw new Error('Solo el administrador puede gestionar usuarios');
+}
+
 //dominios de correo permitidos
 const DOMINIOS_PERMITIDOS = ['duoc.cl', 'profesor.duoc.cl', 'gmail.com'];
 
 //devuelve todos los usuarios
 export async function listarUsuarios() {
   await esperar();
+  exigirAdministrador();
   const usuarios = leer(CLAVE, usuariosMock);
   return usuarios.map(crearUsuarioDTO);
 }
@@ -35,6 +40,7 @@ export async function listarUsuarios() {
 //devuelve un usuario segun su id
 export async function obtenerUsuario(id) {
   await esperar();
+  exigirAdministrador();
   const usuarios = leer(CLAVE, usuariosMock);
   const usuario = usuarios.find((u) => u.id === id);
 
@@ -53,7 +59,7 @@ function validarDatos(datos) {
   if (datos.apellidos.trim().length > 100) throw new Error('Los apellidos no pueden superar los 100 caracteres');
 
   const partesCorreo = datos.correo.trim().split('@');
-  if (partesCorreo.length !== 2 || !DOMINIOS_PERMITIDOS.includes(partesCorreo[1].toLowerCase())) {
+  if (partesCorreo.length !== 2 || !/^[^\s@]+$/.test(partesCorreo[0]) || !DOMINIOS_PERMITIDOS.includes(partesCorreo[1].toLowerCase())) {
     throw new Error('El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com');
   }
   if (datos.correo.trim().length > 100) throw new Error('El correo no puede superar los 100 caracteres');
@@ -78,8 +84,15 @@ function validarDatos(datos) {
 
 //crea un usuario nuevo
 export async function crearUsuario(datos) {
+  exigirAdministrador();
+  return crearUsuarioInterno(datos);
+}
+
+async function crearUsuarioInterno(datos) {
   await esperar();
   validarDatos(datos);
+
+  if (!ROLES.includes(datos.rol)) throw new Error('Selecciona un rol válido');
 
   //la clave solo se pide al crear, tiene las mismas reglas del registro
   if (datos.clave.length < 4 || datos.clave.length > 10) {
@@ -132,7 +145,9 @@ export async function crearUsuario(datos) {
 //si es cliente, tambien actualiza, crea o elimina su registro de cliente segun el rol
 export async function actualizarUsuario(id, datos) {
   await esperar();
+  exigirAdministrador();
   validarDatos(datos);
+  if (!ROLES.includes(datos.rol)) throw new Error('Selecciona un rol válido');
 
   const usuarios = leer(CLAVE, usuariosMock);
   const clientes = leer(CLAVE_CLIENTES, clientesMock);
@@ -195,6 +210,7 @@ export async function actualizarUsuario(id, datos) {
 //elimina un usuario, y si era cliente tambien su registro en clientes
 export async function eliminarUsuario(id) {
   await esperar();
+  exigirAdministrador();
   const usuarios = leer(CLAVE, usuariosMock);
   const usuario = usuarios.find((u) => u.id === id);
   if (!usuario) throw new Error('Usuario no encontrado');
@@ -217,6 +233,7 @@ export async function eliminarUsuario(id) {
 
 //login
 const CLAVE_SESION = 'sesion';
+const CLAVE_TOKEN_ACTIVO = 'tokenActivo';
 
 function validarLogin(correo, clave) {
   if (!correo.trim()) throw new Error('No puede haber campos en blanco.');
@@ -249,24 +266,36 @@ export async function iniciarSesion(correo, clave) {
 
   //clave sesion aqui es sesion, se guarda el dto del usuario en sesion
   const usuarioDTO = crearUsuarioDTO(usuario);
-  guardar(CLAVE_SESION, usuarioDTO);
-  return usuarioDTO;
+  const sesion = { ...usuarioDTO, token: crypto.randomUUID() };
+  guardar(CLAVE_SESION, sesion);
+  guardar(CLAVE_TOKEN_ACTIVO, sesion.token);
+  return sesion;
 }
 
 //devuelve el usuario con la sesion iniciada, o null
 //no es async porque los layouts la necesitan antes de dibujar la pagina
 export function obtenerSesion() {
   const guardado = localStorage.getItem(CLAVE_SESION);
-  return guardado ? JSON.parse(guardado) : null;
+  if (!guardado) return null;
+  try {
+    const sesion = JSON.parse(guardado);
+    if (!sesion.token || sesion.token !== JSON.parse(localStorage.getItem(CLAVE_TOKEN_ACTIVO))) return null;
+    const usuarios = leer(CLAVE, usuariosMock);
+    const usuario = usuarios.find((u) => u.id === sesion.id && u.rol === sesion.rol);
+    return usuario ? sesion : null;
+  } catch {
+    return null;
+  }
 }
 
 //borra la sesion de localStorage
 export function cerrarSesion() {
   localStorage.removeItem(CLAVE_SESION);
+  localStorage.removeItem(CLAVE_TOKEN_ACTIVO);
 }
 
 export async function registrarCliente(datos) {
-  await crearUsuario({ ...datos, rol: 'cliente', cuentaCorrienteHabilitada: false });
+  await crearUsuarioInterno({ ...datos, rol: 'cliente', cuentaCorrienteHabilitada: false });
 
   return iniciarSesion(datos.correo, datos.clave);
 }

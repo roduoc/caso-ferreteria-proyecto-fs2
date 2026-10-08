@@ -3,7 +3,7 @@ import sinImagen from '../assets/sin-imagen.svg';
 
 //tarjeta de un producto en la consulta de stock
 //onGuardar: funcion que recibe el codigo y los cambios, los entrega a la pagina
-export default function TarjetaStock({ producto, onGuardar, onEliminar, mostrarStockBajo }) {
+export default function TarjetaStock({ producto, onGuardar, onEliminar, mostrarStockBajo, soloStock = false }) {
     //lo que el usuario escribe en cada input
     const [nuevoPrecio, setNuevoPrecio] = useState('');
     const [nuevaCantidad, setNuevaCantidad] = useState('');
@@ -67,7 +67,7 @@ export default function TarjetaStock({ producto, onGuardar, onEliminar, mostrarS
             {/*con flex wrap lo que se sale de la linea pasa a la linea siguiente*/}
             <div className="flex flex-wrap sm:flex-nowrap gap-4">
 
-                <div className="flex flex-col gap-2">
+                {!soloStock && <div className="flex flex-col gap-2">
 
                     <input type="number" min="0" placeholder="Nuevo precio"
                         value={nuevoPrecio}
@@ -77,7 +77,7 @@ export default function TarjetaStock({ producto, onGuardar, onEliminar, mostrarS
                         onClick={() => guardar({ precio: nuevoPrecio }, setNuevoPrecio, 'Precio actualizado correctamente')}>
                         Editar precio
                     </button>
-                </div>
+                </div>}
 
                 <div className="flex flex-col gap-2">
 

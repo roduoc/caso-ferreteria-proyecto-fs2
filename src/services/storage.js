@@ -13,9 +13,10 @@ export function leer(clave, datosIniciales) {
     return JSON.parse(guardado);
   }
 
-  //si no habia nada, copia los datos del json
-  localStorage.setItem(clave, JSON.stringify(datosIniciales));
-  return datosIniciales;
+  //si no habia nada, crea una copia para no modificar el mock importado en memoria
+  const copiaInicial = structuredClone(datosIniciales);
+  localStorage.setItem(clave, JSON.stringify(copiaInicial));
+  return copiaInicial;
 }
 
 //guarda la coleccion completa en localStorage
