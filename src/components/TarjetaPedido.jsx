@@ -48,7 +48,9 @@ export default function TarjetaPedido({ pedido, onCambiarEstado }) {
             asi el mensaje no la ensancha y todas las tarjetas quedan alineadas*/}
             <div className="flex flex-col gap-2 justify-self-start sm:justify-self-end w-full sm:w-48">
                 {/*las opciones del select se crean recorriendo el arreglo de estados*/}
+                <label className="text-sm text-stone-400 block text-center" htmlFor={`estado-${pedido.id}`}>Estado</label>
                 <select
+                    id={`estado-${pedido.id}`}
                     value={estadoElegido}
                     onChange={(e) => setEstadoElegido(e.target.value)}
                     className="rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm outline-none focus:border-amber-500">

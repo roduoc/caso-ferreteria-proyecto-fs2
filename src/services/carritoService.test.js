@@ -30,7 +30,7 @@ describe('carritoService', () => {
   });
 
   it('impide superar el stock disponible', async () => {
-    await expect(agregarAlCarrito('MC001', 81)).rejects.toThrow('No hay más stock disponible.');
+    await expect(agregarAlCarrito('MC001', 81)).rejects.toThrow('Solo hay 80 disponibles');
   });
 
   it('devuelve el detalle y subtotal de cada producto', async () => {

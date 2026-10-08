@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'docs/legacy', 'coverage']),
+  globalIgnores(['dist', 'docs/legacy', 'coverage', 'playwright-report', 'test-results']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -18,10 +18,16 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+
+  //(configuración y pruebas de Playwright)
   {
-    files: ['*.config.js'],
-    languageOptions: {
-      globals: globals.node,
-    },
+    files: ['*.config.js', 'e2e/**/*.js'],
+    languageOptions: { globals: globals.node },
+  },
+
+  //los archivos de prueba de Vitest no exportan componentes
+  {
+    files: ['**/*.test.{js,jsx}'],
+    rules: { 'react-refresh/only-export-components': 'off' },
   },
 ])

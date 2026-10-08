@@ -86,16 +86,16 @@ export default function Login() {
 
                             <div>
                                 {/*margin bottom es un pequeño espacio debajo del label, separandolo del input que viene despues*/}
-                                <label className="mb-1 block text-sm font-semibold">Correo electrónico</label>
-                                <input name="correo" type="email" maxLength="100" required
+                                <label className="mb-1 block text-sm font-semibold" htmlFor='correo'>Correo electrónico</label>
+                                <input id="correo" name="correo" type="email" maxLength="100" required
                                     value={correo}
                                     onChange={(e) => setCorreo(e.target.value)}
                                     className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-sm font-semibold">Contraseña</label>
-                                <input name="clave" type="password" maxLength="10" required
+                                <label className="mb-1 block text-sm font-semibold" htmlFor='clave'>Contraseña</label>
+                                <input id="clave" name="clave" type="password" maxLength="10" required
                                     value={clave}
                                     onChange={(e) => setClave(e.target.value)}
                                     className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm outline-none focus:border-amber-500" />
@@ -103,6 +103,11 @@ export default function Login() {
 
                             {/*mt auto empuja el elemento especifico hasta el final del espacio disponible*/}
                             <button className="add-button w-full mt-auto" type="submit">Acceder</button>
+
+                            {/*el desde de adentro es el que llego al login
+                            el de afuera es el que se manga a la pagina registro
+                            lo que recibio el login viene de layoutnormal*/}
+                            <p className="text-center text-sm text-stone-500">¿No tienes una cuenta? <Link className="font-semibold text-amber-700 hover:underline" to="/registro" state={{ desde: location.state?.desde }}>Registrarse</Link></p>
                         </form>
                     </div>
 

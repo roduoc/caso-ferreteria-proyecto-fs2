@@ -28,6 +28,7 @@ export default function MisPedidos() {
     const [pedidos, setPedidos] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [cliente, setCliente] = useState(null);
+    const [buscarId, setBuscarId] = useState('');
 
     useEffect(() => {
         const sesion = obtenerSesion();
@@ -37,6 +38,11 @@ export default function MisPedidos() {
             setCargando(false);
         });
     }, []);
+
+    const textoBuscado = buscarId.trim();
+    const pedidosFiltrados = textoBuscado === ''
+        ? pedidos
+        : pedidos.filter((p) => String(p.id) === textoBuscado);
 
     return (
         //flex 1 para que ocupe todo el espacio vertical disponibl y el footer se quede abajo
@@ -61,17 +67,32 @@ export default function MisPedidos() {
                         </div>
                     )}
 
+                    {/*buscador por numero de pedido, solo aparece si el cliente tiene pedidos*/}
+                    <input type="search" placeholder="Buscar por número de pedido"
+                        value={buscarId}
+                        onChange={(e) => setBuscarId(e.target.value)}
+                        className="w-full rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm outline-none focus:border-amber-500" />
+
+                    {/**/}
+                    {/*si el cliente si tiene pedisoos pero no coinciden con lo buscado*/}
+                    {pedidos.length > 0 && pedidosFiltrados.length === 0 && (
+                        <p className="text-center text-stone-500">No se encontraron pedidos.</p>
+                    )}
+
                     {/*si el cliente todavia no ha comprado nada*/}
                     {!cargando && pedidos.length === 0 && (
                         <p className="bg-white rounded-xl border border-stone-200 p-8 text-center text-stone-600">Todavía no tienes pedidos.</p>
                     )}
 
-                    {pedidos.map((pedido) => (
+                    {pedidosFiltrados.map((pedido) => (
                         <div key={pedido.id} className="bg-white rounded-xl shadow-sm border border-stone-200 p-5">
                             {/*fecha y estado
                             el justify between hace que el primer elemento se pegue a la izquierda y el segundo a la derecha*/}
                             <div className="flex items-center justify-between mb-4">
-                                <span className="text-stone-500 text-sm">{formatearFecha(pedido.fecha)}</span>
+                                <div>
+                                    <p className="font-semibold text-stone-800">Pedido #{pedido.id}</p>
+                                    <span className="text-stone-500 text-sm">{formatearFecha(pedido.fecha)}</span>
+                                </div>
                                 {/*rounded full redondea las esquinas del elemento lo maximo posible*/}
                                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${COLORES_ESTADO[pedido.estado]}`}>
                                     {pedido.estado}

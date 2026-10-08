@@ -22,7 +22,7 @@ describe('TarjetaProducto', () => {
     );
 
     expect(screen.getByRole('heading', { name: producto.nombre })).toBeInTheDocument();
-    expect(screen.getByText('20 unidades disponibles')).toBeInTheDocument();
+    expect(screen.getByText('Stock disponible: 20')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Ver producto' })).toHaveAttribute('href', '/producto/HM001');
   });
 

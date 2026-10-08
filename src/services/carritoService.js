@@ -52,8 +52,11 @@ export async function agregarAlCarrito(codigo, cantidad = 1) {
 
   //lo que ya estaba en el carrito mas lo que se quiere agregar no puede superar el stock
   const cantidadEnCarrito = itemExistente ? itemExistente.cantidad : 0;
+  if (producto.stock === 0) {
+    throw new Error('Este producto no tiene stock disponible.');
+  }
   if (cantidadEnCarrito + cantidadAgregar > producto.stock) {
-    throw new Error('No hay más stock disponible.');
+    throw new Error(`Solo hay ${producto.stock} disponibles y ya tienes ${cantidadEnCarrito} en tu carrito.`);
   }
 
   //si el elemento ya estaba en el carrito le suma la cantidad
