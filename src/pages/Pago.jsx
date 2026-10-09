@@ -69,7 +69,7 @@ export default function Pago() {
             {cliente?.cuentaCorrienteHabilitada && (
               <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-stone-200 p-4 has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
                 <input className="size-4 accent-amber-600" type="radio" name="pago" value="cuenta_corriente" checked={medioPago === 'cuenta_corriente'} onChange={(e) => setMedioPago(e.target.value)} />
-                <span><strong className="block">Cuenta corriente</strong><small className="text-stone-500">El total se agregará a tu saldo pendiente</small></span>
+                <span><strong className="block">Pagar con crédito de la ferretería</strong><small className="text-stone-500">El total del pedido, incluido el despacho, se sumará a tu monto adeudado.</small></span>
               </label>
             )}
           </div>
@@ -90,7 +90,7 @@ export default function Pago() {
           </div>
           <p className="flex justify-between pt-4 text-lg"><strong>Total</strong><strong>{formatoPrecio(subtotal + costoEnvio)}</strong></p>
           <button className="mt-6 w-full rounded-lg bg-amber-500 px-5 py-3 font-bold hover:bg-amber-600 disabled:cursor-wait disabled:opacity-60" type="button" disabled={procesando || items.length === 0} onClick={pagar}>
-            {procesando ? 'Procesando...' : 'Confirmar pago'}
+            {procesando ? 'Procesando...' : medioPago === 'cuenta_corriente' ? 'Confirmar compra a crédito' : 'Confirmar pago'}
           </button>
           <Link className="mt-3 block text-center text-sm font-semibold text-amber-700" to="/envios">Volver a entrega</Link>
         </aside>
