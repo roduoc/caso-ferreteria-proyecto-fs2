@@ -8,14 +8,14 @@ const datos = {
 };
 
 describe('clienteService', () => {
-  it('lista y obtiene clientes con sus datos de usuario', async () => {
+  it('UT-22: lista y obtiene clientes con sus datos de usuario', async () => {
     const clientes = await listarClientes();
     expect(clientes.some((c) => c.id === 4 && c.nombreCompleto && c.cuentaCorrienteHabilitada)).toBe(true);
     expect((await obtenerCliente(3)).correo).toBe('juan.perez@gmail.com');
     await expect(obtenerCliente(999)).rejects.toThrow(/no encontrado/i);
   });
 
-  it('crea un registro de contratista con crédito y luego lo elimina', async () => {
+  it('UT-22: crea un registro de contratista con crédito y luego lo elimina', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     const usuario = await crearUsuario(datos);
     const cliente = await crearCliente(usuario.id, { tipoCliente: 'contratista', cuentaCorrienteHabilitada: true });
@@ -26,7 +26,7 @@ describe('clienteService', () => {
     await expect(obtenerCliente(usuario.id)).rejects.toThrow(/no encontrado/i);
   });
 
-  it('solo habilita crédito a contratistas y protege cuentas con deuda', async () => {
+  it('UT-22: solo habilita crédito a contratistas y protege cuentas con deuda', async () => {
     await expect(crearCliente(90, { tipoCliente: 'otro' })).rejects.toThrow(/particular o contratista/i);
     const actualizado = await actualizarCliente(3, { tipoCliente: 'particular', cuentaCorrienteHabilitada: true });
     expect(actualizado.cuentaCorrienteHabilitada).toBe(false);
@@ -34,7 +34,7 @@ describe('clienteService', () => {
     await expect(eliminarCliente(4)).rejects.toThrow(/deuda pendiente/i);
   });
 
-  it('rechaza modificaciones a clientes inexistentes o tipos inválidos', async () => {
+  it('UT-22: rechaza modificaciones a clientes inexistentes o tipos inválidos', async () => {
     await expect(actualizarCliente(3, { tipoCliente: 'otro' })).rejects.toThrow(/particular o contratista/i);
     await expect(actualizarCliente(999, { tipoCliente: 'particular' })).rejects.toThrow(/no encontrado/i);
     await expect(eliminarCliente(999)).rejects.toThrow(/no encontrado/i);

@@ -14,7 +14,7 @@ const producto = {
 };
 
 describe('TarjetaProducto', () => {
-  it('renderiza la información recibida mediante props', () => {
+  it('UT-06: renderiza la información recibida mediante props', () => {
     render(
       <MemoryRouter>
         <TarjetaProducto producto={producto} />
@@ -26,7 +26,7 @@ describe('TarjetaProducto', () => {
     expect(screen.getByRole('link', { name: 'Ver producto' })).toHaveAttribute('href', '/producto/HM001');
   });
 
-  it('muestra un mensaje cuando el producto no tiene stock', () => {
+  it('UT-06: muestra un mensaje cuando el producto no tiene stock', () => {
     render(
       <MemoryRouter>
         <TarjetaProducto producto={{ ...producto, stock: 0 }} />

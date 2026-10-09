@@ -25,7 +25,7 @@ describe('productoService', () => {
   beforeEach(async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
   });
-  it('lista los productos simulados como DTO', async () => {
+  it('UT-06: lista los productos simulados como DTO', async () => {
     const productos = await listarProductos();
 
     expect(productos.length).toBeGreaterThan(0);
@@ -35,7 +35,7 @@ describe('productoService', () => {
     }));
   });
 
-  it('crea y obtiene un producto', async () => {
+  it('UT-08: crea y obtiene un producto', async () => {
     const creado = await crearProducto(productoNuevo);
     const encontrado = await obtenerProducto(creado.codigo);
 
@@ -43,7 +43,7 @@ describe('productoService', () => {
     expect(encontrado.precio).toBe(2500);
   });
 
-  it('actualiza precio y stock guardándolos como números', async () => {
+  it('UT-08: actualiza precio y stock guardándolos como números', async () => {
     await crearProducto(productoNuevo);
     const actualizado = await actualizarProducto('TS001', { precio: '3000', stock: '6' });
 
@@ -51,7 +51,7 @@ describe('productoService', () => {
     expect(actualizado.stock).toBe(6);
   });
 
-  it('elimina un producto', async () => {
+  it('UT-08: elimina un producto', async () => {
     await crearProducto(productoNuevo);
     await eliminarProducto('TS001');
 
@@ -60,7 +60,7 @@ describe('productoService', () => {
     expect((await listarProductos()).some((p) => p.codigo === 'TS001')).toBe(false);
   });
 
-  it('activa la alerta solo al quedar bajo el stock mínimo', async () => {
+  it('UT-10: activa la alerta solo al quedar bajo el stock mínimo', async () => {
     const alLimite = await actualizarProducto('MC001', { stock: 20 });
     expect(alLimite.stockMinimo).toBe(20);
     expect(alLimite.stockBajo).toBe(false);
@@ -68,14 +68,14 @@ describe('productoService', () => {
     expect(bajoMinimo.stockBajo).toBe(true);
   });
 
-  it('rechaza crear o dar de baja productos sin rol administrador', async () => {
+  it('UT-09: rechaza crear o dar de baja productos sin rol administrador', async () => {
     cerrarSesion();
     await expect(crearProducto(productoNuevo)).rejects.toThrow(/administrador/i);
     await expect(eliminarProducto('MC001')).rejects.toThrow(/administrador/i);
     await expect(actualizarProducto('MC001', { precio: 10 })).rejects.toThrow(/administrador/i);
   });
 
-  it('permite al vendedor reponer stock, pero no cambiar el precio', async () => {
+  it('UT-09: permite al vendedor reponer stock, pero no cambiar el precio', async () => {
     cerrarSesion();
     await iniciarSesion('vendedor@duoc.cl', '1234');
     await expect(actualizarProducto('MC001', { precio: 1000 })).rejects.toThrow(/administrador/i);
@@ -85,7 +85,7 @@ describe('productoService', () => {
     await expect(actualizarStock('MC001', -1)).rejects.toThrow(/cantidad/i);
   });
 
-  it('valida los campos obligatorios y los valores numéricos', async () => {
+  it('UT-09: valida los campos obligatorios y los valores numéricos', async () => {
     for (const [datos, mensaje] of [
     [{ ...productoNuevo, nombre: '' }, /obligatorios/i],
     [{ ...productoNuevo, precio: '0' }, /precio/i],

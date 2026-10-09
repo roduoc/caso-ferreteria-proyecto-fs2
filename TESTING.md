@@ -1,5 +1,7 @@
 # Pruebas con Vitest
 
+Los nombres de los tests incluyen UT-01 a UT-25 para relacionarlos con el documento de cobertura. Cada UT agrupa un escenario, por eso puede aparecer en varias pruebas. Cuando una prueba verifica dos escenarios, lleva ambos identificadores (por ejemplo, UT-05 / UT-23).
+
 Para correr las pruebas una vez: `npm run test:run`.
 
 Para ver la cobertura: `npm run test:coverage`. El detalle HTML queda en `coverage/index.html`. El comando falla si cualquiera de las cuatro métricas globales baja del 80 %.

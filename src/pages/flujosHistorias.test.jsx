@@ -13,7 +13,7 @@ import { actualizarProducto } from '../services/productoService';
 import { cerrarSesion, iniciarSesion } from '../services/usuarioService';
 
 describe('HU 4: catálogo sin autenticación', () => {
-  it('muestra nombre, precio y el stock actualizado al entrar', async () => {
+  it('UT-06: muestra nombre, precio y el stock actualizado al entrar', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     await actualizarProducto('MC001', { stock: 7 });
     cerrarSesion();
@@ -39,7 +39,7 @@ describe('pago con crédito', () => {
     );
   }
 
-  it('ofrece crédito habilitado y confirma el cargo completo a la deuda', async () => {
+  it('UT-18: ofrece crédito habilitado y confirma el cargo completo a la deuda', async () => {
     const sesion = await iniciarSesion('ana.torres@gmail.com', '1234');
     const saldoAnterior = (await obtenerCliente(sesion.id)).saldoAdeudado;
     await agregarAlCarrito('MC001');
@@ -51,7 +51,7 @@ describe('pago con crédito', () => {
     expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(saldoAnterior + 5990 + 3990);
   });
 
-  it('no muestra crédito a un cliente particular', async () => {
+  it('UT-19: no muestra crédito a un cliente particular', async () => {
     await iniciarSesion('juan.perez@gmail.com', '1234');
     await agregarAlCarrito('MC001');
     mostrarPago();
@@ -74,13 +74,13 @@ describe('HU 3 y HU 12: acceso al panel', () => {
     );
   }
 
-  it('impide entrar a un cliente', async () => {
+  it('UT-05 / UT-23: impide entrar a un cliente', async () => {
     await iniciarSesion('juan.perez@gmail.com', '1234');
     mostrarPanel();
     expect(screen.getByText('Inicia sesión')).toBeInTheDocument();
   });
 
-  it('permite entrar a un administrador', async () => {
+  it('UT-05 / UT-23: permite entrar a un administrador', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     mostrarPanel();
     expect(screen.getByText('Historial de clientes')).toBeInTheDocument();
@@ -88,7 +88,7 @@ describe('HU 3 y HU 12: acceso al panel', () => {
 });
 
 describe('HU 10 y HU 12: consultas de pedidos', () => {
-  it('muestra al cliente solo sus pedidos y su estado actual', async () => {
+  it('UT-16: muestra al cliente solo sus pedidos y su estado actual', async () => {
     await iniciarSesion('juan.perez@gmail.com', '1234');
     render(<MemoryRouter><MisPedidos /></MemoryRouter>);
     expect(await screen.findByText('Pendiente')).toBeInTheDocument();
@@ -96,7 +96,7 @@ describe('HU 10 y HU 12: consultas de pedidos', () => {
     expect(screen.queryByText('En preparación')).not.toBeInTheDocument();
   });
 
-  it('permite al administrador buscar un cliente y ver fechas y montos de sus compras', async () => {
+  it('UT-23: permite al administrador buscar un cliente y ver fechas y montos de sus compras', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     render(
       <MemoryRouter initialEntries={['/admin/historial']}>

@@ -3,7 +3,7 @@ import { obtenerCliente } from './clienteService';
 import { listarPagos, listarPagosCliente, registrarPago } from './pagoService';
 
 describe('pagoService: abonos de deuda', () => {
-  it('muestra los pagos del cliente y descuenta un abono parcial', async () => {
+  it('UT-21: muestra los pagos del cliente y descuenta un abono parcial', async () => {
     const saldoAnterior = (await obtenerCliente(4)).saldoAdeudado;
     const cantidadAnterior = (await listarPagosCliente(4)).length;
     const pago = await registrarPago(4, 1000);
@@ -13,13 +13,13 @@ describe('pagoService: abonos de deuda', () => {
     expect((await listarPagos()).some((p) => p.id === pago.id)).toBe(true);
   });
 
-  it('rechaza abonos que no sean enteros positivos', async () => {
+  it('UT-21: rechaza abonos que no sean enteros positivos', async () => {
     for (const monto of [0, -1, 1.5]) {
       await expect(registrarPago(4, monto)).rejects.toThrow(/entero mayor a 0/i);
     }
   });
 
-  it('rechaza cliente inexistente, crédito no habilitado y abono mayor a la deuda', async () => {
+  it('UT-21: rechaza cliente inexistente, crédito no habilitado y abono mayor a la deuda', async () => {
     await expect(registrarPago(999, 100)).rejects.toThrow(/no encontrado/i);
     await expect(registrarPago(3, 100)).rejects.toThrow(/no tiene cuenta/i);
     await expect(registrarPago(4, 9999999)).rejects.toThrow(/mayor a la deuda/i);

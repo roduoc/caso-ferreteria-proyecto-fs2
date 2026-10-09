@@ -14,7 +14,7 @@ import { iniciarSesion, obtenerSesion } from '../services/usuarioService';
 const enRouter = (componente) => render(<MemoryRouter>{componente}</MemoryRouter>);
 
 describe('navegación pública y de administrador', () => {
-  it('muestra enlaces públicos, registro, catálogo y contador del carrito sin iniciar sesión', async () => {
+  it('UT-25: muestra enlaces públicos, registro, catálogo y contador del carrito sin iniciar sesión', async () => {
     enRouter(<><Navbar /><Footer /><FooterAdmin /></>);
     expect(screen.getAllByRole('link', { name: 'Crear cuenta' }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: 'Productos' }).length).toBeGreaterThan(0);
@@ -23,7 +23,7 @@ describe('navegación pública y de administrador', () => {
     await waitFor(() => expect(screen.getByRole('link', { name: /Carrito con 2 productos/i })).toBeInTheDocument());
   });
 
-  it('permite abrir y cerrar el menú móvil y cerrar sesión', async () => {
+  it('UT-25: permite abrir y cerrar el menú móvil y cerrar sesión', async () => {
     await iniciarSesion('juan.perez@gmail.com', '1234');
     enRouter(<Navbar />);
     expect(screen.getAllByRole('link', { name: 'Mis pedidos' }).length).toBeGreaterThan(0);
@@ -33,7 +33,7 @@ describe('navegación pública y de administrador', () => {
     expect(obtenerSesion()).toBeNull();
   });
 
-  it('muestra el panel y cierra sesión desde su cabecera', async () => {
+  it('UT-25: muestra el panel y cierra sesión desde su cabecera', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     enRouter(<NavbarAdmin />);
     fireEvent.click(screen.getByRole('button'));
@@ -47,7 +47,7 @@ describe('tarjetas de gestión', () => {
   const pedido = { id: 18, estado: 'Pendiente' };
   const producto = { codigo: 'MC001', nombre: 'Cemento', precio: 5990, stock: 2, stockBajo: true, stockMinimo: 5 };
 
-  it('muestra los cuatro estados y guarda el estado elegido', async () => {
+  it('UT-17: muestra los cuatro estados y guarda el estado elegido', async () => {
     const onCambiarEstado = vi.fn().mockResolvedValue(undefined);
     render(<TarjetaPedido pedido={pedido} onCambiarEstado={onCambiarEstado} />);
     expect(screen.getAllByRole('option')).toHaveLength(4);
@@ -57,13 +57,13 @@ describe('tarjetas de gestión', () => {
     expect(await screen.findByText('Estado actualizado correctamente')).toBeInTheDocument();
   });
 
-  it('muestra el error si no se puede cambiar el estado', async () => {
+  it('UT-17: muestra el error si no se puede cambiar el estado', async () => {
     render(<TarjetaPedido pedido={pedido} onCambiarEstado={vi.fn().mockRejectedValue(new Error('Estado bloqueado'))} />);
     fireEvent.click(screen.getByRole('button', { name: 'Editar estado' }));
     expect(await screen.findByText('Estado bloqueado')).toBeInTheDocument();
   });
 
-  it('muestra stock bajo y permite editar precio, stock y eliminar', async () => {
+  it('UT-08 / UT-10: muestra stock bajo y permite editar precio, stock y eliminar', async () => {
     const onGuardar = vi.fn().mockResolvedValue(undefined);
     const onEliminar = vi.fn();
     render(<TarjetaStock producto={producto} onGuardar={onGuardar} onEliminar={onEliminar} mostrarStockBajo />);
@@ -78,7 +78,7 @@ describe('tarjetas de gestión', () => {
     expect(onEliminar).toHaveBeenCalledWith('MC001');
   });
 
-  it('muestra un error al fallar la actualización y oculta acciones opcionales', async () => {
+  it('UT-09: muestra un error al fallar la actualización y oculta acciones opcionales', async () => {
     render(<TarjetaStock producto={{ ...producto, stockBajo: false }} onGuardar={vi.fn().mockRejectedValue(new Error('Precio inválido'))} mostrarStockBajo />);
     expect(screen.queryByText(/Stock bajo:/i)).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Eliminar' })).not.toBeInTheDocument();

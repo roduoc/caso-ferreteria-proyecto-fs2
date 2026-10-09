@@ -13,7 +13,7 @@ describe('carritoService', () => {
     vi.restoreAllMocks();
   });
 
-  it('agrega un producto nuevo al carrito', async () => {
+  it('UT-11: agrega un producto nuevo al carrito', async () => {
     await agregarAlCarrito('MC001', 2);
 
     await expect(obtenerCarrito()).resolves.toEqual([
@@ -21,7 +21,7 @@ describe('carritoService', () => {
     ]);
   });
 
-  it('suma la cantidad cuando el producto ya existe', async () => {
+  it('UT-11: suma la cantidad cuando el producto ya existe', async () => {
     await agregarAlCarrito('MC001', 1);
     await agregarAlCarrito('MC001', 2);
 
@@ -29,11 +29,11 @@ describe('carritoService', () => {
     expect(carrito[0].cantidad).toBe(3);
   });
 
-  it('impide superar el stock disponible', async () => {
+  it('UT-12: impide superar el stock disponible', async () => {
     await expect(agregarAlCarrito('MC001', 81)).rejects.toThrow('Solo hay 80 disponibles');
   });
 
-  it('devuelve el detalle y subtotal de cada producto', async () => {
+  it('UT-11: devuelve el detalle y subtotal de cada producto', async () => {
     await agregarAlCarrito('MC001', 2);
 
     const [item] = await obtenerDetalleCarrito();
@@ -41,7 +41,7 @@ describe('carritoService', () => {
     expect(item.subtotal).toBe(item.precio * 2);
   });
 
-  it('actualiza, elimina y vacía productos', async () => {
+  it('UT-13: actualiza, elimina y vacía productos', async () => {
     await agregarAlCarrito('MC001', 1);
     await agregarAlCarrito('MC002', 1);
     await actualizarCantidad('MC001', 3);
@@ -53,7 +53,7 @@ describe('carritoService', () => {
     expect(await obtenerCarrito()).toEqual([]);
   });
 
-  it('rechaza productos inexistentes y cantidades inválidas', async () => {
+  it('UT-12: rechaza productos inexistentes y cantidades inválidas', async () => {
     await expect(agregarAlCarrito('NOEXISTE')).rejects.toThrow(/no encontrado/i);
     await expect(agregarAlCarrito('MC001', 0)).rejects.toThrow(/entero mayor a 0/i);
     await expect(agregarAlCarrito('MC001', 1.5)).rejects.toThrow(/entero mayor a 0/i);

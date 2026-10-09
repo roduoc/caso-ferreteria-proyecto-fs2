@@ -17,7 +17,7 @@ function DestinoEntrega() {
 }
 
 describe('HU 5: filtros del catálogo', () => {
-  it('muestra solo la categoría elegida e informa cuando la búsqueda no encuentra productos', async () => {
+  it('UT-07: muestra solo la categoría elegida e informa cuando la búsqueda no encuentra productos', async () => {
     render(<MemoryRouter><Productos /></MemoryRouter>);
     await screen.findByRole('heading', { name: 'Cemento Polpaico gris 25 kg' });
     const categoria = screen.getByLabelText('Categoría');
@@ -32,7 +32,7 @@ describe('HU 5: filtros del catálogo', () => {
 });
 
 describe('HU 8: carrito y cantidades', () => {
-  it('permite elegir cantidad antes de agregar y muestra cantidad y subtotal', async () => {
+  it('UT-11: permite elegir cantidad antes de agregar y muestra cantidad y subtotal', async () => {
     const detalle = render(
       <MemoryRouter initialEntries={['/producto/MC001']}>
         <Routes><Route path="/producto/:codigo" element={<DetalleProducto />} /></Routes>
@@ -69,7 +69,7 @@ describe('HU 9: retiro y despacho', () => {
     await screen.findByRole('heading', { name: 'Modalidad de entrega' });
   }
 
-  it('muestra ambas opciones y permite retiro sin pedir dirección', async () => {
+  it('UT-14: muestra ambas opciones y permite retiro sin pedir dirección', async () => {
     await prepararEntrega();
     expect(screen.getByRole('radio', { name: /Retiro en tienda/i })).toBeChecked();
     expect(screen.getByRole('radio', { name: /Despacho a domicilio/i })).toBeInTheDocument();
@@ -79,7 +79,7 @@ describe('HU 9: retiro y despacho', () => {
     expect(entrega).toMatchObject({ modalidad: 'retiro', comuna: '', direccion: '' });
   });
 
-  it('exige comuna y dirección cuando se elige despacho', async () => {
+  it('UT-15: exige comuna y dirección cuando se elige despacho', async () => {
     await prepararEntrega();
     fireEvent.click(screen.getByRole('radio', { name: /Despacho a domicilio/i }));
     fireEvent.change(screen.getByLabelText('Comuna'), { target: { value: '' } });
@@ -95,7 +95,7 @@ describe('HU 9: retiro y despacho', () => {
 });
 
 describe('HU 6, HU 7 y HU 13: administración', () => {
-  it('muestra alerta junto al producto al caer bajo su umbral', async () => {
+  it('UT-10: muestra alerta junto al producto al caer bajo su umbral', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     await actualizarProducto('MC001', { stock: 19 });
     render(<AdminInventario />);
@@ -104,7 +104,7 @@ describe('HU 6, HU 7 y HU 13: administración', () => {
     expect(await screen.findByText('Stock bajo: el mínimo es 20')).toBeInTheDocument();
   });
 
-  it('dibuja gráficos calculados desde pedidos y restringe el acceso al administrador', async () => {
+  it('UT-24: dibuja gráficos calculados desde pedidos y restringe el acceso al administrador', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     render(<MemoryRouter><AdminReportes /></MemoryRouter>);
     expect(await screen.findByRole('img', { name: /productos más vendidos/i })).toBeInTheDocument();

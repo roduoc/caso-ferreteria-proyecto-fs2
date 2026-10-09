@@ -11,7 +11,7 @@ const entrega = { modalidad: 'despacho', direccion: 'Av. Test 1', comuna: 'La Se
 const loginCliente = () => iniciarSesion('ana.torres@gmail.com', '1234');
 
 describe('compra a crédito', () => {
-  it('suma productos y despacho al monto adeudado y descuenta stock una sola vez', async () => {
+  it('UT-18: suma productos y despacho al monto adeudado y descuenta stock una sola vez', async () => {
     const sesion = await loginCliente();
     const productoAntes = await obtenerProducto('MC001');
     const saldoAntes = (await obtenerCliente(sesion.id)).saldoAdeudado;
@@ -27,7 +27,7 @@ describe('compra a crédito', () => {
     expect((await listarPedidosCliente(sesion.id)).some((p) => p.id === pedido.id)).toBe(true);
   });
 
-  it('no aumenta la deuda al pagar al contado', async () => {
+  it('UT-20: no aumenta la deuda al pagar al contado', async () => {
     const sesion = await loginCliente();
     const saldoAntes = (await obtenerCliente(sesion.id)).saldoAdeudado;
     await agregarAlCarrito('MC001');
@@ -36,7 +36,7 @@ describe('compra a crédito', () => {
     expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(saldoAntes);
   });
 
-  it('mantiene la venta a cuenta corriente pendiente hasta registrar su cancelación', async () => {
+  it('UT-20: mantiene la venta a cuenta corriente pendiente hasta registrar su cancelación', async () => {
     const sesion = await loginCliente();
     await agregarAlCarrito('MC001');
     const pedido = await crearPedido(sesion.id, { modalidad: 'retiro' }, 'cuenta_corriente');
@@ -49,7 +49,7 @@ describe('compra a crédito', () => {
     expect((await listarPagosCliente(sesion.id)).some((p) => p.id === pago.id)).toBe(true);
   });
 
-  it('rechaza crédito no habilitado y conserva carrito, stock y deuda', async () => {
+  it('UT-19: rechaza crédito no habilitado y conserva carrito, stock y deuda', async () => {
     const sesion = await iniciarSesion('juan.perez@gmail.com', '1234');
     await agregarAlCarrito('MC001');
     const productoAntes = await obtenerProducto('MC001');
@@ -59,7 +59,7 @@ describe('compra a crédito', () => {
     expect(await obtenerCarrito()).toHaveLength(1);
   });
 
-  it('rechaza pedidos sin sesión, con carrito vacío o medio inválido', async () => {
+  it('UT-19: rechaza pedidos sin sesión, con carrito vacío o medio inválido', async () => {
     await expect(crearPedido(4, entrega, 'contado')).rejects.toThrow(/sesión/i);
     const sesion = await loginCliente();
     await expect(crearPedido(sesion.id, entrega, 'otro')).rejects.toThrow(/medio de pago/i);
@@ -68,7 +68,7 @@ describe('compra a crédito', () => {
 });
 
 describe('HU 10 y HU 12: estados, propiedad e historial', () => {
-  it('solo entrega pedidos del cliente autenticado y sus estados actuales', async () => {
+  it('UT-16: solo entrega pedidos del cliente autenticado y sus estados actuales', async () => {
     await iniciarSesion('juan.perez@gmail.com', '1234');
     const propios = await listarPedidosCliente(3);
     expect(propios.length).toBeGreaterThan(0);
@@ -78,7 +78,7 @@ describe('HU 10 y HU 12: estados, propiedad e historial', () => {
     await expect(listarPedidosCliente(3)).rejects.toThrow(/permiso/i);
   });
 
-  it('permite al administrador consultar compras de un cliente con fecha y monto', async () => {
+  it('UT-23: permite al administrador consultar compras de un cliente con fecha y monto', async () => {
     await iniciarSesion('admin@duoc.cl', '1234');
     const historial = await listarPedidosCliente(3);
     expect(historial.length).toBeGreaterThan(0);
@@ -86,7 +86,7 @@ describe('HU 10 y HU 12: estados, propiedad e historial', () => {
     expect(await listarPedidos()).toHaveLength(3);
   });
 
-  it('acepta exactamente cuatro estados y muestra la actualización al consultar', async () => {
+  it('UT-17: acepta exactamente cuatro estados y muestra la actualización al consultar', async () => {
     expect(ESTADOS_PEDIDO).toEqual(['Pendiente', 'En preparación', 'Despachado', 'Entregado']);
     await iniciarSesion('vendedor@duoc.cl', '1234');
     await expect(cambiarEstado(1, 'Cancelado')).rejects.toThrow(/no válido/i);
@@ -97,7 +97,7 @@ describe('HU 10 y HU 12: estados, propiedad e historial', () => {
     await expect(cambiarEstado(3, 'Pendiente')).rejects.toThrow(/entregado/i);
   });
 
-  it('impide al cliente gestionar todos los pedidos', async () => {
+  it('UT-16: impide al cliente gestionar todos los pedidos', async () => {
     await iniciarSesion('juan.perez@gmail.com', '1234');
     await expect(listarPedidos()).rejects.toThrow(/permiso/i);
     await expect(cambiarEstado(1, 'Despachado')).rejects.toThrow(/permiso/i);
