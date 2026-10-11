@@ -34,6 +34,20 @@ jobs:
         run: npm run lint
       - name: Ejecutar pruebas unitarias
         run: npm run test:coverage
+      - name: Instalar Chromium para Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Ejecutar pruebas de navegador
+        run: npm run test:e2e -- --workers=2
+      - name: Guardar reporte y capturas de Playwright
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-playwright
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
       - name: Compilar para la ruta del repositorio
         run: npm run build -- --base=/caso-ferreteria-proyecto-fs2/
       - name: Configurar Pages
