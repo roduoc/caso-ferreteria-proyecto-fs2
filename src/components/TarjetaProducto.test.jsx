@@ -13,10 +13,15 @@ const producto = {
   stock: 20,
 };
 
-//
+//describe agrupa varios tests bajo un mismo nombre, es para organizar
 describe('TarjetaProducto', () => {
   it('UT-06: renderiza la información recibida mediante props', () => {
+    //render dibuja el componente
     render(
+      //usamos memory router porque le tarjeta al mismo tiempo es un link a producto/codigo
+      //y los link siempre necesitan un router por encima
+
+      //no es necesario agregar key a tarjeta producto porque no estamos trabajando con una lista
       <MemoryRouter>
         <TarjetaProducto producto={producto} />
       </MemoryRouter>,

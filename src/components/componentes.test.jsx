@@ -11,6 +11,7 @@ import TarjetaStock from './TarjetaStock';
 import { agregarAlCarrito } from '../services/carritoService';
 import { iniciarSesion, obtenerSesion } from '../services/usuarioService';
 
+//atajo para envolver componentes en memory router
 const enRouter = (componente) => render(<MemoryRouter>{componente}</MemoryRouter>);
 
 describe('navegación pública y de administrador', () => {
@@ -29,6 +30,8 @@ describe('navegación pública y de administrador', () => {
     expect(screen.getAllByRole('link', { name: 'Mis pedidos' }).length).toBeGreaterThan(0);
     await userEvent.click(document.getElementById('menu-button'));
     expect(document.getElementById('mobile-menu')).not.toHaveAttribute('hidden');
+    //el [0] significa el primer elemento del arreglo
+    //se podria haber usado userevent click aqui tambien
     fireEvent.click(screen.getAllByRole('link', { name: 'Cerrar sesión' })[0]);
     expect(obtenerSesion()).toBeNull();
   });
@@ -48,11 +51,17 @@ describe('tarjetas de gestión', () => {
   const producto = { codigo: 'MC001', nombre: 'Cemento', precio: 5990, stock: 2, stockBajo: true, stockMinimo: 5 };
 
   it('UT-17: muestra los cuatro estados y guarda el estado elegido', async () => {
+    //vi.fn es una funcion falsa para probar el componente
+    //mockresolvedvalue undefined le dice a la funcion falsa que retorne bien, con valor undefined
+    //es como simular que el service respondio todo ok
     const onCambiarEstado = vi.fn().mockResolvedValue(undefined);
     render(<TarjetaPedido pedido={pedido} onCambiarEstado={onCambiarEstado} />);
     expect(screen.getAllByRole('option')).toHaveLength(4);
+    //screen getbyrole combobox encuentra el select
+    //fireevent change simula que el usuario eligio despachado
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Despachado' } });
     fireEvent.click(screen.getByRole('button', { name: 'Editar estado' }));
+    //esto prueba que se presiono editar estado y se ejecuto oncambiarestado con los datos correctos
     await waitFor(() => expect(onCambiarEstado).toHaveBeenCalledWith(18, 'Despachado'));
     expect(await screen.findByText('Estado actualizado correctamente')).toBeInTheDocument();
   });
