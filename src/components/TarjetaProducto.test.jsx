@@ -13,6 +13,7 @@ const producto = {
   stock: 20,
 };
 
+//
 describe('TarjetaProducto', () => {
   it('UT-06: renderiza la información recibida mediante props', () => {
     render(
