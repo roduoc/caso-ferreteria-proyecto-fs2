@@ -4,6 +4,8 @@ import regionesComunas from '../mocks/regionesComunas.json';
 import { crearUsuarioDTO } from '../models/Usuario';
 import { leer, guardar, esperar, siguienteId } from './storage';
 import { crearCliente, actualizarCliente, eliminarCliente, TIPOS_CLIENTE } from './clienteService';
+import { obtenerSesion, cerrarSesion, guardarSesion } from './sesion';
+import { llamarApi } from './api';
 
 //se retorna un dto en leer, actualizar y crear para
 //actualizar la pantalla luego de la accion, y porque 
@@ -207,7 +209,6 @@ export async function actualizarUsuario(id, datos) {
   return crearUsuarioDTO(usuarios[indice]);
 }
 
-//elimina un usuario, y si era cliente tambien su registro en clientes
 export async function eliminarUsuario(id) {
   await esperar();
   exigirAdministrador();
@@ -231,9 +232,8 @@ export async function eliminarUsuario(id) {
   guardar(CLAVE, usuarios.filter((u) => u.id !== id));
 }
 
-//login
-const CLAVE_SESION = 'sesion';
-const CLAVE_TOKEN_ACTIVO = 'tokenActivo';
+//se vuelven a exportar porque estan en sesion y necesitamos exportarlas desde aqui
+export { obtenerSesion, cerrarSesion };
 
 function validarLogin(correo, clave) {
   if (!correo.trim()) throw new Error('No puede haber campos en blanco.');
@@ -250,52 +250,41 @@ function validarLogin(correo, clave) {
   }
 }
 
-//busca un usuario con ese correo y clave
-//si lo encuentra, guarda su dto en localStorage como el usuario con la sesion iniciada
 export async function iniciarSesion(correo, clave) {
-  await esperar();
   validarLogin(correo, clave);
-  const usuarios = leer(CLAVE, usuariosMock);
 
-  //revisa usuario por usuario y compara el correo y la clave
-  const usuario = usuarios.find(
-    (u) => u.correo.toLowerCase() === correo.trim().toLowerCase() && u.clave === clave
-  );
+  const respuesta = await llamarApi('/api/auth/login', {
+    metodo: 'POST',
+    sinToken: true,
+    datos: { correo: correo.trim().toLowerCase(), clave },
+  });
 
-  if (!usuario) throw new Error('Correo o contraseña incorrectos.');
-
-  //clave sesion aqui es sesion, se guarda el dto del usuario en sesion
-  const usuarioDTO = crearUsuarioDTO(usuario);
-  const sesion = { ...usuarioDTO, token: crypto.randomUUID() };
-  guardar(CLAVE_SESION, sesion);
-  guardar(CLAVE_TOKEN_ACTIVO, sesion.token);
-  return sesion;
-}
-
-//devuelve el usuario con la sesion iniciada, o null
-//no es async porque los layouts la necesitan antes de dibujar la pagina
-export function obtenerSesion() {
-  const guardado = localStorage.getItem(CLAVE_SESION);
-  if (!guardado) return null;
-  try {
-    const sesion = JSON.parse(guardado);
-    if (!sesion.token || sesion.token !== JSON.parse(localStorage.getItem(CLAVE_TOKEN_ACTIVO))) return null;
-    const usuarios = leer(CLAVE, usuariosMock);
-    const usuario = usuarios.find((u) => u.id === sesion.id && u.rol === sesion.rol);
-    return usuario ? sesion : null;
-  } catch {
-    return null;
-  }
-}
-
-//borra la sesion de localStorage
-export function cerrarSesion() {
-  localStorage.removeItem(CLAVE_SESION);
-  localStorage.removeItem(CLAVE_TOKEN_ACTIVO);
+  return guardarSesion(respuesta.usuario, respuesta.token);
 }
 
 export async function registrarCliente(datos) {
-  await crearUsuarioInterno({ ...datos, rol: 'cliente', cuentaCorrienteHabilitada: false });
+  validarDatos({ ...datos, rol: 'cliente' });
+  if (datos.clave.length < 4 || datos.clave.length > 10) {
+    throw new Error('La contraseña debe tener entre 4 y 10 caracteres');
+  }
 
-  return iniciarSesion(datos.correo, datos.clave);
+  //solo se mandan los campos que espera el backend (RegistroRequest)
+  //si se manda un campo de mas, el backend responde 400
+  const respuesta = await llamarApi('/api/auth/registro', {
+    metodo: 'POST',
+    sinToken: true,
+    datos: {
+      rut: datos.rut.trim().toUpperCase(),
+      nombre: datos.nombre.trim(),
+      apellidos: datos.apellidos.trim(),
+      correo: datos.correo.trim().toLowerCase(),
+      clave: datos.clave,
+      region: datos.region,
+      comuna: datos.comuna,
+      direccion: datos.direccion.trim(),
+      tipoCliente: datos.tipoCliente,
+    },
+  });
+
+  return guardarSesion(respuesta.usuario, respuesta.token);
 }
