@@ -1,148 +1,80 @@
-import productosMock from '../mocks/productos.json';
-import { crearProductoDTO } from '../models/Producto';
-import { leer, guardar, esperar } from './storage';
-import { obtenerSesion } from './usuarioService';
+import { llamarApi } from './api';
+import { obtenerSesion } from './sesion';
 
-const CLAVE = 'productos';
-
-//devuelve todos los productos
+//el catalogo es publico, aunque haya una sesion guardada
 export async function listarProductos() {
-  await esperar();
-  const productos = leer(CLAVE, productosMock);
-  return productos.filter((p) => p.activo !== false).map(crearProductoDTO);
+  return llamarApi('/api/productos', { sinToken: true });
 }
 
-//devuelve un producto segun su codigo
 export async function obtenerProducto(codigo) {
-  await esperar();
-  const productos = leer(CLAVE, productosMock);
-  const producto = productos.find((p) => p.codigo === codigo);
-
-  if (!producto || producto.activo === false) throw new Error('Producto no encontrado');
-  return crearProductoDTO(producto);
+  return llamarApi(`/api/productos/${encodeURIComponent(codigo)}`, { sinToken: true });
 }
 
-//cambia el precio y/o el stock de un producto
+function exigirAdministrador() {
+  if (obtenerSesion()?.rol !== 'admin') throw new Error('Solo el administrador puede gestionar productos');
+}
+
+function numeroEntero(valor, nombre, minimo) {
+  if (valor === '' || valor === null || valor === undefined || String(valor).trim() === '') {
+    throw new Error(`Ingresa ${nombre}`);
+  }
+  const numero = Number(valor);
+  if (!Number.isInteger(numero) || numero < minimo) {
+    if (nombre === 'un precio') throw new Error('El precio debe ser un número entero mayor a 0');
+    if (nombre === 'el stock mínimo') throw new Error('El stock mínimo debe ser un número entero de 0 o más');
+    throw new Error('La cantidad debe ser un número entero de 0 o más');
+  }
+  return numero;
+}
+
 export async function actualizarProducto(codigo, cambios) {
-  if (obtenerSesion()?.rol !== 'admin') throw new Error('Solo el administrador puede editar productos');
-  return guardarCambiosProducto(codigo, cambios);
+  exigirAdministrador();
+  const datos = {};
+  if (cambios.precio !== undefined) datos.precio = numeroEntero(cambios.precio, 'un precio', 1);
+  if (cambios.stock !== undefined) datos.stock = numeroEntero(cambios.stock, 'una cantidad', 0);
+  if (Object.keys(datos).length === 0) throw new Error('Ingresa un precio o una cantidad');
+  return llamarApi(`/api/productos/${encodeURIComponent(codigo)}`, {
+    metodo: 'PATCH',
+    datos,
+  });
 }
 
-//El vendedor puede reponer existencias, pero no cambiar precios ni otros datos del catálogo.
+//el vendedor usa una ruta aparte que solo acepta stock
 export async function actualizarStock(codigo, stock) {
   if (!['admin', 'vendedor'].includes(obtenerSesion()?.rol)) {
     throw new Error('No tienes permiso para actualizar el stock');
   }
-  return guardarCambiosProducto(codigo, { stock });
+  return llamarApi(`/api/productos/${encodeURIComponent(codigo)}/stock`, {
+    metodo: 'PATCH',
+    datos: { stock: numeroEntero(stock, 'una cantidad', 0) },
+  });
 }
 
-async function guardarCambiosProducto(codigo, cambios) {
-  await esperar();
-  const nuevosDatos = {};
-
-  if (cambios.precio !== undefined) {
-    if (cambios.precio === '') throw new Error('Ingresa un precio');
-    const precio = Number(cambios.precio);
-    if (!Number.isInteger(precio) || precio <= 0) {
-      throw new Error('El precio debe ser un número entero mayor a 0');
-    }
-    nuevosDatos.precio = precio;
-  }
-
-  if (cambios.stock !== undefined) {
-    if (cambios.stock === '') throw new Error('Ingresa una cantidad');
-    const stock = Number(cambios.stock);
-    if (!Number.isInteger(stock) || stock < 0) {
-      throw new Error('La cantidad debe ser un número entero de 0 o más');
-    }
-    nuevosDatos.stock = stock;
-  }
-
-  //carga los productos
-  const productos = leer(CLAVE, productosMock);
-  //busca el producto por codigo
-  const indice = productos.findIndex((p) => p.codigo === codigo);
-  if (indice === -1 || productos[indice].activo === false) throw new Error('Producto no encontrado');
-
-  //se copia el producto con los cambios encima
-  productos[indice] = { ...productos[indice], ...nuevosDatos };
-  guardar(CLAVE, productos);
-
-  return crearProductoDTO(productos[indice]);
-
-}
-
-//crea un producto nuevo, solo lo usa el admin
 export async function crearProducto(datos) {
-  await esperar();
-  if (obtenerSesion()?.rol !== 'admin') throw new Error('Solo el administrador puede crear productos');
-
-  //los datos llegan tal como estan en el formulario, todos como texto
-  //primero se revisa que ningun campo este vacio
-  if (!datos.codigo.trim() || !datos.nombre.trim() || !datos.categoria.trim() ||
-      !datos.subcategoria.trim() || !datos.marca.trim() || !datos.unidad.trim() ||
-      datos.precio === '' || datos.stock === '' || datos.stockMinimo === '') {
+  exigirAdministrador();
+  const campos = ['codigo', 'nombre', 'categoria', 'subcategoria', 'marca', 'unidad'];
+  if (campos.some((campo) => !datos[campo]?.trim())
+      || [datos.precio, datos.stock, datos.stockMinimo].some((valor) => valor === '' || valor == null)) {
     throw new Error('Todos los campos son obligatorios');
   }
-
-  //recien despues de revisar que no esten vacios se convierten a numero
-  //si se convirtieran antes, Number('') daria 0 y no se sabria si estaba vacio
-  const precio = Number(datos.precio);
-  const stock = Number(datos.stock);
-  const stockMinimo = Number(datos.stockMinimo);
-
-  if (!Number.isInteger(precio) || precio <= 0) {
-    throw new Error('El precio debe ser un número entero mayor a 0');
-  }
-  if (!Number.isInteger(stock) || stock < 0) {
-    throw new Error('La cantidad debe ser un número entero de 0 o más');
-  }
-  if (!Number.isInteger(stockMinimo) || stockMinimo < 0) {
-    throw new Error('El stock mínimo debe ser un número entero de 0 o más');
-  }
-
-  //carga los productos
-  const productos = leer(CLAVE, productosMock);
-  const codigo = datos.codigo.trim().toUpperCase();
-
-  //some pregunta si al menos uno de los elementos cumple la condicion
-  if (productos.some((p) => p.codigo === codigo)) {
-    throw new Error('Ya existe un producto con ese código');
-  }
-
   const nuevo = {
-    codigo,
+    codigo: datos.codigo.trim().toUpperCase(),
     nombre: datos.nombre.trim(),
     categoria: datos.categoria.trim(),
     subcategoria: datos.subcategoria.trim(),
     marca: datos.marca.trim(),
     unidad: datos.unidad.trim(),
-    precio,
-    stock,
-    stockMinimo,
-    activo: true,
+    precio: numeroEntero(datos.precio, 'un precio', 1),
+    stock: numeroEntero(datos.stock, 'una cantidad', 0),
+    stockMinimo: numeroEntero(datos.stockMinimo, 'el stock mínimo', 0),
   };
-
-  //push lo agrega a la lista de productos
-  productos.push(nuevo);
-  //guarda la lista de productos con el producto nuevo
-  guardar(CLAVE, productos);
-  return crearProductoDTO(nuevo);
+  return llamarApi('/api/productos', {
+    metodo: 'POST',
+    datos: nuevo,
+  });
 }
 
-//elimina un producto segun su codigo, solo lo usa el admin
 export async function eliminarProducto(codigo) {
-  await esperar();
-  if (obtenerSesion()?.rol !== 'admin') throw new Error('Solo el administrador puede dar de baja productos');
-  //carga los productos
-  const productos = leer(CLAVE, productosMock);
-
-  const indice = productos.findIndex((p) => p.codigo === codigo && p.activo !== false);
-  if (indice === -1) {
-    throw new Error('Producto no encontrado');
-  }
-
-  //La baja conserva el registro para mantener los pedidos históricos.
-  productos[indice] = { ...productos[indice], activo: false };
-  guardar(CLAVE, productos);
+  exigirAdministrador();
+  await llamarApi(`/api/productos/${encodeURIComponent(codigo)}`, { metodo: 'DELETE' });
 }
