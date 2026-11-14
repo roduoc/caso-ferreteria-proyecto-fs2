@@ -1,10 +1,7 @@
 import { test, expect } from '@playwright/test'
+import { ingresar } from './apoyo'
 
-async function ingresar(page, correo, clave) {
-  await page.getByLabel('Correo').fill(correo)
-  await page.getByLabel('Contraseña').fill(clave)
-  await page.getByRole('button', { name: 'Acceder' }).click()
-}
+//este test solo lee: el reporte se calcula con los pedidos reales que manda el backend
 
 test.describe('HU-13 Reporte de productos y clientes más frecuentes', () => {
   test.beforeEach(async ({ page }) => {

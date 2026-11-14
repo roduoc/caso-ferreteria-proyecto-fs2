@@ -1,14 +1,16 @@
 import { test, expect } from '@playwright/test'
+import { ingresar, leerProducto, cambiarProducto } from './apoyo'
 
-async function ingresar(page, correo, clave) {
-  await page.getByLabel('Correo').fill(correo)
-  await page.getByLabel('Contraseña').fill(clave)
-  await page.getByRole('button', { name: 'Acceder' }).click()
-}
+//stock del Cemento Polpaico antes del test (aqui no se compra, solo se elige la entrega)
+let stockOriginal
 
 test.describe('HU-09 Elegir modalidad de entrega', () => {
   //antes del test agregamoso un cemento polpaico al carrito
   test.beforeEach(async ({ page }) => {
+    //para agregarlo al carrito necesita stock: si en la base real se acabo, se repone para el test
+    stockOriginal = (await leerProducto('MC001')).stock
+    if (stockOriginal < 1) await cambiarProducto('MC001', { stock: 10 })
+
     await page.goto('/#/login')
     await ingresar(page, 'ana.torres@gmail.com', '1234')
     await expect(page).toHaveURL(/#\/mis-pedidos/)
@@ -18,6 +20,10 @@ test.describe('HU-09 Elegir modalidad de entrega', () => {
     //luego pasamos a envios
     await page.goto('/#/envios')
     await expect(page.getByText('Modalidad de entrega')).toBeVisible()
+  })
+
+  test.afterEach(async () => {
+    await cambiarProducto('MC001', { stock: stockOriginal })
   })
 
   test('CP-36: Ana elige retiro en tienda y el pago muestra esa modalidad', async ({ page }) => {
@@ -50,4 +56,4 @@ test.describe('HU-09 Elegir modalidad de entrega', () => {
     await expect(page.getByText('Ingresa la comuna y la dirección de despacho.')).toBeVisible()
     await expect(page).toHaveURL(/#\/envios/)
   })
-})
+})

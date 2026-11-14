@@ -29,7 +29,8 @@ test.describe('HU-02 Iniciar y cerrar sesión', () => {
   test('CP-10 con clave incorrecta muestra error y no inicia sesión', async ({ page }) => {
     await page.goto('/#/login')
     await ingresar(page, 'ana.torres@gmail.com', '9999')
-    await expect(page.getByRole('alert')).toHaveText('Correo o contraseña incorrectos.')
+    //este mensaje ahora lo manda el backend (ms-usuarios), sin punto final
+    await expect(page.getByRole('alert')).toHaveText('Correo o contraseña incorrectos')
     await expect(page).toHaveURL(/#\/login/)
   })
 
@@ -56,4 +57,4 @@ test.describe('HU-02 Iniciar y cerrar sesión', () => {
     await page.goto('/#/mis-pedidos')
     await expect(page).toHaveURL(/#\/login/)
   })
-})
+})

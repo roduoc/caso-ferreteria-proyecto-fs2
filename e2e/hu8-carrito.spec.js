@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { formatoPrecio, leerProducto, cambiarProducto } from './apoyo'
 
 async function agregarDesdeDetalle(page, codigo, cantidad) {
   await page.goto(`/#/producto/${codigo}`)
@@ -11,18 +12,37 @@ async function agregarDesdeDetalle(page, codigo, cantidad) {
   await page.getByRole('button', { name: 'Añadir al carrito' }).click()
 }
 
+//el carrito sigue en localStorage, pero el nombre, el precio y el stock vienen del backend
+//se guardan el cemento y la caladora como estaban, para dejarlos igual al final
+let cemento
+let caladora
+
 test.describe('HU-08 Agregar productos al carrito', () => {
+  test.beforeEach(async () => {
+    cemento = await leerProducto('MC001')
+    caladora = await leerProducto('HE006')
+    //para agregar 3 sacos el cemento necesita stock: si en la base real se acabo, se repone para el test
+    if (cemento.stock < 10) await cambiarProducto('MC001', { stock: 10 })
+  })
+
+  test.afterEach(async () => {
+    await cambiarProducto('MC001', { stock: cemento.stock })
+    await cambiarProducto('HE006', { stock: caladora.stock })
+  })
 
   test('CP-33: se agregan 3 sacos de Cemento Polpaico al carrito', async ({ page }) => {
     await agregarDesdeDetalle(page, 'MC001', 3)
     await expect(page.getByRole('status')).toHaveText('Producto añadido al carrito.')
     await expect(page.getByRole('link', { name: 'Carrito con 3 productos' })).toBeVisible()
     await page.goto('/#/carrito')
-    await expect(page.getByText('Cemento Polpaico gris 25 kg')).toBeVisible()
+    await expect(page.getByText(cemento.nombre)).toBeVisible()
     await expect(page.getByText('3 productos en el carrito')).toBeVisible()
   })
 
   test('CP-34: no se puede agregar más Caladoras que su stock, 4', async ({ page }) => {
+    //se deja la caladora con 4 unidades en el backend, como en los datos iniciales
+    await cambiarProducto('HE006', { stock: 4 })
+
     await agregarDesdeDetalle(page, 'HE006', 4)
     await expect(page.getByRole('status')).toHaveText('Producto añadido al carrito.')
     //se intenta agregar 1 mas
@@ -36,20 +56,21 @@ test.describe('HU-08 Agregar productos al carrito', () => {
   test('CP-35: el subtotal del carrito cambia al agregar, modificar y eliminar', async ({ page }) => {
     //la fila subtotal
     const subtotal = page.locator('aside div').filter({ hasText: 'Subtotal' })
+    //el precio se lee del backend (en los datos iniciales es 5990: 2 sacos = 11980)
+    const precio = cemento.precio
 
-    //agregar 2 sacos = 11980
     await agregarDesdeDetalle(page, 'MC001', 2)
     await expect(page.getByRole('status')).toHaveText('Producto añadido al carrito.')
     await page.goto('/#/carrito')
-    await expect(subtotal).toContainText('$11.980')
+    await expect(subtotal).toContainText(formatoPrecio(precio * 2))
 
-    //con + quedan 3 sacos 17970
+    //con + quedan 3 sacos
     await page.getByRole('button', { name: 'Aumentar cantidad' }).click()
-    await expect(subtotal).toContainText('$17.970')
+    await expect(subtotal).toContainText(formatoPrecio(precio * 3))
 
-    //con - vuelven a ser 2 sacos 11980
+    //con - vuelven a ser 2 sacos
     await page.getByRole('button', { name: 'Disminuir cantidad' }).click()
-    await expect(subtotal).toContainText('$11.980')
+    await expect(subtotal).toContainText(formatoPrecio(precio * 2))
 
     //al eliminar el carrito queda vacio
     await page.getByRole('button', { name: 'Eliminar' }).click()

@@ -1,15 +1,10 @@
 import { test, expect } from '@playwright/test'
-
-async function ingresar(page, correo, clave) {
-  await page.getByLabel('Correo').fill(correo)
-  await page.getByLabel('Contraseña').fill(clave)
-  await page.getByRole('button', { name: 'Acceder' }).click()
-}
+import { CORREOS, ingresar, leerProducto, cambiarProducto } from './apoyo'
 
 //pedro, vendedor, inicia sesion y cambia el stock de un producto
 async function cambiarStock(page, codigo, cantidad) {
   await page.goto('/#/login')
-  await ingresar(page, 'vendedor@duoc.cl', '1234')
+  await ingresar(page, CORREOS.pedro)
 
   await page.getByPlaceholder('Buscar por código (ej: MC001)').fill(codigo)
   //fill escribe texto, por eso debemos convertir lo que escribimos a string
@@ -23,11 +18,24 @@ async function buscarEnCatalogo(page, codigo) {
   await page.getByLabel('Buscar producto').fill(codigo)
 }
 
-test.describe('HU-04 Consultar catálogo con stock', () => {
+//stock que tenia el Cemento Polpaico antes de cada test, para dejarlo igual al final
+let stockOriginal
 
+test.describe('HU-04 Consultar catálogo con stock', () => {
+  test.beforeEach(async () => {
+    stockOriginal = (await leerProducto('MC001')).stock
+  })
+
+  test.afterEach(async () => {
+    await cambiarProducto('MC001', { stock: stockOriginal })
+  })
+
+  //en la base de datos real el stock cambia con las compras,
+  //por eso se compara con lo que dice el backend y no con un numero fijo
   test('CP 21 el catálogo muestra el stock del Cemento Polpaico', async ({ page }) => {
     await buscarEnCatalogo(page, 'MC001')
-    await expect(page.getByText('Stock disponible: 80')).toBeVisible()
+    const texto = stockOriginal > 0 ? `Stock disponible: ${stockOriginal}` : 'Sin stock'
+    await expect(page.getByText(texto)).toBeVisible()
   })
 
   test('CP 22 Pedro cambia el stock y el catálogo muestra el stock nuevo', async ({ page }) => {

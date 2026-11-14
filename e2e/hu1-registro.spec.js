@@ -1,16 +1,8 @@
 import { test, expect } from '@playwright/test'
+import { datosUnicos, buscarIdPorCorreo, eliminarUsuarioSiExiste } from './apoyo'
 
-// Datos válidos de una clienta nueva (no existe en usuarios.json)
-const datosValidos = {
-  nombre: 'Sofía',
-  apellidos: 'Rojas Pérez',
-  rut: '123456789',
-  correo: 'sofia@gmail.com',
-  clave: '1234',
-  region: 'Coquimbo',
-  comuna: 'La Serena',
-  direccion: 'Av. del Mar 100',
-}
+let datosValidos
+let registrados = []
 
 //page es una pestaña abierta del navegador que abre playwright
 async function llenarFormulario(page, cambios = {}) {
@@ -35,12 +27,34 @@ async function llenarFormulario(page, cambios = {}) {
 
 test.describe('HU-01 Registro de clientes', () => {
   test.beforeEach(async ({ page }) => {
+    const { rut, correo } = datosUnicos()
+    datosValidos = {
+      nombre: 'Sofía',
+      apellidos: 'Rojas Pérez',
+      rut,
+      correo,
+      clave: '1234',
+      region: 'Coquimbo',
+      comuna: 'La Serena',
+      direccion: 'Av. del Mar 100',
+    }
+    registrados = []
     await page.goto('/#/registro')
   })
 
+  //la cuenta de Sofia queda guardada en MySQL: se elimina para no dejar basura
+  test.afterEach(async () => {
+    for (const correo of registrados) {
+      await eliminarUsuarioSiExiste(await buscarIdPorCorreo(correo))
+    }
+  })
+
   test('CP-1 Sofía se registra y llega a mis pedidos', async ({ page }) => {
+    registrados.push(datosValidos.correo)
     await llenarFormulario(page)
     await expect(page).toHaveURL(/#\/mis-pedidos/)
+    //la cuenta existe de verdad en el backend
+    expect(await buscarIdPorCorreo(datosValidos.correo)).toBeTruthy()
   })
 
   test('CP-2 rechaza correo con dominio no permitido', async ({ page }) => {
@@ -62,6 +76,7 @@ test.describe('HU-01 Registro de clientes', () => {
     await expect(page).toHaveURL(/#\/registro/)
   })
 
+  //este mensaje ahora lo manda el backend, que revisa los correos en MySQL
   test('CP-5 rechaza el correo de Ana porque ya existe', async ({ page }) => {
     await llenarFormulario(page, { correo: 'ana.torres@gmail.com' })
     await expect(page.getByRole('alert')).toHaveText('Ya existe un usuario con ese correo')
@@ -69,7 +84,9 @@ test.describe('HU-01 Registro de clientes', () => {
   })
 
   test('CP-6 con sesión iniciada, registro redirige a mis pedidos', async ({ page }) => {
+    registrados.push(datosValidos.correo)
     await llenarFormulario(page)
+    await expect(page).toHaveURL(/#\/mis-pedidos/)
     await page.goto('/#/registro')
     await expect(page).toHaveURL(/#\/mis-pedidos/)
   })
