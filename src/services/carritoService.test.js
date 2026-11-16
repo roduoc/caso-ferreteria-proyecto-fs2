@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
   actualizarCantidad,
   agregarAlCarrito,
@@ -8,9 +8,14 @@ import {
   vaciarCarrito,
 } from './carritoService';
 
+import { rutasCatalogo, simularApi } from '../test/apiSimulada';
+
 describe('carritoService', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    simularApi({
+      ...rutasCatalogo({ MC003: { stock: 0 } }),
+      'GET /api/productos/NOEXISTE': { estado: 404, cuerpo: { mensaje: 'Producto no encontrado' } },
+    });
   });
 
   it('UT-11: agrega un producto nuevo al carrito', async () => {
@@ -22,7 +27,7 @@ describe('carritoService', () => {
   });
 
   it('UT-11: suma la cantidad cuando el producto ya existe', async () => {
-    await agregarAlCarrito('MC001', 1);
+    await agregarAlCarrito('MC001');
     await agregarAlCarrito('MC001', 2);
 
     const carrito = await obtenerCarrito();
@@ -36,7 +41,12 @@ describe('carritoService', () => {
   it('UT-11: devuelve el detalle y subtotal de cada producto', async () => {
     await agregarAlCarrito('MC001', 2);
 
-    const [item] = await obtenerDetalleCarrito();
+    localStorage.setItem('carrito', JSON.stringify([
+      ...(await obtenerCarrito()), { codigo: 'BAJA', cantidad: 1 },
+    ]));
+    const detalle = await obtenerDetalleCarrito();
+    expect(detalle).toHaveLength(1);
+    const [item] = detalle;
     expect(item.nombre).toBe('Cemento Polpaico gris 25 kg');
     expect(item.subtotal).toBe(item.precio * 2);
   });
@@ -54,6 +64,7 @@ describe('carritoService', () => {
   });
 
   it('UT-12: rechaza productos inexistentes y cantidades inválidas', async () => {
+    await expect(agregarAlCarrito('MC003')).rejects.toThrow(/no tiene stock/i);
     await expect(agregarAlCarrito('NOEXISTE')).rejects.toThrow(/no encontrado/i);
     await expect(agregarAlCarrito('MC001', 0)).rejects.toThrow(/entero mayor a 0/i);
     await expect(agregarAlCarrito('MC001', 1.5)).rejects.toThrow(/entero mayor a 0/i);

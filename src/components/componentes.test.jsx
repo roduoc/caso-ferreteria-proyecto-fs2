@@ -9,12 +9,15 @@ import NavbarAdmin from './NavbarAdmin';
 import TarjetaPedido from './TarjetaPedido';
 import TarjetaStock from './TarjetaStock';
 import { agregarAlCarrito } from '../services/carritoService';
-import { iniciarSesion, obtenerSesion } from '../services/usuarioService';
+import { obtenerSesion } from '../services/usuarioService';
+
+import { rutasCatalogo, sesionDePrueba, simularApi } from '../test/apiSimulada';
 
 const enRouter = (componente) => render(<MemoryRouter>{componente}</MemoryRouter>);
 
 describe('navegación pública y de administrador', () => {
   it('UT-25: muestra enlaces públicos, registro, catálogo y contador del carrito sin iniciar sesión', async () => {
+    simularApi(rutasCatalogo());
     enRouter(<><Navbar /><Footer /><FooterAdmin /></>);
     expect(screen.getAllByRole('link', { name: 'Crear cuenta' }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: 'Productos' }).length).toBeGreaterThan(0);
@@ -24,7 +27,7 @@ describe('navegación pública y de administrador', () => {
   });
 
   it('UT-25: permite abrir y cerrar el menú móvil y cerrar sesión', async () => {
-    await iniciarSesion('juan.perez@gmail.com', '1234');
+    sesionDePrueba(3);
     enRouter(<Navbar />);
     expect(screen.getAllByRole('link', { name: 'Mis pedidos' }).length).toBeGreaterThan(0);
     await userEvent.click(document.getElementById('menu-button'));
@@ -34,7 +37,7 @@ describe('navegación pública y de administrador', () => {
   });
 
   it('UT-25: muestra el panel y cierra sesión desde su cabecera', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
+    sesionDePrueba(1);
     enRouter(<NavbarAdmin />);
     fireEvent.click(screen.getByRole('button'));
     expect(document.getElementById('mobile-menu')).toBeInTheDocument();

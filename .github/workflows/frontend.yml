@@ -1,0 +1,170 @@
+name: Frontend CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      playwright:
+        description: Ejecutar la suite completa de Playwright contra el backend de pruebas
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verificar:
+    name: Lint, Vitest y build
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+      AWS_DEPLOY_ENABLED: ${{ vars.AWS_DEPLOY_ENABLED }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:coverage
+      - name: Guardar cobertura de Vitest
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-vitest
+          path: coverage/
+          if-no-files-found: ignore
+      - name: Compilar para la raíz del sitio
+        run: |
+          if [[ "$GITHUB_REF" == refs/heads/main && "$AWS_DEPLOY_ENABLED" == true ]]; then
+            : "${VITE_API_URL:?Configura VITE_API_URL con la URL pública del backend}"
+          fi
+          if [[ -z "$VITE_API_URL" ]]; then
+            unset VITE_API_URL
+          fi
+          npm run build
+      - name: Guardar sitio compilado
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+          if-no-files-found: error
+
+  publicar:
+    name: Publicar en S3
+    needs: verificar
+    if: github.ref == 'refs/heads/main' && vars.AWS_DEPLOY_ENABLED == 'true' && inputs.playwright != true
+    runs-on: ubuntu-latest
+    environment: frontend-s3
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+      AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
+      FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+    steps:
+      - name: Validar configuración
+        run: |
+          : "${AWS_REGION:?Configura AWS_REGION}"
+          : "${AWS_S3_BUCKET:?Configura AWS_S3_BUCKET}"
+          : "${FRONTEND_URL:?Configura FRONTEND_URL}"
+          [[ "$AWS_S3_BUCKET" =~ ^[a-z0-9][a-z0-9.-]+[a-z0-9]$ ]]
+          [[ "$FRONTEND_URL" == http://* || "$FRONTEND_URL" == https://* ]]
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+      - name: Obtener credenciales por OIDC
+        if: env.AWS_ROLE_ARN != ''
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Subir los archivos y luego index.html
+        env:
+          ACADEMY_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          ACADEMY_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ACADEMY_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        run: |
+          if [[ -z "$AWS_ROLE_ARN" ]]; then
+            : "${ACADEMY_ACCESS_KEY_ID:?Configura AWS_ACCESS_KEY_ID}"
+            : "${ACADEMY_SECRET_ACCESS_KEY:?Configura AWS_SECRET_ACCESS_KEY}"
+            : "${ACADEMY_SESSION_TOKEN:?Configura AWS_SESSION_TOKEN}"
+            export AWS_ACCESS_KEY_ID="$ACADEMY_ACCESS_KEY_ID"
+            export AWS_SECRET_ACCESS_KEY="$ACADEMY_SECRET_ACCESS_KEY"
+            export AWS_SESSION_TOKEN="$ACADEMY_SESSION_TOKEN"
+          fi
+          aws s3 sync dist/ "s3://$AWS_S3_BUCKET/" --exclude index.html --only-show-errors
+          aws s3 cp dist/index.html "s3://$AWS_S3_BUCKET/index.html" --cache-control no-cache --only-show-errors
+
+  verificar-sitio:
+    name: Verificar portada y catálogo en S3
+    needs: publicar
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BASE_URL: ${{ vars.FRONTEND_URL }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e -- e2e/smoke.spec.js
+      - name: Guardar reporte de verificación
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-sitio-s3
+          path: playwright-report/
+          if-no-files-found: ignore
+
+  playwright:
+    name: Playwright con el backend de pruebas
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.playwright
+    needs: verificar
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: ${{ vars.E2E_API_URL }}
+      API_PRODUCCION: ${{ vars.VITE_API_URL }}
+    steps:
+      - name: Confirmar que la API de pruebas es distinta de la publicada
+        run: |
+          : "${VITE_API_URL:?Configura E2E_API_URL con el backend de pruebas}"
+          : "${API_PRODUCCION:?Configura VITE_API_URL con el backend publicado}"
+          node --input-type=module <<'JS'
+          const pruebas = new URL(process.env.VITE_API_URL);
+          const produccion = new URL(process.env.API_PRODUCCION);
+          if (pruebas.origin === produccion.origin) {
+            console.error('E2E_API_URL debe apuntar a un origen de pruebas separado.');
+            process.exit(1);
+          }
+          JS
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - name: Guardar reporte, trazas y capturas
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-playwright
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore

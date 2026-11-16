@@ -71,3 +71,42 @@ npm run build:css
 Se utilizo herramientas de IA principalmente para los assets y SVGs, y en algunas vistas para corregir temas de diseño y potenciar los estilos de CSS, tambien fue utilizada como herramienta para darnos ideas y darle un enfoque a nuestro proyecto
 
 ## FULLSTACKEANDO AURA
+
+## CI/CD del frontend en AWS
+
+**Frontend CI/CD** ejecuta lint, Vitest con respuestas simuladas y la compilación
+de Vite en los PR hacia `main` y al actualizar `main`. En Actions se pueden
+descargar el reporte de cobertura y la carpeta compilada.
+
+Para activar la publicación automática, configura estas variables en
+**Settings → Secrets and variables → Actions → Variables** del repositorio.
+
+| Variable | Valor |
+| --- | --- |
+| `VITE_API_URL` | URL pública del API Gateway, sin barra final. |
+| `AWS_REGION` | Región del bucket existente. |
+| `AWS_S3_BUCKET` | Nombre del bucket, sin `s3://`. |
+| `FRONTEND_URL` | URL pública que usan los usuarios para entrar a la tienda. |
+| `AWS_DEPLOY_ENABLED` | `true` cuando el bucket y el acceso estén listos. |
+| `AWS_ROLE_ARN` | Rol de AWS para publicar mediante OIDC, cuando está disponible. |
+| `E2E_API_URL` | URL del backend de pruebas, con su propia base de datos. Solo se usa para la suite completa de Playwright. |
+
+El rol OIDC debe confiar en este repositorio y en el entorno
+`frontend-s3` de GitHub, y tener permiso para listar el bucket y subir los
+archivos. Restringe ese entorno a la rama `main`. Si el sandbox de AWS
+Academy entrega credenciales temporales en vez de un rol OIDC, deja
+`AWS_ROLE_ARN` vacío y guarda `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+y `AWS_SESSION_TOKEN` como secretos del entorno `frontend-s3`. Esos tres
+valores se deben renovar cuando venza la sesión del laboratorio.
+
+El workflow sube los archivos de `dist/` a la raíz del bucket y publica
+`index.html` al final. Luego Playwright abre la portada y comprueba que el
+catálogo cargue. El API Gateway debe permitir por CORS el origen de
+`FRONTEND_URL`.
+
+Para ejecutar las pruebas completas de Aisleen, abre **Actions → Frontend CI/CD
+→ Run workflow** en `main` y marca la opción de Playwright. Esa ejecución
+levanta el frontend en el runner y usa `E2E_API_URL`; el backend de pruebas
+debe aceptar el origen `http://localhost:4173` y tener los datos iniciales
+de pruebas. La ejecución de la suite completa omite la publicación, porque
+incluye casos que cambian datos.

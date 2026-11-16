@@ -8,15 +8,13 @@ import LayoutAdmin from '../layouts/LayoutAdmin';
 import AdminHistorial from './admin/AdminHistorial';
 import AdminHistorialVer from './admin/AdminHistorialVer';
 import { agregarAlCarrito } from '../services/carritoService';
-import { obtenerCliente } from '../services/clienteService';
-import { actualizarProducto } from '../services/productoService';
-import { cerrarSesion, iniciarSesion } from '../services/usuarioService';
+import {
+  clientesDePrueba, pedidos, rutasCatalogo, sesionDePrueba, simularApi,
+} from '../test/apiSimulada';
 
 describe('HU 4: catálogo sin autenticación', () => {
   it('UT-06: muestra nombre, precio y el stock actualizado al entrar', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
-    await actualizarProducto('MC001', { stock: 7 });
-    cerrarSesion();
+    simularApi(rutasCatalogo({ MC001: { stock: 7 } }));
     render(<MemoryRouter initialEntries={['/productos']}><Productos /></MemoryRouter>);
     const nombre = await screen.findByRole('heading', { name: 'Cemento Polpaico gris 25 kg' });
     const tarjeta = nombre.closest('article');
@@ -39,23 +37,34 @@ describe('pago con crédito', () => {
     );
   }
 
-  it('UT-18: ofrece crédito habilitado y confirma el cargo completo a la deuda', async () => {
-    const sesion = await iniciarSesion('ana.torres@gmail.com', '1234');
-    const saldoAnterior = (await obtenerCliente(sesion.id)).saldoAdeudado;
+  it('UT-18: ofrece crédito habilitado y envía la modalidad de cuenta corriente', async () => {
+    sesionDePrueba(4);
+    const fetch = simularApi({
+      ...rutasCatalogo(),
+      'GET /api/clientes/4': { cuerpo: clientesDePrueba[1] },
+      'POST /api/pedidos': { estado: 201, cuerpo: { id: 8, total: 9980 } },
+    });
     await agregarAlCarrito('MC001');
     mostrarPago();
     const opcion = await screen.findByRole('radio', { name: /Cuenta corriente|Pagar con crédito/i });
     fireEvent.click(opcion);
     fireEvent.click(screen.getByRole('button', { name: /Confirmar pago|Confirmar compra a crédito/i }));
     expect(await screen.findByText('Compra registrada')).toBeInTheDocument();
-    expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(saldoAnterior + 5990 + 3990);
+    expect(JSON.parse(fetch.mock.lastCall[1].body)).toMatchObject({
+      clienteId: 4, medioPago: 'cuenta_corriente', entrega: { modalidad: 'despacho' },
+    });
   });
 
   it('UT-19: no muestra crédito a un cliente particular', async () => {
-    await iniciarSesion('juan.perez@gmail.com', '1234');
+    sesionDePrueba(3);
+    const fetch = simularApi({
+      ...rutasCatalogo(),
+      'GET /api/clientes/3': { cuerpo: clientesDePrueba[0] },
+    });
     await agregarAlCarrito('MC001');
     mostrarPago();
-    await waitFor(() => expect(screen.getByText('Pago al contado')).toBeInTheDocument());
+    await waitFor(() => expect(fetch.mock.calls.some(([url]) => url.endsWith('/api/clientes/3'))).toBe(true));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Confirmar pago' })).toBeEnabled());
     expect(screen.queryByRole('radio', { name: /Pagar con crédito/i })).not.toBeInTheDocument();
   });
 });
@@ -75,13 +84,13 @@ describe('HU 3 y HU 12: acceso al panel', () => {
   }
 
   it('UT-05 / UT-23: impide entrar a un cliente', async () => {
-    await iniciarSesion('juan.perez@gmail.com', '1234');
+    sesionDePrueba(3);
     mostrarPanel();
     expect(screen.getByText('Inicia sesión')).toBeInTheDocument();
   });
 
   it('UT-05 / UT-23: permite entrar a un administrador', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
+    sesionDePrueba(1);
     mostrarPanel();
     expect(screen.getByText('Historial de clientes')).toBeInTheDocument();
   });
@@ -89,7 +98,11 @@ describe('HU 3 y HU 12: acceso al panel', () => {
 
 describe('HU 10 y HU 12: consultas de pedidos', () => {
   it('UT-16: muestra al cliente solo sus pedidos y su estado actual', async () => {
-    await iniciarSesion('juan.perez@gmail.com', '1234');
+    sesionDePrueba(3);
+    simularApi({
+      'GET /api/pedidos/cliente/3': { cuerpo: [pedidos[0], pedidos[2]] },
+      'GET /api/clientes/3': { cuerpo: clientesDePrueba[0] },
+    });
     render(<MemoryRouter><MisPedidos /></MemoryRouter>);
     expect(await screen.findByText('Pendiente')).toBeInTheDocument();
     expect(screen.getByText('Entregado')).toBeInTheDocument();
@@ -97,7 +110,12 @@ describe('HU 10 y HU 12: consultas de pedidos', () => {
   });
 
   it('UT-23: permite al administrador buscar un cliente y ver fechas y montos de sus compras', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
+    sesionDePrueba(1);
+    simularApi({
+      'GET /api/clientes': { cuerpo: clientesDePrueba },
+      'GET /api/clientes/3': { cuerpo: clientesDePrueba[0] },
+      'GET /api/pedidos/cliente/3': { cuerpo: [pedidos[0], pedidos[2]] },
+    });
     render(
       <MemoryRouter initialEntries={['/admin/historial']}>
         <Routes>

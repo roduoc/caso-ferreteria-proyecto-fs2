@@ -1,105 +1,103 @@
 import { describe, expect, it } from 'vitest';
-import { agregarAlCarrito, obtenerCarrito } from './carritoService';
-import { obtenerCliente } from './clienteService';
-import { listarPagosCliente, registrarPago } from './pagoService';
+import { obtenerCarrito } from './carritoService';
 import { cambiarEstado, crearPedido, listarPedidos, listarPedidosCliente } from './pedidoService';
-import { obtenerProducto } from './productoService';
-import { cerrarSesion, iniciarSesion } from './usuarioService';
+import { cerrarSesion } from './usuarioService';
 import { ESTADOS_PEDIDO } from '../models/Pedido';
+import { pedidos, sesionDePrueba, simularApi } from '../test/apiSimulada';
 
-const entrega = { modalidad: 'despacho', direccion: 'Av. Test 1', comuna: 'La Serena' };
-const loginCliente = () => iniciarSesion('ana.torres@gmail.com', '1234');
+const despacho = { modalidad: 'despacho', direccion: 'Av. Test 1', comuna: 'La Serena' };
+const retiro = { modalidad: 'retiro' };
 
-describe('compra a crédito', () => {
-  it('UT-18: suma productos y despacho al monto adeudado y descuenta stock una sola vez', async () => {
-    const sesion = await loginCliente();
-    const productoAntes = await obtenerProducto('MC001');
-    const saldoAntes = (await obtenerCliente(sesion.id)).saldoAdeudado;
-    await agregarAlCarrito('MC001', 2);
+function prepararCarrito() {
+  localStorage.setItem('carrito', JSON.stringify([
+    { codigo: 'MC001', cantidad: 2, precio: 1, nombre: 'Ignorar' },
+  ]));
+}
 
-    const pedido = await crearPedido(sesion.id, entrega, 'cuenta_corriente');
+describe('creación de pedidos', () => {
+  it.each([
+    ['UT-18', 'cuenta_corriente', despacho, 3990],
+    ['UT-20', 'contado', retiro, 0],
+  ])('%s envía la compra con medio %s y vacía el carrito al confirmarse', async (_id, medioPago, entrega, costoEnvio) => {
+    sesionDePrueba(4);
+    prepararCarrito();
+    const total = 11980 + costoEnvio;
+    const fetch = simularApi({
+      'POST /api/pedidos': {
+        estado: 201,
+        cuerpo: { id: 4, clienteId: 4, medioPago, total, costoEnvio, estado: 'Pendiente' },
+      },
+    });
 
-    expect(pedido.total).toBe(productoAntes.precio * 2 + 3990);
-    expect(pedido.medioPago).toBe('cuenta_corriente');
-    expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(saldoAntes + pedido.total);
-    expect((await obtenerProducto('MC001')).stock).toBe(productoAntes.stock - 2);
+    const pedido = await crearPedido(4, entrega, medioPago);
+
+    expect(pedido).toMatchObject({ id: 4, medioPago, total, costoEnvio });
+    expect(JSON.parse(fetch.mock.lastCall[1].body)).toEqual({
+      clienteId: 4, entrega, medioPago, items: [{ codigo: 'MC001', cantidad: 2 }],
+    });
     expect(await obtenerCarrito()).toEqual([]);
-    expect((await listarPedidosCliente(sesion.id)).some((p) => p.id === pedido.id)).toBe(true);
   });
 
-  it('UT-20: no aumenta la deuda al pagar al contado', async () => {
-    const sesion = await loginCliente();
-    const saldoAntes = (await obtenerCliente(sesion.id)).saldoAdeudado;
-    await agregarAlCarrito('MC001');
-    const pedido = await crearPedido(sesion.id, { modalidad: 'retiro' }, 'contado');
-    expect(pedido.costoEnvio).toBe(0);
-    expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(saldoAntes);
-  });
-
-  it('UT-20: mantiene la venta a cuenta corriente pendiente hasta registrar su cancelación', async () => {
-    const sesion = await loginCliente();
-    await agregarAlCarrito('MC001');
-    const pedido = await crearPedido(sesion.id, { modalidad: 'retiro' }, 'cuenta_corriente');
-    expect(pedido.medioPago).toBe('cuenta_corriente');
-    const saldoPendiente = (await obtenerCliente(sesion.id)).saldoAdeudado;
-    expect(saldoPendiente).toBeGreaterThanOrEqual(pedido.total);
-    const pago = await registrarPago(sesion.id, saldoPendiente);
-    expect(pago.monto).toBe(saldoPendiente);
-    expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(0);
-    expect((await listarPagosCliente(sesion.id)).some((p) => p.id === pago.id)).toBe(true);
-  });
-
-  it('UT-19: rechaza crédito no habilitado y conserva carrito, stock y deuda', async () => {
-    const sesion = await iniciarSesion('juan.perez@gmail.com', '1234');
-    await agregarAlCarrito('MC001');
-    const productoAntes = await obtenerProducto('MC001');
-    await expect(crearPedido(sesion.id, entrega, 'cuenta_corriente')).rejects.toThrow(/habilitada/i);
-    expect((await obtenerProducto('MC001')).stock).toBe(productoAntes.stock);
-    expect((await obtenerCliente(sesion.id)).saldoAdeudado).toBe(0);
+  it('UT-19: muestra el rechazo de crédito del servidor y conserva el carrito', async () => {
+    sesionDePrueba(3);
+    prepararCarrito();
+    simularApi({
+      'POST /api/pedidos': { estado: 409, cuerpo: { mensaje: 'Cuenta corriente no habilitada' } },
+    });
+    await expect(crearPedido(3, despacho, 'cuenta_corriente')).rejects.toThrow(/no habilitada/i);
     expect(await obtenerCarrito()).toHaveLength(1);
   });
 
   it('UT-19: rechaza pedidos sin sesión, con carrito vacío o medio inválido', async () => {
-    await expect(crearPedido(4, entrega, 'contado')).rejects.toThrow(/sesión/i);
-    const sesion = await loginCliente();
-    await expect(crearPedido(sesion.id, entrega, 'otro')).rejects.toThrow(/medio de pago/i);
-    await expect(crearPedido(sesion.id, entrega, 'contado')).rejects.toThrow(/vacío/i);
+    await expect(crearPedido(4, despacho, 'contado')).rejects.toThrow(/sesión/i);
+    sesionDePrueba(4);
+    await expect(crearPedido(4, despacho, 'otro')).rejects.toThrow(/medio de pago/i);
+    await expect(crearPedido(4, despacho, 'contado')).rejects.toThrow(/vacío/i);
+    expect(fetch).not.toHaveBeenCalled();
   });
 });
 
 describe('HU 10 y HU 12: estados, propiedad e historial', () => {
-  it('UT-16: solo entrega pedidos del cliente autenticado y sus estados actuales', async () => {
-    await iniciarSesion('juan.perez@gmail.com', '1234');
-    const propios = await listarPedidosCliente(3);
-    expect(propios.length).toBeGreaterThan(0);
-    expect(propios.every((p) => p.clienteId === 3 && ESTADOS_PEDIDO.includes(p.estado))).toBe(true);
+  it('UT-16: solicita solo los pedidos del cliente autenticado', async () => {
+    sesionDePrueba(3);
+    simularApi({ 'GET /api/pedidos/cliente/3': { cuerpo: [pedidos[0], pedidos[2]] } });
+    await expect(listarPedidosCliente(3)).resolves.toMatchObject([
+      { clienteId: 3, estado: 'Pendiente' },
+      { clienteId: 3, estado: 'Entregado' },
+    ]);
     await expect(listarPedidosCliente(4)).rejects.toThrow(/permiso/i);
     cerrarSesion();
     await expect(listarPedidosCliente(3)).rejects.toThrow(/permiso/i);
   });
 
-  it('UT-23: permite al administrador consultar compras de un cliente con fecha y monto', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
-    const historial = await listarPedidosCliente(3);
-    expect(historial.length).toBeGreaterThan(0);
-    expect(historial.every((p) => p.clienteId === 3 && /^\d{4}-\d{2}-\d{2}$/.test(p.fecha) && p.total > 0)).toBe(true);
-    expect(await listarPedidos()).toHaveLength(3);
+  it('UT-23: permite al administrador consultar fecha y monto de las compras', async () => {
+    sesionDePrueba(1);
+    simularApi({
+      'GET /api/pedidos/cliente/3': { cuerpo: [pedidos[0]] },
+      'GET /api/pedidos': { cuerpo: pedidos },
+    });
+    await expect(listarPedidosCliente(3)).resolves.toMatchObject([{ fecha: '2026-09-15', total: 34760 }]);
+    await expect(listarPedidos()).resolves.toHaveLength(3);
   });
 
-  it('UT-17: acepta exactamente cuatro estados y muestra la actualización al consultar', async () => {
+  it('UT-17: valida los estados y envía el nuevo estado al servidor', async () => {
+    sesionDePrueba(2);
+    const fetch = simularApi({
+      'PATCH /api/pedidos/1/estado': { cuerpo: { ...pedidos[0], estado: 'Despachado' } },
+      'PATCH /api/pedidos/3/estado': { estado: 409, cuerpo: { mensaje: 'El pedido ya fue entregado' } },
+    });
     expect(ESTADOS_PEDIDO).toEqual(['Pendiente', 'En preparación', 'Despachado', 'Entregado']);
-    await iniciarSesion('vendedor@duoc.cl', '1234');
     await expect(cambiarEstado(1, 'Cancelado')).rejects.toThrow(/no válido/i);
-    await cambiarEstado(1, 'Despachado');
-    await iniciarSesion('juan.perez@gmail.com', '1234');
-    expect((await listarPedidosCliente(3)).find((p) => p.id === 1).estado).toBe('Despachado');
-    await iniciarSesion('vendedor@duoc.cl', '1234');
+    await expect(cambiarEstado(1, 'Despachado')).resolves.toMatchObject({ estado: 'Despachado' });
+    expect(JSON.parse(fetch.mock.lastCall[1].body)).toEqual({ estado: 'Despachado' });
     await expect(cambiarEstado(3, 'Pendiente')).rejects.toThrow(/entregado/i);
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('UT-16: impide al cliente gestionar todos los pedidos', async () => {
-    await iniciarSesion('juan.perez@gmail.com', '1234');
+  it('UT-16: impide al cliente gestionar pedidos', async () => {
+    sesionDePrueba(3);
     await expect(listarPedidos()).rejects.toThrow(/permiso/i);
     await expect(cambiarEstado(1, 'Despachado')).rejects.toThrow(/permiso/i);
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

@@ -3,6 +3,7 @@ import { loadEnv } from 'vite'
 
 const env = loadEnv('', process.cwd(), 'VITE_')
 process.env.VITE_API_URL ??= env.VITE_API_URL ?? 'http://localhost:8080'
+const sitioPublicado = process.env.PLAYWRIGHT_BASE_URL
 
 export default defineConfig({
   testDir: './e2e',
@@ -13,13 +14,13 @@ export default defineConfig({
   timeout: 60_000,
   reporter: [[process.env.CI ? 'github' : 'list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: sitioPublicado || 'http://localhost:4173',
     trace: 'on-first-retry',
     screenshot: 'on',
     video: 'retain-on-failure',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: {
+  webServer: sitioPublicado ? undefined : {
     command: 'npm run build && npm run preview -- --port 4173 --strictPort',
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env.CI,

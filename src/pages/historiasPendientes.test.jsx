@@ -8,8 +8,9 @@ import Productos from './Productos';
 import AdminInventario from './admin/AdminInventario';
 import AdminReportes from './admin/AdminReportes';
 import { agregarAlCarrito, obtenerCarrito } from '../services/carritoService';
-import { actualizarProducto } from '../services/productoService';
-import { iniciarSesion } from '../services/usuarioService';
+import {
+  clientesDePrueba, pedidos, rutasCatalogo, sesionDePrueba, simularApi, usuariosDePrueba,
+} from '../test/apiSimulada';
 
 function DestinoEntrega() {
   const { state } = useLocation();
@@ -18,6 +19,7 @@ function DestinoEntrega() {
 
 describe('HU 5: filtros del catálogo', () => {
   it('UT-07: muestra solo la categoría elegida e informa cuando la búsqueda no encuentra productos', async () => {
+    simularApi(rutasCatalogo());
     render(<MemoryRouter><Productos /></MemoryRouter>);
     await screen.findByRole('heading', { name: 'Cemento Polpaico gris 25 kg' });
     const categoria = screen.getByLabelText('Categoría');
@@ -33,6 +35,7 @@ describe('HU 5: filtros del catálogo', () => {
 
 describe('HU 8: carrito y cantidades', () => {
   it('UT-11: permite elegir cantidad antes de agregar y muestra cantidad y subtotal', async () => {
+    simularApi(rutasCatalogo());
     const detalle = render(
       <MemoryRouter initialEntries={['/producto/MC001']}>
         <Routes><Route path="/producto/:codigo" element={<DetalleProducto />} /></Routes>
@@ -56,7 +59,11 @@ describe('HU 8: carrito y cantidades', () => {
 
 describe('HU 9: retiro y despacho', () => {
   async function prepararEntrega() {
-    await iniciarSesion('juan.perez@gmail.com', '1234');
+    sesionDePrueba(3);
+    simularApi({
+      ...rutasCatalogo(),
+      'GET /api/clientes/3': { cuerpo: clientesDePrueba[0] },
+    });
     await agregarAlCarrito('MC001');
     render(
       <MemoryRouter initialEntries={['/envios']}>
@@ -96,8 +103,8 @@ describe('HU 9: retiro y despacho', () => {
 
 describe('HU 6, HU 7 y HU 13: administración', () => {
   it('UT-10: muestra alerta junto al producto al caer bajo su umbral', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
-    await actualizarProducto('MC001', { stock: 19 });
+    sesionDePrueba(1);
+    simularApi(rutasCatalogo({ MC001: { stock: 19, stockBajo: true } }));
     render(<AdminInventario />);
     await screen.findByRole('heading', { name: 'Consulta de stock - Vista Administrador' });
     fireEvent.change(screen.getByPlaceholderText('Buscar por código (ej: MC001)'), { target: { value: 'MC001' } });
@@ -105,7 +112,11 @@ describe('HU 6, HU 7 y HU 13: administración', () => {
   });
 
   it('UT-24: dibuja gráficos calculados desde pedidos y restringe el acceso al administrador', async () => {
-    await iniciarSesion('admin@duoc.cl', '1234');
+    sesionDePrueba(1);
+    simularApi({
+      'GET /api/pedidos': { cuerpo: pedidos },
+      'GET /api/usuarios': { cuerpo: usuariosDePrueba },
+    });
     render(<MemoryRouter><AdminReportes /></MemoryRouter>);
     expect(await screen.findByRole('img', { name: /productos más vendidos/i })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /clientes más frecuentes/i })).toBeInTheDocument();
