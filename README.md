@@ -36,12 +36,12 @@ Los usuarios de prueba están creados en el archivo `assets/js/clientes_prueba.j
 
 ### Administrador
 
-- Correo: `ana.torres@duoc.cl`
+- Correo: `admin@duoc.cl`
 - Contraseña: `1234`
 
 ### Vendedor
 
-- Correo: `luis.fuentes@duoc.cl`
+- Correo: `vendedor@duoc.cl`
 - Contraseña: `1234`
 
 ### Cliente
